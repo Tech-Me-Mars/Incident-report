@@ -1,0 +1,24 @@
+ .card {
+    @apply bg-white border border-gray-200 shadow-sm  rounded-xl;
+  }
+
+  .label-form {
+    @apply text-gray-600 font-semibold;
+  }
+
+  .label-form-error{
+    @apply text-red-600;
+  }
+  .header-menu{
+    @apply text-3xl font-bold
+  }
+  .input-icon-right{
+    @apply   absolute top-1 right-0 mr-2
+  }
+  .input-icon-left {
+    @apply absolute top-1 left-0 ml-2;
+}
+.bg-warmgray {
+  background-color: #f0ecec;
+}
+

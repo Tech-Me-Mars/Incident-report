@@ -1,0 +1,115 @@
+<template>
+  <div class="flex justify-center">
+    <Toast position="top-center" group="bc" class="w-full max-w-md">
+      <template #message="slotProps">
+        <div class="flex flex-col items-start flex-1">
+          <h4 class="font-medium text-lg text-center flex justify-center text-gray-900">{{ slotProps.message.summary }}
+          </h4>
+          <div class="font-medium text-sm text-gray-900">
+            <ul v-if="typeof slotProps.message.detail === 'object'" class="list-disc pl-4">
+              <li v-for="(item, index) in slotProps.message.detail" :key="index">
+                <ul v-if="Array.isArray(item.array)" class="list-disc pl-4">
+                  <li v-for="(element, idx) in item.array" :key="idx">
+                    {{ element }}
+                  </li>
+                </ul>
+                <span v-else>{{ item.array }}</span>
+              </li>
+            </ul>
+            <div v-if="typeof slotProps.message.detail === 'string'" class="text-gray-900">{{ slotProps.message.detail }}
+            </div>
+          </div>
+        </div>
+      </template>
+    </Toast>
+  </div>
+</template>
+
+<script setup>
+import { useToast } from "primevue/usetoast";
+import { onUpdated, watch } from "vue";
+
+
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+    default: () => ({
+      severity: "",
+      summary: "",
+      detail: "",
+    }),
+  },
+  error: {
+    type: Boolean,
+    default: false,
+  },
+  dataError: {
+    required: true,
+  }
+  // objerror:{
+  //   type: Object,
+  // }
+});
+
+// หากต้องการใช้ตัวแปรจากตัวอย่างก็เพิ่มได้ตรงนี้
+
+// เรียกใช้ hook useToast และเก็บ instance ของ Toast
+const toast = useToast();
+
+// เมื่อ component ถูก mount เรียกใช้งาน show()
+
+onUpdated(() => show());
+
+// ฟังก์ชัน show() ที่จะเพิ่ม Toast
+const show = () => {
+
+  if (props.error === false) { //กรณีไม่Error (status 200)
+    try {
+      toast.add({
+        severity: props.data.severity,
+        summary: props.data.summary,
+        detail: props.data.detail,
+        life: 3000,
+        group: 'bc',
+      });
+    }catch (error){
+      console.error(error)
+    }
+  }
+
+  else { // กรณีเข้าError
+    try {
+      if (props.dataError.response && props.dataError.response.status == 422 && props.dataError.response.data && props.dataError.response.data.data) {       // หากเข้า 422 
+        console.log('เข้าarray')
+        const dataObject = props.dataError.response.data.data;
+        const allKeys = Object.keys(dataObject);
+        const keyArrayPairs = [];
+        allKeys.forEach((key) => {
+          const currentArray = dataObject[key];
+          keyArrayPairs.push({ key, array: currentArray });
+        });
+        //  [[ SHOW ERROR แบบ ARRAY ]]
+        toast.add({
+          severity: "error",
+          summary: 'error.เกิดข้อผิดพลาด',
+          detail: keyArrayPairs,
+          life: 3000,
+          group: 'bc',
+        });
+      } else {     // หากเข้า status error ทั่วไปหรือ 404
+        //  [[ SHOW ERROR แบบ MESSAGE ]]
+        toast.add({
+          severity: "error",
+          summary: 'error.เกิดข้อผิดพลาด',
+          detail: props.dataError.response.data.message,
+          life: 3000,
+          group: 'bc',
+        });
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+};
+</script>

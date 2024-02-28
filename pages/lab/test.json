@@ -1,0 +1,19 @@
+{
+    "uid": "vc-upload-1709112998618-3",
+    "lastModified": 1708594627138,
+    "lastModifiedDate": "2024-02-22T09:37:07.138Z",
+    "name": "comment-color.png",
+    "size": 301,
+    "type": "image/png",
+    "percent": 0,
+    "originFileObj": {
+        "uid": "vc-upload-1709112998618-3"
+    },
+    "error": {
+        "status": 404,
+        "method": "post",
+        "url": "https://www.mocky.io/v2/5cc8019d300000980a055e76"
+    },
+    "response": "",
+    "status": "error"
+}

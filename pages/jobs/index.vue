@@ -1,0 +1,4 @@
+<template>
+    <PageJobsHeader />
+    <PageJobsPreview />
+</template>
