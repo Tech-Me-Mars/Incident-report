@@ -8,7 +8,7 @@
             <span class="mdi mdi-clock-time-four text-4xl text-blue-500"></span>
             <div class="w-full px-2">
                 <div class="flex justify-between flex-wrap items-center">
-                    <NuxtLink to="/mission/1">
+                    <NuxtLink to="/mission">
                         <TmmLabelSubtitle class="line-clamp-1 max-w-[14rem]  overflow-hidden"
                             label="โครงการสายตรววจเพื่อประชาชนคนไทย" />
                     </NuxtLink>
@@ -46,7 +46,7 @@
             <span class="mdi mdi-clock-time-four text-4xl text-blue-500"></span>
             <div class="w-full px-2">
                 <div class="flex justify-between flex-wrap items-center">
-                    <NuxtLink to="/mission/1">
+                    <NuxtLink to="/mission">
                         <TmmLabelSubtitle class="line-clamp-1 max-w-[14rem]  overflow-hidden"
                             label="นัดประชุมโครงการตำรวจ" />
                     </NuxtLink>

@@ -1,6 +1,6 @@
 <template>
         <HeaderMenu class="flex">
-            <NuxtLink :to="`/mission/${route.params.id}`">
+            <NuxtLink :to="`/mission`">
         <TmmButtonBackPage />
     </NuxtLink>
     </HeaderMenu>

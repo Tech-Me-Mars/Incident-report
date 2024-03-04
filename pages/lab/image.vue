@@ -1,14 +1,9 @@
 <template>
-    <div class="overflow-x-auto overflow-y-auto h-[6.5rem] whitespace-nowrap">
-        <!-- <swiper :slidesPerView="3" :spaceBetween="0" :freeMode="true" :pagination="{
-                    clickable: true,
-                }" class="mySwiper">
-                    <swiper-slide v-for="(item, index) in listImage" :key="index" class=""> -->
+    <div class="overflow-x-auto overflow-y-auto  whitespace-nowrap ">
         <a-image-preview-group class="">
-            <a-image v-for="(item, index) in listImage" :key="index" :width="110" :height="100" class="rounded-lg p-1" :src="item" />
+            <a-image v-for="(item, index) in listImage" :key="index" :width="110" :height="100" class="rounded-lg p-1"
+                :src="item" />
         </a-image-preview-group>
-        <!-- </swiper-slide>
-                </swiper> -->
     </div>
 </template>
 
@@ -20,4 +15,3 @@ const listImage = [
     'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg/1200px-September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg'
 ]
 </script>
-

@@ -28,11 +28,17 @@ const toggleActive = (item) => {
 };
 
 onMounted(populateDaysOfMonth);
-
+const slidPerPage = ref(6);
+const slidesPerView = computed(() => {
+  // Check if the screen width is md or larger
+  const isMdOrLarger = window.innerWidth >= 768;
+  // If it is, return 12, otherwise return the default value (6)
+  return isMdOrLarger ? 12 : slidPerPage.value;
+});
 </script>
 <template>
     <div class="w-full mySwiper card p-3 mb-3">
-        <swiper :slidesPerView="6" :spaceBetween="5" :freeMode="true" :pagination="{
+        <swiper :slidesPerView="slidesPerView" :spaceBetween="5" :freeMode="true" :pagination="{
             clickable: true,
         }" class="mySwiper">
             <swiper-slide v-for="(item, index) in daysOfMonth" :key="index" class="">

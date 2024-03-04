@@ -5,7 +5,7 @@
   </div>
 
   <div class="my-2">
-    <TmmInputDropDown v-model="bestChoice" placeholder="เลือก" :options="options" class="w-full" value="id"
+    <TmmInputDropDown v-model="bestChoice" placeholder="งานของฉัน" className="" :options="options" class="w-full" value="id"
       label="name" />
   </div>
   <div class="card p-5 mb-2">
@@ -45,7 +45,7 @@
   </div>
 
   <div class="flex justify-center">
-    <a-pagination v-model:current="currentPage" :total="100" v-model:page-size="pageSize1" class="card w-full" />
+    <a-pagination v-model:current="currentPage" :total="100" v-model:page-size="pageSize1" class="border-gray-300 p-1 border rounded-xl w-full card" />
   </div>
 </template>
 <style>

@@ -37,17 +37,8 @@ const handleSubmit = () => {
         value.value = '';
     }, 1000);
 };
-const fileArray =ref([])
 
-const listImage = [
-    'https://www.tcc.or.th/wp-content/uploads/2022/04/19042022_TCCNews_Accident_website-1200x675.png',
-    'https://image.posttoday.com/uploads/images/md/2023/09/K6LgsMkOwMLyKVbF1kIu.webp?x-image-process=style/lg',
-    'https://mpics.mgronline.com/pics/Images/566000003905501.JPEG',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg/1200px-September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg'
-]
-const checkType = ref(1);
 </script>
-
 <template>
     <div class="p-3">
         <a-list v-if="comments.length" :data-source="comments" item-layout="horizontal">
@@ -55,7 +46,6 @@ const checkType = ref(1);
                 <a-list-item class="mb-2 p-0 p">
                     <a-comment class=" card px-2  bg-gray-100 w-full">
                         <template #author><a class="text-black text-sm">{{ item.author }}</a></template>
-
                         <template #avatar>
                             <TmmAvatar label="ลุงตู่" :src="item.avatar" />
                         </template>
@@ -63,12 +53,6 @@ const checkType = ref(1);
                             <p class="text-gray-500 text-xs">
                                 {{ item.content }}
                             </p>
-                            <div class="overflow-x-auto overflow-y-auto  whitespace-nowrap ">
-                                <a-image-preview-group class="">
-                                    <a-image v-for="(item, index) in listImage" :key="index" :width="70" :height="70"
-                                        class="rounded-lg p-1" :src="item" />
-                                </a-image-preview-group>
-                            </div>
                         </template>
                         <template #datetime>
                             <span class="text-gray-600">{{ item.datetime }}</span>
@@ -80,20 +64,10 @@ const checkType = ref(1);
     </div>
 
     <!-- <p class="" v-html="value" style="white-space: pre-wrap; word-wrap: break-word;"></p> -->
-    <TmmDisplayUploadImage v-model="fileArray" />
-    
-    <div class=" bg-white py-2 gap-2">
-        <div class="flex justify-center mb-2">
-            <TmmInputRadio label="กิจกรรม" :value="1" v-model="checkType" />
-            <TmmInputRadio label="ค่าใช้จ่าย" :value="2" v-model="checkType" />
-        </div>
-        <div class="flex gap-2">
-            <TmmInputUploadImage multiple v-model="fileArray" />
-            <TmmInputTextarea allow-clear className="rounded-xl bg-gray-100" :autoSize="{ minRows: 1, maxRows: 2 }"
-                placeholder="แสดงความคิดเห็น..." v-model="value" :rows="1" />
-            <TmmIcon @click="handleSubmit"
-                icon="mdi mdi-send text-blue-700 text-2xl flex items-center cursor-pointer" />
-        </div>
-
+    <div class="flex items-end bg-white py-2 gap-2">
+        <TmmIcon icon="mdi mdi-image-outline text-gray-500 text-2xl flex items-center cursor-pointer" />
+        <TmmInputTextarea allow-clear className="rounded-xl bg-gray-100" :autoSize="{ minRows: 1, maxRows: 2 }" placeholder="แสดงความคิดเห็น..."
+            v-model="value" :rows="1" />
+        <TmmIcon @click="handleSubmit" icon="mdi mdi-send text-blue-700 text-2xl flex items-center cursor-pointer" />
     </div>
 </template>

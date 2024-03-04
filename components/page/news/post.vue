@@ -66,7 +66,12 @@ onMounted(() => {
     appendDataPost()
 })
 
+const slidesPerViewMd = 6;
+const slidesPerViewNormal = 3;
 
+const slidesPerView = computed(() => {
+  return window.innerWidth >= 768 ? slidesPerViewMd : slidesPerViewNormal;
+});
 </script>
 <template>
     {{ newsPost.length }}
@@ -93,7 +98,7 @@ onMounted(() => {
                     class="mt-4 text-gray-400 focus:outline-none cursor-pointer">...ดูเพิ่มเติม</span>
             </p>
             <div>
-                <swiper :slidesPerView="3" :spaceBetween="0" :freeMode="true" :pagination="{
+                <swiper :slidesPerView="slidesPerView" :spaceBetween="0" :freeMode="true" :pagination="{
                     clickable: true,
                 }" class="">
                     <swiper-slide v-for="(item_img, index) in item.images" :key="index" class="">

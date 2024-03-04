@@ -4,9 +4,9 @@
             colorPrimary: colorDisplay,
         },
     }">
-    
-        <a-button :type="type" :htmlType="htmlType" :ghost="outlined" :loading="loading" :class="`${className}`" :disabled="disabled"
-            :shape="shape" :size="size" @click="emitClick">
+
+        <a-button :type="type" :htmlType="htmlType" :ghost="outlined" :loading="loading" :class="`${className}`"
+            :disabled="disabled" :shape="shape" :size="size" @click="emitClick">
             <i :class="`${icon}`" /> {{ label }}
         </a-button>
     </a-config-provider>
@@ -66,6 +66,7 @@ const secondary = "#696b6e"
 const successColor = "#52c41a"
 const warningColor = "#faad14"
 const errorColor = "#ff4d4f"
+const orangeColor = "#f78431"
 const infoColor = "#1677ff"
 const darkColor = "#000"
 
@@ -81,6 +82,8 @@ const colorDisplay = (() => {
             return warningColor
         case "error":
             return errorColor
+        case "orange":
+            return orangeColor
         case "info":
             return infoColor
         case "dark":

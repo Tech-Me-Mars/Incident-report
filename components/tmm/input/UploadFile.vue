@@ -1,17 +1,14 @@
 <template>
-    <!-- <fwb-file-input v-model="model" type="file" :accept="accept" ref="fileInput" :multiple="multiple"
-        :placeholder="placeholder" /> -->
-    <a-upload v-model:file-list="model" name="file" :multiple="multiple" action="https://www.mocky.io/v2/5cc8019d300000980a055e76" :max-count="maxCount" @change="handleChange"
-        >
+    <a-upload name="file" :file-list="model" :list-type="listType" :multiple="multiple" :max-count="maxCount"
+        :before-upload="beforeUpload" @change="handleChange" @remove="handleRemove">
         <a-button>
             <upload-outlined></upload-outlined>
-            Click to Upload
+            เลือกไฟล์
         </a-button>
     </a-upload>
 </template>
   
 <script setup>
-import { FwbFileInput } from 'flowbite-vue'
 const model = defineModel()
 const props = defineProps({
     disabled: {
@@ -29,19 +26,36 @@ const props = defineProps({
     multiple: {
         type: Boolean,
         default: false
-    },maxCount:{
+    }, maxCount: {
         type: Number,
         default: 99,
+    },
+    listType:{
+        type: String,
+        default: "text",   
     }
 });
+
+const handleRemove = file => {
+    const index = model.value.indexOf(file);
+    const newFileList = model.value.slice();
+    newFileList.splice(index, 1);
+    model.value = newFileList;
+};
+
+const beforeUpload = file => {
+    model.value = [...(model.value || []), file];
+    console.log('keepFileList', model.value)
+    return false;
+};
 
 const emits = defineEmits();
 const emitKeydown = (event) => {
     emits('change', event); // Emit the keydown event
 }
 const handleChange = (event) => {
-  console.log(event)
-  emits('change', event);
+    console.log(event)
+    emits('change', event);
 };
 
 </script>
