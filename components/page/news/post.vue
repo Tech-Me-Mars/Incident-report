@@ -51,7 +51,10 @@ const appendDataPost = async () => {
             { url: 'https://www.tcc.or.th/wp-content/uploads/2022/04/19042022_TCCNews_Accident_website-1200x675.png' },
             { url: 'https://image.posttoday.com/uploads/images/md/2023/09/K6LgsMkOwMLyKVbF1kIu.webp?x-image-process=style/lg' },
             { url: 'https://mpics.mgronline.com/pics/Images/566000003905501.JPEG' },
-            { url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg/1200px-September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg' }
+            { url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg/1200px-September_26%2C_2007_accident%2C_highway_9%2C_CT%2C_flipped_truck.jpg' },
+            { url: 'https://mpics.mgronline.com/pics/Images/566000003905501.JPEG' },
+            { url: 'https://mpics.mgronline.com/pics/Images/566000003905501.JPEG' },
+            { url: 'https://mpics.mgronline.com/pics/Images/566000003905501.JPEG' },
         ],
         showMore: false,
         like: 25,
@@ -97,7 +100,7 @@ const slidesPerView = computed(() => {
                 <span @click="item.showMore = !item.showMore" v-show="!item.showMore"
                     class="mt-4 text-gray-400 focus:outline-none cursor-pointer">...ดูเพิ่มเติม</span>
             </p>
-            <div>
+            <!-- <div>
                 <swiper :slidesPerView="slidesPerView" :spaceBetween="0" :freeMode="true" :pagination="{
                     clickable: true,
                 }" class="">
@@ -106,7 +109,13 @@ const slidesPerView = computed(() => {
                     </swiper-slide>
 
                 </swiper>
-            </div>
+            </div> -->
+            <div class="overflow-x-auto overflow-y-auto  whitespace-nowrap ">
+                                <a-image-preview-group class="">
+                                    <a-image v-for="(item_image, index_image) in item.images" :key="index_image" :width="70" :height="70"
+                                        class="rounded-lg p-1" :src="item_image.url" />
+                                </a-image-preview-group>
+                            </div>
         </template>
         <template #footer>
             <div class="flex gap-5">

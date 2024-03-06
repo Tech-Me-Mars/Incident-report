@@ -3,8 +3,8 @@
         <div class="w-full" v-for="(item, index) in menuNavigation" :key="index">
             <NuxtLink :to="item.to">
                 <div class='flex flex-col items-center justify-center' :class="customClass(item.to)">
-                <span :class="`${item.icon}`" style="font-size: 23px;"></span>
-                <div class="text-sm">{{ item.label }}</div>
+                <span :class="`${item.icon}`" style="font-size: 20px;"></span>
+                <div class="text-xs">{{ item.label }}</div>
             </div>
         </NuxtLink>
         </div>

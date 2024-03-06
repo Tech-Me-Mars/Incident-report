@@ -1,13 +1,13 @@
 <template>
-    <div class="card p-3 mb-3" v-for="(item, index) in fields" :key="item.key">
+    <div class="card p-3 mb-3">
         <div class="flex justify-between">
-            <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
+            <TmmTag color="#f0c424" class="rounded-xl mb-2">ลำดับที่ 1</TmmTag>
             <!-- <CloseCircleTwoTone @click="remove(index)" /> -->
         </div>
         <div class="grid grid-cols-1">
             <div class="mb-2">
                 <TmmTypographyLabelForm label="ผู้รับผิดชอบ" />
-                <TmmInput v-model:value="item.value.responsible_person" />
+                <TmmInput v-model:value="responsible_person" />
             </div>
         </div>
         <div class="my-1">
@@ -16,38 +16,40 @@
         <div class="grid grid-cols-2 gap-2">
             <div class="mb-2">
                 <TmmTypographyLabelForm label="วันที่เริ่มต้น" />
-                <TmmInputCalendar v-model="item.value.operating_period_start" />
+                <TmmInputCalendar v-model="operating_period_start" />
             </div>
             <div class="mb-2">
                 <TmmTypographyLabelForm label="วันที่สิ้นสุด" />
-                <TmmInputCalendar v-model="item.value.operating_period_end" />
+                <TmmInputCalendar v-model="operating_period_end" />
             </div>
         </div>
-        <div class="grid grid-cols-1">
+        <div class="grid grid-cols-1 mb-2">
             <div class="mb-2">
                 <TmmTypographyLabelForm label="รายละเอียดงาน" />
-                <TmmInputTextarea :rows="2" v-model:value="item.value.plan_detail" />
+                <TmmInputTextarea :rows="2" v-model:value="job_description" />
             </div>
-            <div class="mb-2 flex flex-col">
-                <TmmTypographyLabelForm label="ตั้งค่าการอนุมัติ" />
-                <span>
-                    <TmmInputSwitch v-model="item.value.approve" />
-                </span>
+            <div class="mb-2">
+                <TmmTypographyLabelForm label="การดำเนินการ" />
+                <TmmInputTextarea :rows="2" v-model:value="operation_detail" />
+            </div>
+
+        </div>
+        <div class="flex flex-col gap-2 mb-2">
+            <TmmTypographyLabelForm label="เอกสารที่เกี่ยวข้อง (ถ้ามี)" />
+            <TmmInputUploadFile multiple v-model="documents" />
+        </div>
+
+        <div class="grid grid-cols-1 mb-2">
+            <div class="mb-2">
+                <TmmTypographyLabelForm label="สถานะดำเนินงาน" />
+                <TmmInputDropDown v-model="bestChoice" placeholder="งานของฉัน" className="" :options="options"
+                    class="w-full" value="id" label="name" />
             </div>
         </div>
+        
     </div>
 
-    <!-- <div class="w-full px-10 py-5 mb-3">
-        <TmmButton type="dashed" outlined icon="mdi mdi-plus" label="เพิ่มลำดับงาน" @click="push({
-            order: 1,
-            responsible_person: undefined,
-            due_date: undefined,
-            operating_period_start: undefined,
-            operating_period_end: undefined,
-            plan_detail: undefined,
-            approve: false
-        })" className="border-gray-400 text-gray-600 w-full" />
-    </div> -->
+
     <div class="flex gap-5 justify-center max-w-[20rem] mx-auto">
         <TmmButton type="primary" severity="secondary" className="w-full" label="ยกเลิก" />
         <TmmButton type="primary" severity="primary" className="w-full" htmlType="submit" label="บันทึก"
@@ -61,16 +63,18 @@
                     <h1 class="text-4xl" style="color: #f8b31e;">ERROR!</h1>
                 </div>
                 <h1 class="text-center text-xl font-medium mb-2">พล.ต.ท สมหมาย มีชัย</h1>
-                <p class="text-center text-gray-500 text-md mb-2">ไม่สามารถเข้าร่วมโครงการได้ เนื่องจาก พล.ต.ท สมหมาย มีชัย
+                <p class="text-center text-gray-500 text-md mb-2">ไม่สามารถเข้าร่วมโครงการได้ เนื่องจาก พล.ต.ท สมหมาย
+                    มีชัย
                     มีแผนงานมากเกินไป</p>
                 <div class="flex justify-center">
-                    <TmmButton label="ตกลง" @click="open = false" type="primary" severity="warning" className="w-[10rem]"
-                        size="large" />
+                    <TmmButton label="ตกลง" @click="open = false" type="primary" severity="warning"
+                        className="w-[10rem]" size="large" />
                 </div>
             </div>
         </a-modal>
     </div>
 </template>
+
 <script setup>
 //! /////// [validation] /////////
 const open = ref(false);
@@ -78,13 +82,21 @@ const showModal = () => {
     open.value = true;
 };
 
-import { useFieldArray, useForm } from "vee-validate";
+import { useFieldArray, useForm, useField } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as zod from "zod";
 
-const plan_name = ref('โครงการสายตรวจเพื่อนประชาชน')
-const planer = ref('พบ.ต.ท ยิ่งยศ ใจดี')
-const approveper = ref('พล.ต.ล สมหวัง ใจแข็งแกร่ง')
+const options = ref([
+    {
+        id: 1,
+        name: 'อยู่ระหว่างดำเนินงาน',
+    },
+    {
+        id: 2,
+        name: 'ดำเนินงานเสร็จสิ้น',
+    }
+]);
+
 
 const requireValue = "กรุณาระบุข้อมูล";
 const validationSchema = toTypedSchema(
@@ -116,13 +128,24 @@ const { handleSubmit, errors } = useForm({
                 due_date: undefined,
                 operating_period_start: undefined,
                 operating_period_end: undefined,
-                plan_detail: undefined,
+                job_description: undefined,
+                operation_detail: undefined,
                 approve: false
             },
         ],
     },
     validationSchema,
 });
+
+// const { value:documents  } = useField("documents");
+const { value: documents } = useField('documents', null, {
+    initialValue: [] // กำหนดค่าเริ่มต้นที่นี่
+})
+const { value: responsible_person } = useField("responsible_person");
+const { value: operating_period_start } = useField("operating_period_start");
+const { value: operating_period_end } = useField("operating_period_end");
+const { value: job_description } = useField("job_description");
+
 
 const { remove, push, fields } = useFieldArray("work_array");
 const onSubmit = handleSubmit((values) => {

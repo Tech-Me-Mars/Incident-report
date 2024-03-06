@@ -10,7 +10,6 @@
   </div>
   <div class="card p-5 mb-2">
     <div class="flex w-full items-center gap-3 mb-2">
-      <!-- <TmmIcon icon="mdi mdi-clock-time-four text-2xl text-blue-500" rounded /> -->
       <ClockCircleTwoTone style="font-size: 20px;" />
       <div class="flex flex-col">
         <TmmLabelSubtitle class="" label="โครงการตรวจสายตาเพื่อประชาชน" />
@@ -28,7 +27,47 @@
 
   <div class="card p-5 mb-2">
     <div class="flex w-full items-center gap-3 mb-2">
-      <!-- <TmmIcon icon="mdi mdi-clock-time-four text-2xl text-blue-500" rounded /> -->
+      <ClockCircleTwoTone style="font-size: 20px;" />
+      <div class="flex flex-col">
+        <TmmLabelSubtitle class="" label="ประสานงานทีมกับสน.ทองหล่อช่วยเหลือผู้เสียหาย" />
+        <TmmLabelSmall label="เหลือเวลาอีก 5 วัน 13 ชั่วโมง" />
+      </div>
+    </div>
+    <div>
+      <div class="flex justify-between">
+        <small>อัตราความสำเร็จ</small>
+        <small class="text-blue-500 font-semibold">83%</small>
+      </div>
+      <TmmFeedbackProgress value=25 />
+    </div>
+  </div>
+  <div class="flex justify-center mb-5">
+    <a-pagination v-model:current="currentPage" :total="100" v-model:page-size="pageSize1" class="border-gray-300 p-1 border rounded-xl w-full card" />
+  </div>
+
+  <div class="my-2">
+    <TmmInputDropDown v-model="bestChoice" placeholder="งานที่ได้รับมอบหมาย" className="" :options="options" class="w-full" value="id"
+      label="name" />
+  </div>
+  <div class="card p-5 mb-2">
+    <div class="flex w-full items-center gap-3 mb-2">
+      <ClockCircleTwoTone style="font-size: 20px;" />
+      <div class="flex flex-col">
+        <TmmLabelSubtitle class="" label="โครงการตรวจสายตาเพื่อประชาชน" />
+        <TmmLabelSmall label="เหลือเวลาอีก 5 วัน 13 ชั่วโมง" />
+      </div>
+    </div>
+    <div>
+      <div class="flex justify-between">
+        <small>อัตราความสำเร็จ</small>
+        <small class="text-blue-500 font-semibold">68%</small>
+      </div>
+      <TmmFeedbackProgress value=25 />
+    </div>
+  </div>
+
+  <div class="card p-5 mb-2">
+    <div class="flex w-full items-center gap-3 mb-2">
       <ClockCircleTwoTone style="font-size: 20px;" />
       <div class="flex flex-col">
         <TmmLabelSubtitle class="" label="ประสานงานทีมกับสน.ทองหล่อช่วยเหลือผู้เสียหาย" />

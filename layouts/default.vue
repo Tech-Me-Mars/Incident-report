@@ -1,11 +1,15 @@
 <template>
   <div class="min-h-screen bg-zinc-50 pb-16">
-    
+
     <!-- <Header class="max-w-4xl mx-auto"/> -->
-    <div class=" max-w-4xl mx-auto">
-    <slot class="" />
-  </div>
-  <Navigation />
+    <div class="max-w-4xl mx-auto">
+      <slot class="" />
+      <Navigation class="max-w-4xl mx-auto" />
+    </div>
+    <!-- <div class="">
+    
+  </div> -->
+
   </div>
 </template>
 

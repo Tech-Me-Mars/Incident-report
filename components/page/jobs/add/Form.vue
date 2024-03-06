@@ -44,7 +44,7 @@
         <div class="grid grid-cols-1">
             <div class="mb-2">
                 <TmmTypographyLabelForm label="รายละเอียดงาน" />
-                <TmmInputTextarea :rows="2" v-model:value="item.value.plan_detail" />
+                <TmmInputTextarea :rows="2" v-model:value="item.value.job_description" />
             </div>
             <div class="mb-2 flex flex-col">
                 <TmmTypographyLabelForm label="ตั้งค่าการอนุมัติ" />
@@ -62,7 +62,7 @@
             due_date: undefined,
             operating_period_start: undefined,
             operating_period_end: undefined,
-            plan_detail: undefined,
+            job_description: undefined,
             approve: false
         })" className="border-gray-400 text-gray-600 w-full" />
     </div>
@@ -134,7 +134,7 @@ const { handleSubmit, errors } = useForm({
                 due_date: undefined,
                 operating_period_start: undefined,
                 operating_period_end: undefined,
-                plan_detail: undefined,
+                job_description: undefined,
                 approve: false
             },
         ],
