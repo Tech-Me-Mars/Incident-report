@@ -43,7 +43,8 @@ export default defineNuxtConfig({
   "@nuxtjs/tailwindcss",
    "nuxt-primevue",
    '@nuxtjs/i18n',
-   '@ant-design-vue/nuxt'
+   '@ant-design-vue/nuxt',
+   '@vant/nuxt'
   // ,function (options, nuxt) {
   //   for (const key in AntD) {
   //     if (['version', 'install'].includes(key)) continue
@@ -56,63 +57,62 @@ export default defineNuxtConfig({
   // },
 ],
 
-  primevue: {
-    cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
-    components: {
-      include: "*",
-      // exclude: ['editor']
-    },
-    directives: {
-      include: "*",
-    },
-    composables: {
-      include: "*",
-    },
-    options: {
-      ripple: true,
-      pt: {
-        button: {
-         root:{
-            class: "py-1",
-            style: "" 
-          }
-        },
-        paginator: {
+  // primevue: {
+  //   cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
+  //   components: {
+  //     include: "*",
+  //   },
+  //   directives: {
+  //     include: "*",
+  //   },
+  //   composables: {
+  //     include: "*",
+  //   },
+  //   options: {
+  //     ripple: true,
+  //     pt: {
+  //       button: {
+  //        root:{
+  //           class: "py-1",
+  //           style: "" 
+  //         }
+  //       },
+  //       paginator: {
 
-        },
-        breadcrumb: {
-          root: { class: "bg-transparent px-0 border-none" },
-        },
-        column: {
-          root: {
-            class: "px-8",
-          },
-          headerCell: {
-            class: " px-8 border-none text-sm text-gray-700",
-            style: "background-color: #F1F5F9",
-          },
-          sortBadge: {
-            style: { width: ".3rem", height: ".3rem" },
-          },
-          bodyCell: {
-            class: "px-8 text-sm text-gray-700",
-            style: "border-bottom: 1px solid rgb(241,245,249)",
-          },
-        },
-        calendar: {
-          root: { style: "height: 2.4rem" },
-        },
-      },
-    },
-  },
+  //       },
+  //       breadcrumb: {
+  //         root: { class: "bg-transparent px-0 border-none" },
+  //       },
+  //       column: {
+  //         root: {
+  //           class: "px-8",
+  //         },
+  //         headerCell: {
+  //           class: " px-8 border-none text-sm text-gray-700",
+  //           style: "background-color: #F1F5F9",
+  //         },
+  //         sortBadge: {
+  //           style: { width: ".3rem", height: ".3rem" },
+  //         },
+  //         bodyCell: {
+  //           class: "px-8 text-sm text-gray-700",
+  //           style: "border-bottom: 1px solid rgb(241,245,249)",
+  //         },
+  //       },
+  //       calendar: {
+  //         root: { style: "height: 2.4rem" },
+  //       },
+  //     },
+  //   },
+  // },
   css: [
-    "primevue/resources/themes/lara-light-blue/theme.css",
+    // "primevue/resources/themes/lara-light-blue/theme.css",
     "@/assets/css/fontgobal.css",
     "primeicons/primeicons.css",
     "@mdi/font/css/materialdesignicons.min.css",
     "@/assets/css/fontgobal.css",
     "@/assets/css/style.css",
-    "@/themes/material/material-light/standard/indigo/theme.scss",
+    // "@/themes/material/material-light/standard/indigo/theme.scss",
     "flag-icons/css/flag-icons.min.css",
     // 'ant-design-vue/dist/antd.css',
     // '@/themes/tailwind/tailwind-light/theme.scss',

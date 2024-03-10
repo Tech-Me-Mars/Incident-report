@@ -11,6 +11,7 @@
         <NuxtPage />
       </NuxtLayout>
     </a-config-provider>
+    <TmmLoadingGlobal />
   <!-- </a-locale-provider> -->
 </template>
 <script setup>
