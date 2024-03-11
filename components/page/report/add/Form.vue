@@ -161,7 +161,7 @@ const handleChange = async () => {
         </div>
         <div class="flex flex-col">
             <TmmTypographyLabelForm label="เอกสารค่าใช้จ่าย" />
-            <TmmInputUploadFile v-model="fileList" />
+            <TmmInputUploadFile multiple v-model="fileList" />
         </div>
     </div>
 
