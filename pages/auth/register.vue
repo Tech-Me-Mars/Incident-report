@@ -60,8 +60,9 @@
                         <TmmTypographyLabelForm label="วัน เดือน ปี เกิด" />
                         <TmmInputCalendar v-model="birthday_date" />
                         <!-- <input type="date" id="birthday" name="birthday" v-model="birthday_date"> -->
+                     
 
-                        {{  (birthday_date) }}
+                    
                     </div>
 
 
@@ -115,11 +116,6 @@ const changeImg = (event) => {
 const requireValue = "กรุณาระบุข้อมูล";
 const validationSchema = toTypedSchema(
     zod.object({
-        // email: zod.string().nonempty(requireValue).email({ message: "ต้องเป็นรูปแบบอีเมล์เท่านั้น" }).default(""),
-        // cid: zod
-        //     .string()
-        //     .nonempty(requireValue)
-        //     .min(6, "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร"),
         cid: zod.string().nonempty(requireValue).default(""),
         police_rank_id: zod.number({
             required_error: requireValue,
@@ -129,8 +125,8 @@ const validationSchema = toTypedSchema(
         last_name: zod.string().nonempty(requireValue).default(""),
         phone: zod.string().nonempty(requireValue).default(""),
         birthday_date: zod.date({
-            required_error: requireValue,
-            invalid_type_error: requireValue,
+            required_error: 'required_error',
+            invalid_type_error: 'invalid_type_error',
         }),
         police_position_id: zod.number({
             required_error: requireValue,
