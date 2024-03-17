@@ -1,20 +1,17 @@
 <template>
-    <InputGroup>
-        <InputGroupAddon class="p-0" v-if="iconleft">
+    <a-input :class="`${className}`" v-model:value="model" :disabled="disabled" :placeholder="placeholder"
+        @input="emitInput" @keydown="emitKeydown" :readonly="readonly">
+        <template #prefix v-if="iconleft">
             <i :class="`${iconleft}`"></i>
-        </InputGroupAddon>
-        <InputMask :class="`${className}`" :mask="mask" v-model="model" :disabled="disabled" :placeholder="placeholder" @input="emitInput"
-            @keydown="emitKeydown"  :readonly="readonly" />
-        <InputGroupAddon class="p-0" v-if="iconright">
+        </template>
+        <template #suffix v-if="iconright">
             <i :class="`${iconright}`"></i>
-        </InputGroupAddon>
-    </InputGroup>
+        </template>
+    </a-input>
 </template>
-  
+
 <script setup>
-import InputMask from 'primevue/inputmask';
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
+
 const model = defineModel()
 const props = defineProps({
     disabled: {
@@ -37,27 +34,37 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    className:{
+    className: {
         type: String,
         default: "",
-    },
-    type:{
-        type: String,
-        default: "text",
-    },
-    mask:{
-        type: String,
-        default: "(999) 999-9999",
-    },
+    }
 });
 const emits = defineEmits();
 const emitKeydown = (event) => {
     emits('keydown', event); // Emit the keydown event
 }
 const emitInput = (event) => {
+    let formattedNumber = event.target.value.replace(/\D/g, '');
+
+    // ตรวจสอบว่าหมายเลขโทรศัพท์ยาวเกินไปหรือไม่
+    if (formattedNumber.length > 10) {
+        formattedNumber = formattedNumber.slice(0, 10);
+    }
+
+    // จัดรูปแบบหมายเลขโทรศัพท์ให้สมบูรณ์ (e.g., (123) 456-7890)
+    let formatted = '';
+    if (formattedNumber.length > 0) {
+        formatted = '(' + formattedNumber.slice(0, 3);
+    }
+    if (formattedNumber.length > 3) {
+        formatted += ') ' + formattedNumber.slice(3, 6);
+    }
+    if (formattedNumber.length > 6) {
+        formatted += '-' + formattedNumber.slice(6, 10);
+    }
+
+    model.value = formatted;
+
     emits('input', event);
 };
 </script>
-  
-
-

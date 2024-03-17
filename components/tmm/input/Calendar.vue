@@ -1,7 +1,8 @@
 <template>
     <!-- <Calendar v-model="model" showIcon :placeholder="placeholder" :class="`${className}`" :dateFormat="customDateFormat(model)"
         :minDate="minDate" showButtonBar  /> -->
-        <a-date-picker  v-model:value="model" :class="`block ${className}`"  :size="size" :placeholder="placeholder" :disabled="disabled" :format="customDateFormat(model)"/>
+        <a-date-picker  v-model:value="model" :class="`block ${className}`"  :size="size" :placeholder="placeholder" :disabled="disabled" 
+        :format="customDateFormat(model)" />
 </template>
   
 <script setup>

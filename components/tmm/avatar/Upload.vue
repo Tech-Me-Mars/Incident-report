@@ -59,6 +59,7 @@ function getBase64(img, callback) {
 const loading = ref(false);
 const imageUrl = ref('');
 const handleChange = info => {
+    // imageUrl.value= URL.createObjectURL(info.file);
     if (info.file.status === 'uploading') {
         loading.value = true;
         return;
@@ -74,10 +75,10 @@ const handleChange = info => {
         loading.value = false;
         message.error('upload error');
     }
-    console.log(event)
-    emits('change', event);
+    emits('change', info);
 };
 const beforeUpload = file => {
+    // imageUrl.value= URL.createObjectURL(info.file);
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
         message.error('You can only upload JPG file!');

@@ -112,7 +112,7 @@ export default defineNuxtConfig({
     "@mdi/font/css/materialdesignicons.min.css",
     "@/assets/css/fontgobal.css",
     "@/assets/css/style.css",
-    // "@/themes/material/material-light/standard/indigo/theme.scss",
+    "@/themes/material/material-light/standard/indigo/theme.scss",
     "flag-icons/css/flag-icons.min.css",
     // 'ant-design-vue/dist/antd.css',
     // '@/themes/tailwind/tailwind-light/theme.scss',

@@ -1,3 +1,5 @@
+<!-- imageUrl.value= URL.createObjectURL(info.file); -->
+
 <template>
     <a-upload v-model:file-list="fileList" name="avatar" list-type="picture-card" class="avatar-uploader"
         :show-upload-list="false" :before-upload="beforeUpload" @change="handleChange">
@@ -43,9 +45,9 @@ const beforeUpload = file => {
     if (!isJpgOrPng) {
         message.error('You can only upload JPG file!');
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
+    const isLt500M = file.size / 1024 / 1024 < 500;
+    if (!isLt500M) {
+        message.error('Image must be smaller than 500MB!');
     }
     return isJpgOrPng && isLt2M;
 };

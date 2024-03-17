@@ -1,7 +1,7 @@
 import axios from "axios";
 import liff from "@line/liff";
 // const config = useRuntimeConfig();
-axios.defaults.baseURL = "https://api-uat.mix-station.com";
+axios.defaults.baseURL = "https://api_incident_report.tech-me-mars.com";
 
 const getToken = function () {
   return localStorage.getItem("token");
