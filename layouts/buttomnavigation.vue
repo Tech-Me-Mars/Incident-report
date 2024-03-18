@@ -9,13 +9,19 @@
         </NuxtLink>
         </div>
     </div> -->
-
-    <van-tabbar v-model="active">
+    <van-tabbar v-model="active" class="max-w-4xl mx-auto">
   <!-- {{ active }} -->
   <van-tabbar-item v-for="(item, index) in menuNavigation" :key="index" :name="item.activeRouteName" :icon="item.icon" :to="item.to">{{ item.label }}</van-tabbar-item>
 </van-tabbar>
 </template>
-
+<style>
+.van-tabbar--fixed {
+    position: fixed;
+    bottom: 0;
+    left: auto;
+    right: auto;
+}
+</style>
 <script setup>
 import { useRoute } from 'vue-router'
 
