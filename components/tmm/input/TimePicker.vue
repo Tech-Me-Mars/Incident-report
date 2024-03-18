@@ -1,5 +1,6 @@
 <template>
-<a-time-picker v-model="model" format="HH:mm" :class="`block ${className}`" :size="size" :placeholder="placeholder" :disabled="disabled" />
+<!-- <a-time-picker v-model="model" value-format="HH:mm" format="HH:mm" :class="`block ${className}`" :size="size" :placeholder="placeholder" :disabled="disabled" /> -->
+<a-time-picker v-model:value="model" value-format="HH:mm" format="HH:mm" :class="`block ${className}`" :size="size" :placeholder="placeholder" :disabled="disabled" />
 </template>
   
 <script setup>

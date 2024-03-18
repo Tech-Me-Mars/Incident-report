@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "@line/liff": "^2.23.1",
+    "@line/liff": "^2.23.2",
     "@mdi/font": "^7.3.67",
     "@vee-validate/zod": "^4.12.3",
     "animate.css": "^4.1.1",

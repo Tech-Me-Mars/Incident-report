@@ -6,7 +6,7 @@
             เลือกไฟล์
         </a-button>
     </a-upload> -->
-    <a-upload v-model:file-list="model" name="avatar" list-type="picture-card" class="avatar-uploader"
+    <a-upload v-model:file-list="model" name="avatar" accept="image/*" list-type="picture-card" class="avatar-uploader"
         :show-upload-list="false" :before-upload="beforeUpload" @change="handleChange">
         <img v-if="imageUrl" :src="imageUrl" alt="avatar" class="w-full h-full rounded-xl" />
         <div v-else>

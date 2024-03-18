@@ -28,7 +28,7 @@
 <script setup>
 import { useToast } from "primevue/usetoast";
 import { onUpdated, watch } from "vue";
-
+import { message } from 'ant-design-vue';
 
 const props = defineProps({
   data: {
@@ -66,13 +66,14 @@ const show = () => {
 
   if (props.error === false) { //กรณีไม่Error (status 200)
     try {
-      toast.add({
-        severity: props.data.severity,
-        summary: props.data.summary,
-        detail: props.data.detail,
-        life: 3000,
-        group: 'bc',
-      });
+      // toast.add({
+      //   severity: props.data.severity,
+      //   summary: props.data.summary,
+      //   detail: props.data.detail,
+      //   life: 3000,
+      //   group: 'bc',
+      // });
+      message.success(props.data.detail);
     }catch (error){
       console.error(error)
     }
@@ -80,33 +81,34 @@ const show = () => {
 
   else { // กรณีเข้าError
     try {
-      if (props.dataError.response && props.dataError.response.status == 422 && props.dataError.response.data && props.dataError.response.data.data) {       // หากเข้า 422 
-        console.log('เข้าarray')
-        const dataObject = props.dataError.response.data.data;
-        const allKeys = Object.keys(dataObject);
-        const keyArrayPairs = [];
-        allKeys.forEach((key) => {
-          const currentArray = dataObject[key];
-          keyArrayPairs.push({ key, array: currentArray });
-        });
-        //  [[ SHOW ERROR แบบ ARRAY ]]
-        toast.add({
-          severity: "error",
-          summary: 'error.เกิดข้อผิดพลาด',
-          detail: keyArrayPairs,
-          life: 3000,
-          group: 'bc',
-        });
-      } else {     // หากเข้า status error ทั่วไปหรือ 404
+      // if (props.dataError.response && props.dataError.response.status == 422 && props.dataError.response.data && props.dataError.response.data.data) {       // หากเข้า 422 
+      //   console.log('เข้าarray')
+      //   const dataObject = props.dataError.response.data.data;
+      //   const allKeys = Object.keys(dataObject);
+      //   const keyArrayPairs = [];
+      //   allKeys.forEach((key) => {
+      //     const currentArray = dataObject[key];
+      //     keyArrayPairs.push({ key, array: currentArray });
+      //   });
+      //   //  [[ SHOW ERROR แบบ ARRAY ]]
+      //   toast.add({
+      //     severity: "error",
+      //     summary: 'error.เกิดข้อผิดพลาด',
+      //     detail: keyArrayPairs,
+      //     life: 3000,
+      //     group: 'bc',
+      //   });
+      //} else {     // หากเข้า status error ทั่วไปหรือ 404
         //  [[ SHOW ERROR แบบ MESSAGE ]]
-        toast.add({
-          severity: "error",
-          summary: 'error.เกิดข้อผิดพลาด',
-          detail: props.dataError.response.data.message,
-          life: 3000,
-          group: 'bc',
-        });
-      }
+        // toast.add({
+        //   severity: "error",
+        //   summary: 'error.เกิดข้อผิดพลาด',
+        //   detail: props.dataError.response.data.message,
+        //   life: 3000,
+        //   group: 'bc',
+        // });
+        message.error(props.dataError.response.data.message);
+      //}
     } catch (error) {
       console.error(error)
     }

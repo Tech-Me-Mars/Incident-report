@@ -1,5 +1,5 @@
 <template>
-    <a-upload name="file" :file-list="model" :list-type="listType" :multiple="multiple" :max-count="maxCount"
+    <a-upload name="file" :file-list="model" :accept="accept" :list-type="listType" :multiple="multiple" :maxCount="maxCount"
         :before-upload="beforeUpload" @change="handleChange" @remove="handleRemove">
         <a-button>
             <upload-outlined></upload-outlined>

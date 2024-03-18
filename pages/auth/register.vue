@@ -60,9 +60,10 @@
                         <TmmTypographyLabelForm label="วัน เดือน ปี เกิด" />
                         <TmmInputCalendar v-model="birthday_date" />
                         <!-- <input type="date" id="birthday" name="birthday" v-model="birthday_date"> -->
-                     
+                        {{ birthday_date }}
 
-                    
+
+
                     </div>
 
 
@@ -76,6 +77,9 @@
             </Form>
         </div>
     </section>
+
+
+    <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
 </template>
 
 <script setup>
@@ -87,6 +91,9 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { format } from "date-fns";
 import * as zod from "zod";
 const isloadingAxi = useState('isloadingAxi')
+const alertToast = ref({});
+const errorAlert = ref(false);
+const dataError = ref({})
 
 onMounted(() => {
     loadPoliceRank();
@@ -128,10 +135,10 @@ const validationSchema = toTypedSchema(
             required_error: 'required_error',
             invalid_type_error: 'invalid_type_error',
         }),
-        police_position_id: zod.number({
-            required_error: requireValue,
-            invalid_type_error: requireValue,
-        }),
+        // police_position_id: zod.number({
+        //     required_error: requireValue,
+        //     invalid_type_error: requireValue,
+        // }),
         headquarters_id: zod.number({
             required_error: requireValue,
             invalid_type_error: requireValue,
@@ -226,25 +233,32 @@ const onSubmit = handleSubmit(async (values) => {
     saveUsers(values);
 });
 const saveUsers = async (values) => {
-    birthday_date.value = format(birthday_date.value, "yyyy-MM-dd"); //แปลงรูปแบบวันเกิด
-    phone.value = phone.value.replace(/\D/g, ""); //แปลงให้เหลือแต่ตัวเลข
-    // console.log('changeImg' + upload_avatar.value.file)
-    const formData = new FormData();
-    formData.append('line_get_id_token', line_get_id_token.value);
-    formData.append('cid', cid.value);
-    formData.append('police_rank_id', police_rank_id.value);
-    formData.append('first_name', first_name.value);
-    formData.append('last_name', last_name.value);
-    formData.append('phone', phone.value);
-    formData.append('birthday_date', birthday_date.value);
-    formData.append('police_position_id', police_position_id.value);
-    formData.append('headquarters_id', headquarters_id.value);
-    formData.append('division_id', division_id.value);
-    formData.append('station_id', station_id.value);
-    formData.append('upload_avatar', upload_avatar.value[0].originFileObj);
+    try {
+        const birthday_date_form = format(birthday_date.value, "yyyy-MM-dd"); //แปลงรูปแบบวันเกิด
+        phone.value = phone.value.replace(/\D/g, ""); //แปลงให้เหลือแต่ตัวเลข
+        // console.log('changeImg' + upload_avatar.value.file)
+        const formData = new FormData();
+        formData.append('line_get_id_token', line_get_id_token.value);
+        formData.append('cid', cid.value);
+        formData.append('police_rank_id', police_rank_id.value);
+        formData.append('first_name', first_name.value);
+        formData.append('last_name', last_name.value);
+        formData.append('phone', phone.value);
+        formData.append('birthday_date', birthday_date_form);
+        formData.append('police_position_id', police_position_id.value);
+        formData.append('headquarters_id', headquarters_id.value);
+        formData.append('division_id', division_id.value);
+        formData.append('station_id', station_id.value);
+        formData.append('upload_avatar', upload_avatar.value[0].originFileObj);
 
-    console.log('formData', [...formData])
-
+        console.log('formData', [...formData])
+        
+        const res = await dataApi.register(formData)
+    } catch (error) {
+        // errorAlert.value = true;
+        // dataError.value = error;
+        console.error(error)
+    }
 
     // const dataApi
 }
