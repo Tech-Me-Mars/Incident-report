@@ -1,13 +1,13 @@
 <template>
-    <a-upload name="file" :file-list="model" :accept="accept" :list-type="listType" :multiple="multiple" :maxCount="maxCount"
-        :before-upload="beforeUpload" @change="handleChange" @remove="handleRemove">
+    <a-upload name="file" :file-list="model" :accept="accept" :list-type="listType" :multiple="multiple"
+        :maxCount="maxCount" :before-upload="beforeUpload" @change="handleChange" @remove="handleRemove">
         <a-button>
             <upload-outlined></upload-outlined>
             เลือกไฟล์
         </a-button>
     </a-upload>
 </template>
-  
+
 <script setup>
 const model = defineModel()
 const props = defineProps({
@@ -30,9 +30,9 @@ const props = defineProps({
         type: Number,
         default: 99,
     },
-    listType:{
+    listType: {
         type: String,
-        default: "text",   
+        default: "text",
     }
 });
 
@@ -44,21 +44,32 @@ const handleRemove = file => {
 };
 
 const beforeUpload = file => {
-    model.value = [...(model.value || []), file];
-    console.log('keepFileList', model.value)
-    return false;
+    if (model.value.length < props.maxCount) {
+        model.value = [...(model.value || []), file];
+        console.log('keepFileList', model.value);
+        return false;
+    } else {
+        console.log('Exceeds maxCount');
+        return false; // Prevent file from being uploaded
+    }
 };
 
 const emits = defineEmits();
 const emitKeydown = (event) => {
     emits('change', event); // Emit the keydown event
 }
-const handleChange = (event) => {
-    console.log(event)
-    emits('change', event);
+const handleChange = (info) => {
+    let resFileList = [...info.fileList];
+    // 2. read from response and show file link
+    resFileList = resFileList.map(file => {
+        if (file.response) {
+            // Component will show file.url as link
+            file.url = file.response.url;
+        }
+        return file;
+    });
+    model.value = resFileList;
+    emits('change', info);
 };
 
 </script>
-  
-
-
