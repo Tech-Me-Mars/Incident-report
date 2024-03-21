@@ -57,7 +57,7 @@ const props = defineProps({
   },
   search:{
     type: Boolean,
-    default: false,
+    default: true,
   }
 });
 

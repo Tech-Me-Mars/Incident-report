@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import * as AntD from 'ant-design-vue'
-import { addComponent } from '@nuxt/kit'
+
 
 export default defineNuxtConfig({
   devtools: { enabled: false },
