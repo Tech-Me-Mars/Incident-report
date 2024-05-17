@@ -5,7 +5,7 @@ export default {
             'inline-flex',
             'max-w-full',
             'relative',
-            'shadow-sm',
+            // 'shadow-sm',
             'rounded-md',
             // Misc
             { 'opacity-40 select-none pointer-events-none cursor-default': props.disabled }
@@ -13,21 +13,27 @@ export default {
     }),
     input: ({ props }) => ({
         class: [
+            '!w-[0rem]',
             // Display
             'flex flex-auto',
 
             // Font
             'font-sans leading-none  sm:text-sm',
 
+            'bg-transparent',
             // Colors
-            'text-surface-900 dark:text-surface-0',
-            'placeholder:text-surface-400 dark:placeholder:text-surface-500',
-            'bg-surface-0 dark:bg-surface-900',
-            'ring-1 ring-inset ring-surface-300 dark:ring-surface-700 ring-offset-0',
+            // 'text-surface-900 dark:text-surface-0',
+            // 'placeholder:text-surface-400 dark:placeholder:text-surface-500',
+            // 'bg-surface-0 dark:bg-surface-900',
+            // 'ring-1 ring-inset ring-offset-0',
+            // { 'ring-surface-300 dark:ring-surface-700': !props.invalid },
+
+            // Invalid State
+            // { 'ring-red-500 dark:ring-red-400': props.invalid },
 
             // Spacing
-            'm-0 py-1.5 px-3',
-            '-ml-[1px]',
+            'm-0 px-3',
+            '-ml-px',
 
             // Shape
             'appearance-none',
@@ -44,7 +50,7 @@ export default {
         ]
     }),
     inputicon: {
-        class: ['sm:text-sm', 'absolute top-[50%] -mt-2', 'text-surface-600 dark:text-surface-200', 'right-[.75rem]']
+        class: ['sm:text-sm', 'absolute top-[50%] -mt-2', 'text-surface-600 dark:text-surface-200', 'left-[1rem]','cursor-pointer']
     },
     dropdownbutton: {
         root: {
@@ -81,6 +87,7 @@ export default {
             },
 
             // Size
+            '!min-w-[10rem]',
             { 'w-auto p-2 ': !props.inline },
             { 'min-w-[80vw] w-auto p-2 ': props.touchUI },
             { 'p-2 min-w-full': props.inline },

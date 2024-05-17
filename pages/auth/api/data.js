@@ -1,26 +1,39 @@
 import { request } from "@/service/AxiosService.js";
 // GET PAYMENT METHOD
 export function register(payload) {
-  const url = `/api/auth/register_line`;
-  return request("post", url, payload, true);
+  const url = `/api/auth/register_line_v2`;
+  return request("post", url, payload, false);
 }
 
 export function getPoliceRank() {
-  const url = `/api/v1/policerank`;
-  return request("get", url, {}, true);
+  const url = `/api/v1/public/std/police_rank`;
+  return request("get", url, {}, false);
 }
 
 
 export function getHeadquarters() {
-  const url = `/api/v1/location/headquarters`;
-  return request("get", url, {}, true);
+  const url = `/api/v1/public/std/location/headquarters`;
+  return request("get", url, {}, false);
 }
 export function getDivision(id) {
-  const url = `/api/v1/location/division/${id}`;
-  return request("get", url, {}, true);
+  const url = `/api/v1/public/std/location/division/${id}`;
+  return request("get", url, {}, false);
 }
 export function getStation(id) {
-  const url = `/api/v1/location/station/${id}`;
-  return request("get", url, {}, true);
+  const url = `/api/v1/public/std/location/station/${id}`;
+  return request("get", url, {}, false);
 }
+export function lineLogin(payload) {
+  const url = `/api/auth/login_line`;
+  return request("post", url, payload, false);
+}
+
+export function getPolicePosition() {
+  const url = `/api/v1/public/std/police_position`;
+  return request("get", url, {}, false);
+}
+
+
+
+
 

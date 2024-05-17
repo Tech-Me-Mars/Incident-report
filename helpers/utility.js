@@ -19,12 +19,30 @@ export const formatDate = (value) => {
     // คุณอาจต้องแปลง value เป็น Date object ก่อน
     value = new Date(value);
   }
-  const { locales, locale, setLocale } = useI18n();
-  return value.toLocaleDateString(locale.value||"th-Th", {
+  return value.toLocaleDateString("th-TH", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   });
+};
+
+export const formatDateTime = (value) => {
+  if (!value) {
+    return ""; // หรือค่าที่คุณต้องการในกรณีที่ไม่มีค่า
+  }
+  if (!(value instanceof Date)) {
+    // ในกรณีที่ value ไม่ใช่ Date object
+    // คุณอาจต้องแปลง value เป็น Date object ก่อน
+    value = new Date(value);
+  }
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  return value.toLocaleDateString("th-TH", options);
 };
 
 export const formatCurrency = (value) => {

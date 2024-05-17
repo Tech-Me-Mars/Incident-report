@@ -3,7 +3,7 @@
   <section class="p-3">
     <PageProfileListproject />
 
-    <div class="mb-3">
+    <div class="mt-10 mb-3">
       <span class="text-gray-500">ข้อมูลทั่วไป</span>
     </div>
     <PageProfileMenu />

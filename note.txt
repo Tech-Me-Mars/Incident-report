@@ -1,0 +1,43 @@
+ทำข้อความ เพิ่มโน๊ตใหม่ 
+แก้ขาjobอัพเดท ไม่ต้องส่ง //ยังไม่แก้
+แก้notify ไม่ต้องแสดง boduy กับปุ่ม คลิกการ์ดไปเลย แก้แล้ว
+แก้หน้า main mission พวกปุ่มสีส้ม  //แก้แล้ว
+comment สิทแก้ไข หรือลบ note ตาม compare ตาม id ตัวเอง จากตัวเอง //แก้แล้ว
+ครงจัดการ(แก้ไข) job  รูปภาพให้previewแทน //ยังไม่แก้
+notification detail สร้างหน้าเพิ่ม กดแล้วมาหน้าdetail //แก้แล้ว
+แค่ job mission jobs_mission warpไป  แก้แล้ว
+ตัดveiw all ใส่ pagination แทน แก้แล้ว
+เพอ้มหลอดอัตราความสำเร็จจาก API
+
+## ตรงหน้าคอมเม้นได้ ให้เพิ่ม header สีฟ้าๆ
+////// ที่ต้องแก้
+##  /jobs/mission/edit/25 แก้กดกลับไปหน้า  /jobs/mission/24 โดย เพิ่ม parameter ที่ลิ้ง เช่น mission/edit/24/25
+##/jobs/mission/edit/26  เพิ่มฟิลดำเนินงาน (text proccess)
+##/jobs/mission/edit/26 is_complete ==1 ถึงจะมีปุ่มส่งออก เปลี่ยนรูปด้วย
+## /jobs/mission/edit/26 ตอนบันทึก โชวmodal มั่วๆ
+## /jobs/mission/detail/27 ตอนลบโน๊ต เพิ่มคอนเฟิม
+
+////// ที่ต้องแก้
+1.ตอนactive วันที่เลือก อยู่ซ้ายสุด ตอนonMounte **แก้แล้ว
+2.active menubar jobกับ ---------(mission คืออันเดียวกัน)----------- **แก้แล้ว
+3.นัดหมายวันนี้ ตัดทิ้ง **แก้แล้ว
+4.ผู้สร้างผู้วางแผนงานเป็นคนเดียวกัน (ไม่เกี่ยวกับแอม)
+5.ตั้งค่าอนุมัติเป็น ดีฟอล true
+
+////
+หน้าโปล สวิทตัดออก  งานของฉัน->งานของฉัน งานที่ได้รับมอบหมาย->รายงานของฉัน
+ปุ่มส้ม
+can_edit=1 จัดการ
+
+can_approve
+
+<NuxtLink v-if="item.topic != 'show' && item.topic == 'jobs' && item.showMore" :to="`/jobs/mission/${item.value_id}`">
+                            <TmmButton label="ดูรายละเอียด" type="primary" className="w-[8rem]" />
+                        </NuxtLink>
+                        <NuxtLink v-if="item.topic != 'show' && item.topic == 'jobs_process' && item.showMore" :to="`/jobs/mission/edit/${item.value_id}`">
+                            <TmmButton label="ดูรายละเอียด" type="primary" className="w-[8rem]" />
+                        </NuxtLink>
+
+
+
+https://github.com/kaandesu/vue-paho-mqtt?tab=readme-ov-file#subscribe

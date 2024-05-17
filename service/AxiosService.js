@@ -1,17 +1,18 @@
 import axios from "axios";
 import liff from "@line/liff";
 // const config = useRuntimeConfig();
-axios.defaults.baseURL = "https://api_incident_report.tech-me-mars.com";
+// axios.defaults.baseURL = "https://api_incident_report.tech-me-mars.com";
+axios.defaults.baseURL = "https://api_uat_incident_report.tech-me-mars.com"; //uat
 
 const getToken = function () {
   return localStorage.getItem("token");
 };
 
-const getLang = () =>{
+const getLang = () => {
   const Lang = localStorage.getItem("defaultlangguage") === "en-US" ? "en" : "th";
   return Lang;
-} 
-export async function request(method, url, data, auth = true) {
+}
+export async function request(method, url, data, auth = true, type = 'json') {
 
   const headers = {
     // en or th
@@ -28,6 +29,7 @@ export async function request(method, url, data, auth = true) {
       url,
       data,
       headers,
+      responseType: type // กำหนด responseType เป็น 'stream,json,blob'
     });
     if (response) {
       isloadingAxi.value = false;
@@ -41,13 +43,13 @@ export async function request(method, url, data, auth = true) {
 
     // [[ กรณีกรอกรหัสผิด return 401]] 
     if (error.response.status === 401) {
-      if (liff.isLoggedIn()) {
-        liff.logout();
-      }
+      // if (liff.isLoggedIn()) {
+      //   liff.logout();
+      // }
       // หาก401 (token หมดเวลา) ให้Logout line แล้วLogin=>init ใหม่
       console.log("Login รหัสผ่านผิด | Token ไม่ถูกต้อง | ไม่มี Token");
       // localStorage.removeItem("token");
-      // await navigateTo("/auth/login");
+      await navigateTo("/auth/login-line");
     } else if (error.response.status === 422) {
       console.log("ติด validate");
     } else if (error.response.status === 500) {
