@@ -1,4 +1,6 @@
 <template>
+    <HeaderMainProfile />
+    <section class="p-3">
     <HeaderMenu class="flex justify-start items-center gap-5">
         <p class="font-bold text-lg">Jobs</p>
     </HeaderMenu>
@@ -11,4 +13,11 @@
             <TmmButton label="สร้างรายงาน" className="w-full min-w-[16rem]" size="large" type="primary" />
         </NuxtLink>
     </div>
+</section>
 </template>
+<script setup>
+
+onMounted(()=>{
+    navigateTo('/report/add')
+})
+</script>

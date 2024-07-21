@@ -1,8 +1,9 @@
 <template>
-    <HeaderMenu class="flex justify-start items-center gap-5">
+    <HeaderMainProfile />
+    <section class="p-3">
+        <HeaderMenu class="flex justify-start items-center gap-5">
         <p class="font-bold text-lg">แก้ไข jobs</p>
     </HeaderMenu>
-    <section class="p-3">
         <!-- <PageJobsAddForm /> -->
         <Form @submit="onSubmit">
             <div class="card p-3 mb-3" v-if="resProcessJobs?.jobs?.can_edit == true">
@@ -21,6 +22,24 @@
                     <TmmInputDropDown v-model="approve_plan_employee_id" placeholder="" className=""
                         :options="resPoliceHeadStation" class="w-full" value="id" label="fullname"
                         :error="errors.approve_plan_employee_id" />
+                </div>
+                <div class="mb-2">
+                    <TmmTypographyLabelForm label="ลำดับความเร่งด่วน" />
+                    <TmmInputDropDown v-model="jobs_level_of_urgency_code" placeholder="" className=""
+                        :options="resgetUrgency" class="w-full" value="code" label="name"
+                        :error="errors.jobs_level_of_urgency_code" />
+                </div>
+                <div class="mb-2">
+                    <TmmTypographyLabelForm label="ลำดับความสำคัญ" />
+                    <TmmInputDropDown v-model="jobs_level_priority_code" placeholder="" className=""
+                        :options="resPriority" class="w-full" value="code" label="name"
+                        :error="errors.jobs_level_priority_code" />
+                </div>
+                <div class="mb-2">
+                    <TmmTypographyLabelForm label="ชั้นความลับ" />
+                    <TmmInputDropDown v-model="jobs_level_secret_code" placeholder="" className=""
+                        :options="resgetSecret" class="w-full" value="code" label="name"
+                        :error="errors.jobs_level_secret_code" />
                 </div>
             </div>
 
@@ -112,6 +131,9 @@ onMounted(() => {
     loadPlanJobEmp();
     loadInquiryEmp();
     loadDataToForm();
+    loadUrgency();
+    loadPriority();
+    loadSecret();
 });
 
 const router= useRouter()
@@ -130,6 +152,35 @@ const loadPlanJobEmp = async () => {
             fullname: `${e.rank_name_th_abb} ${e.first_name} ${e.last_name} ${e.position_name_th_abb}`,
         }));
 
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resgetUrgency = ref();
+const loadUrgency = async () => {
+    try {
+        const res = await dataApi.getUrgency()
+        resgetUrgency.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+const resPriority = ref();
+const loadPriority = async () => {
+    try {
+        const res = await dataApi.getPriority()
+        resPriority.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resgetSecret = ref();
+const loadSecret = async () => {
+    try {
+        const res = await dataApi.getSecret()
+        resgetSecret.value = res.data.data;
     } catch (error) {
         console.error(error);
     }
@@ -217,6 +268,9 @@ const { handleSubmit, errors, handleReset } = useForm({
 const { value: name } = useField("name");
 const { value: plan_job_employee_id } = useField("plan_job_employee_id");
 const { value: approve_plan_employee_id } = useField("approve_plan_employee_id");
+const { value: jobs_level_of_urgency_code } = useField("jobs_level_of_urgency_code");
+const { value: jobs_level_priority_code } = useField("jobs_level_priority_code");
+const { value: jobs_level_secret_code } = useField("jobs_level_secret_code");
 const { value: status } = useField('status', null, {
     initialValue: 1 // กำหนดค่าเริ่มต้นที่นี่
 })
@@ -230,6 +284,9 @@ const loadDataToForm = async () => {
         name.value = res.data.data?.jobs?.name
         plan_job_employee_id.value = res.data.data?.jobs?.plan_job_employee_id
         approve_plan_employee_id.value = res.data.data?.jobs?.approve_plan_employee_id
+        jobs_level_of_urgency_code.value = res.data.data?.jobs?.jobs_level_of_urgency_code
+        jobs_level_priority_code.value = res.data.data?.jobs?.jobs_level_priority_code
+        jobs_level_secret_code.value = res.data.data?.jobs?.jobs_level_secret_code
         res.data.data?.jobs_process.forEach((e, i) => {
             fields.value[i].value.id = e.id;
             fields.value[i].value.setting_approve = e.tools?.setting_approve == 1 ? true : false;
@@ -319,6 +376,9 @@ const savejob = async (values) => {
             name: name.value,
             plan_job_employee_id: plan_job_employee_id.value,
             approve_plan_employee_id: approve_plan_employee_id.value,
+            jobs_level_of_urgency_code: jobs_level_of_urgency_code.value?jobs_level_of_urgency_code.value:"",
+            jobs_level_priority_code: jobs_level_priority_code.value?jobs_level_priority_code.value:"",
+            jobs_level_secret_code: jobs_level_secret_code.value?jobs_level_secret_code.value:"",
             // type => 'create’=>’สร้างของตนเอง’ | 'assign' =>’สร้างให้ผู้อื่นรับผิดชอบงาน’
             // "type":"create",
             status: 1, // 1 | 0

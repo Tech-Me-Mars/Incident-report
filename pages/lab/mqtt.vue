@@ -16,8 +16,9 @@ onMounted(() => {
     mqttSub()
 });
 
+const mqtt_pre = useRuntimeConfig().public.MQTT_PRE;
 const mqttSub = async () => {
-    $mqtt.subscribe('eop/notification/', (message) => {
+    $mqtt.subscribe(`${mqtt_pre}/notification/5`, (message) => {
         // ทำอะไรก็ได้ที่ต้องการเมื่อได้รับข้อมูล MQTT จาก server
         mqttData.value = message;  // ตัวอย่างการเก็บข้อมูลลงในตัวแปร ref
         console.log(message, 'received');  // ตัวอย่างการ log ข้อมูลที่ได้รับ
@@ -27,6 +28,6 @@ const mqttSub = async () => {
 
 
 const mqttPub = () => {
-    $mqtt.publish('eop/notification/', 'Hello, from subsciber!', 'Fnr');
+    $mqtt.publish('notification/5', 'Hello, from subsciber!', 'Fnr');
 }
 </script>

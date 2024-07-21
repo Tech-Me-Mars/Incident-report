@@ -1,14 +1,64 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
+  // app: {
+  //   head: {
+  //     script: [
+  //       { src: 'https://api.longdo.com/map/?key=1e7c1b91542a627c2f556824f98e9977', type: 'text/javascript' },
+  //       { src: 'path/to/longdomap.markercluster-src.js', type: 'text/javascript' }
+  //     ],
+  //     link: [
+  //       { rel: 'stylesheet', href: 'path/to/MarkerCluster.Default.css' }
+  //     ]
+  //   }
+  // },
+  
   ssr:false,
+  build: {
+    transpile: ['v3-infinite-loading']
+  },
   vue: {
     defineModel: true,
     propsDestructure: true
   },
   modules: [
-    '@nuxtjs/tailwindcss','@ant-design-vue/nuxt','nuxt-swiper','@vant/nuxt','nuxt-primevue','@formkit/auto-animate/nuxt','@sidebase/nuxt-pdf'
+    "@pinia/nuxt",
+    '@stefanobartoletti/nuxt-social-share',
+    '@nuxtjs/tailwindcss',
+    '@ant-design-vue/nuxt',
+    'nuxt-swiper',
+    '@vant/nuxt',
+    'nuxt-primevue',
+    '@formkit/auto-animate/nuxt',
+    '@sidebase/nuxt-pdf',
+    "@stefanobartoletti/nuxt-social-share",
+    'nuxt-tiptap-editor'
   ],
+  tiptap: {
+    prefix: "Tiptap", //prefix for Tiptap imports, composables not included
+  },
+  
+  quasar: {
+    // Configurable Component Defaults
+    components: {
+      defaults: {
+        QBtn: {
+          dense: true,
+          flat: true,
+        },
+        QInput: {
+          dense: true
+        }
+      }
+    }
+  },
+  
+  // socialShare: {
+  //   // ตั้งค่าต่าง ๆ ที่คุณต้องการได้ที่นี่
+  //   url: 'http://localhost:3000/lab/share',
+  //   styled: true,
+  //   label: false
+  // },
   primevue: {
     // components: {
     //   include: "*",
@@ -31,20 +81,30 @@ export default defineNuxtConfig({
     "@/assets/css/fontgobal.css",
     "@/assets/css/style.css",
     "flag-icons/css/flag-icons.min.css",
+    '@/assets/css/MarkerCluster.Default.css'
   ],
   runtimeConfig: {
     public: {
       LIFFID: process.env.LIFFID,
       LIFFURL: process.env.LIFFURL,
-      // ! DEV 
-      // URL_API: "https://api_incident_report.tech-me-mars.com",
-      // UAT
-      URL_API: "https://api_uat_incident_report.tech-me-mars.com",
+      MAP_KEY: process.env.MAP_KEY,
+      // prod
+      // URL_API: "https://api.eop-thaipolice.com",
+      // MQTT_PRE:"eop"
+      // uat
+      URL_API: "https://uat-api.eop-thaipolice.com",
+      MQTT_PRE:"uateop"
+      
       
     }
   },
   plugins: [
     '@/plugins/mqtt',
+    '@/plugins/vue3-perfect-scrollbar.js',
+    '@/plugins/vue-scroll-loader.client.js',
+    '@/plugins/infinite-loading.js',
+    '@/plugins/sweetalert2',
+    // '@/plugins/longdo-map-vue.client.js'
   ],
 
   tailwindcss: {

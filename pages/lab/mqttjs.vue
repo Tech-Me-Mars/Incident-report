@@ -56,10 +56,10 @@ export default {
     // mosquitto_sub -h 10.32.50.93 -u fiberzone -P dmFybmlvbi1tcXR0 -t test/data
     // mosquitto_pub -h 10.32.50.93 -u fiberzone -P dmFybmlvbi1tcXR0 -t test/data -m "test data"
     connection: {
-      protocol: 'wss',
+      protocol: 'ws',
       // host: 'broker.emqx.io',
       host: '154.26.129.247',
-      port: 8084,
+      port: 8083,
       clientId: 'emqx_vue3_' + Math.random().toString(16).substring(2, 8),
       username: 'eop_web',
       password: 'eop@web',

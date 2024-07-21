@@ -87,6 +87,8 @@ export default {
             },
 
             // Size
+            'bg-white',
+            'shadow-md',
             '!min-w-[10rem]',
             { 'w-auto p-2 ': !props.inline },
             { 'min-w-[80vw] w-auto p-2 ': props.touchUI },

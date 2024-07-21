@@ -1,9 +1,13 @@
 <template>
-  <div class=" bg-zinc-50 pb-14">
+  <div class=" bg-zinc-50  min-h-screen">
 
     <!-- <Header class="max-w-4xl mx-auto"/> -->
-    <div class="max-w-4xl mx-auto bg-zinc-50 min-h-screen">
-      <slot class="" />
+    <div class="max-w-4xl mx-auto bg-zinc-50 ">
+       <!-- <HeaderMainProfile /> -->
+       
+      <div class="pb-14">
+        <slot  />
+      </div>
       <Navigation />
     </div>
     <!-- <div class="">
@@ -14,8 +18,23 @@
 </template>
 
 <script setup>
+
 import Header from '@/layouts/header.vue'
 import Navigation from '@/layouts/buttomnavigation'
+
+import * as dataApi from '@/service/ProfileService'
+onMounted(async()=>{
+  // await loadProfile();
+})
+const loadProfile = async () => {
+  try {
+    const res = await dataApi.getProfile();
+    const police_employee_id = useState("police_employee_id", () => res.data.data.police_employee_id);
+    // localStorage.setItem("police_employee_id", res.data.data.police_employee_id);
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <style>

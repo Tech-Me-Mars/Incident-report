@@ -1,8 +1,9 @@
 <template>
-    <PageMissionViewHeader />
+    <HeaderMainProfile />
     <!-- {{ fields }} -->
     <section class="p-3">
-        <!-- <PageMissionEditProjectname /> -->
+        <PageMissionViewHeader />
+        <!-- <PageMissionProcessProjectname /> -->
         <TmmCard class="!bg-blue-600 mb-2 card">
             <template #header>
                 <div class="py-1">
@@ -27,7 +28,7 @@
             </template>
         </TmmCard>
         <hr />
-        <!-- <PageMissionEditForm /> -->
+        <!-- <PageMissionProcessForm /> -->
         <div class="card p-3 mb-3">
             <div class="flex justify-end">
                 <TmmTag color="#f0c424" class="rounded-xl mb-2">ลำดับที่ {{ sort_no }}
@@ -149,7 +150,10 @@ const resJobStatusProcessApprove = ref();
 const loadJobStatusProcessApprove = async () => {
     try {
         let res = undefined;
-        if (can_approve.value == 1) {
+        if (is_complete.value == 1) {
+            res = await dataApi.getJobStatusProcessApprove();
+        }
+        else if (can_approve.value == 1) {
             res = await dataApi.getJobStatusProcessApprove();
         } else {
             res = await dataApi.getJobStatusProcess();
@@ -352,7 +356,7 @@ const savejob = async (values) => {
             summary: "ทำรายการสำเร็จ",
             detail: res.data.message,
         };
-        handleReset();
+        // handleReset();
     } catch (error) {
         errorAlert.value = true;
         dataError.value = error;

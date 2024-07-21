@@ -1,158 +1,421 @@
 <template>
-    <HeaderMenu class="flex justify-start items-center gap-5 mb-5">
-        <p class="font-bold text-lg">REPORT</p>
-    </HeaderMenu>
+    <HeaderMainProfile />
+
+
+    <a-modal v-model:open="connectLineModal" :closable="false" :maskClosable="false" centered title="" :footer="null">
+        <div style="text-align: center;">
+            <p class="mb-5">คุณจะต้องเปิดรับการแจ้งเตือนไลน์ก่อนจึงจะสามารถเขียน REPORT ได้</p>
+            <TmmButton @click="connectLineNotify" label="เปิดรับการแจ้งเตือนไลน์" />
+        </div>
+    </a-modal>
+
+
+
+    <a-modal v-model:open="warningModal" title="" :zIndex="1500" :maskClosable="false" :footer="null">
+        <p class="text-red-600 text-md">
+            {{ messageError }}
+        </p>
+    </a-modal>
+    <a-drawer title="Export File" placement="bottom" :closable="false" :open="open" @close="onClose">
+        <NuxtLink :to="`/report/edit/export/pdf/${$route.params.id}`">
+            <div
+                class="flex gap-3 items-center  bg-white border-orange-500 border-2 rounded-xl p-1 mb-2 text-orange-500">
+                <TmmIcon icon="mdi mdi-file-pdf-box text-orange-600" style="font-size:30px" />
+                <span class="text-xl font-nomal">Export PDF</span>
+            </div>
+        </NuxtLink>
+        <div @click="genWord"
+            class="flex gap-3 items-center bg-white border-blue-500 border-2 rounded-xl p-1 mb-2 cursor-pointer">
+            <TmmIcon icon="mdi mdi-file-word text-4xl text-blue-600" style="font-size:30px" />
+            <span class="text-xl font-nomal">Word</span>
+        </div>
+    </a-drawer>
+
     <section class="p-3">
+        <HeaderMenu class="flex justify-between items-center gap-5 mb-5">
+            <div class="flex gap-2">
+                <TmmButtonBackPage @click="router.push(`/my-report`)" />
+                <p class="font-bold text-lg">ดูข้อมูล REPORT ที่ฉันสร้าง</p>
+            </div>
+            <TmmButtonExportHeader @click="showDrawer" />
+        </HeaderMenu>
+
+        <!-- <a-modal ref="modalRef" :maskClosable="false" v-model:open="connectLineModal" :wrap-style="{ overflow: 'hidden' }" @ok="handleOk">
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <template #title>
+                <div ref="modalTitleRef" style="width: 100%; cursor: move">Draggable Modal</div>
+            </template>
+<template #modalRender="{ originVNode }">
+                <div :style="transformStyle">
+                    <component :is="originVNode" />
+                </div>
+            </template>
+</a-modal> -->
+        <!-- <a-modal :maskClosable="false" centered v-model:open="connectLineModal" :wrap-style="{ overflow: 'hidden' }" >
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <template #title>
+        <div ref="modalTitleRef" style="width: 100%; cursor: move">Draggable Modal</div>
+      </template>
+      <template #modalRender="{ originVNode }">
+        <div :style="transformStyle">
+          <component :is="originVNode" />
+        </div>
+      </template>
+    </a-modal> -->
 
         <!-- <PageReportAddForm /> -->
         <Form @submit="onSubmit">
-            <TmmLabelSubtitle class="text-gray-500" label="รายงานเหตุ" />
             <div class="card p-3 mb-3">
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="ภ.จว" />
-                    <TmmInputDropDown v-model="police_province_id" placeholder="" className=""
-                        :options="resPoliceProvince" class="w-full" value="id" label="province_name"
-                        :error="errors.police_province_id" readonly />
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="รายงานเหตุ" />
-                    <TmmInput v-model="name" :error="errors.name" readonly />
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="พื้นที่ สน./สภ" />
-                    <TmmInput v-model="station_name" readonly placeholder="" className="" class="w-full" />
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                    <div class="">
+                        <TmmTypographyLabelForm label="พื้นที่" />
+                        <TmmInputDropDown v-model="police_province_id" placeholder="" className="readonly"
+                            :options="resPoliceProvince" class="w-full" value="id" label="police_province_name"
+                            :error="errors.police_province_id" />
+                    </div>
+                    <div>
+                        <TmmTypographyLabelForm label="วันที่เกิดเหตุ" />
+                        <TmmInputCalendar v-model="incident_date" class="w-full" className="readonly"
+                            placeholder="วันที่เกิดเหตุ..." :error="errors.incident_date" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="เวลาเกิดเหตุ" />
+                        <TmmInputTimePicker v-model=incident_time className="readonly" class="w-full"
+                            :error="errors.incident_time" />
+                    </div>
+
+                    <div class="">
+                        <TmmTypographyLabelForm label="ประเภทรายงานเหตุ" />
+                        <a-auto-complete class="!w-full readonly" v-model:value="type_report_code"
+                            :options="resTypeReport" placeholder="ประเภทรายงานเหตุ" @search="onSearch" />
+                    </div>
+
+                    <div class="">
+                        <TmmTypographyLabelForm label="เหตุที่เกิดหรือข้อหา" />
+                        <TmmInputTextarea placeholder="คำอธิบาย..." :auto-size="{ minRows: 3, maxRows: 99 }"
+                            v-model="incident_cause_text" className="readonly" :error="errors.incident_cause_text" />
+                    </div>
+
+                    <div class="">
+                        <TmmTypographyLabelForm label="บริเวณที่เกิดเหตุ" />
+                        <TmmInputTextarea placeholder="คำอธิบาย..." :auto-size="{ minRows: 3, maxRows: 99 }"
+                            v-model="incident_area_text" className="readonly" :error="errors.incident_area_text" />
+                    </div>
+
+                    <div class="">
+                        <TmmTypographyLabelForm label="ลักษณะที่เกิดเหตุ" />
+                        <TmmInputTextarea placeholder="คำอธิบาย..." :auto-size="{ minRows: 3, maxRows: 99 }"
+                            v-model="incident_structure_text" className="readonly"
+                            :error="errors.incident_structure_text" />
+                    </div>
                 </div>
             </div>
 
-            <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลเหตุ" />
-            <div class="card p-3 mb-3">
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="วันที่เกิดเหตุ" />
-                    <TmmInputCalendar v-model="date_incident" class="w-full" readonly placeholder="เลือกวันที่"
-                        :error="errors.date_incident" />
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="เวลาเกิดเหตุ" />
-                    <TmmInput v-model=time_incident class="w-full" readonly
-                        :error="errors.time_incident" />
-                        <!-- <a-time-picker v-model:value="temp" inputReadOnly /> -->
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="สถานที่เกิดเหตุ" />
-                    <TmmInputTextarea v-model="locale_text" :error="errors.locale_text" readonly />
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="ผู้เสียหาย" />
-                    <TmmInputTextarea v-model="sufferer_text" :error="errors.sufferer_text" readonly />
-                </div>
 
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="ผู้ต้องหา" />
-                    <TmmInput v-model="accuser_name" :error="errors.accuser_name" readonly />
+            <!--  ########################  [[ ข้อมูลผู้เสียหาย ]] ########################-->
+            <!--  ########################  [[ ข้อมูลผู้เสียหาย ]] ########################-->
+            <!--  ########################  [[ ข้อมูลผู้เสียหาย ]] ########################-->
+            <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลผู้เสียหาย" />
+            <div class="card p-3 mb-3" v-for="(item, index) in suffererFields" :key="item.key">
+                <div class="flex justify-between">
+                    <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
+                    <!-- <CloseCircleTwoTone v-if="suffererFields.length > 1" @click="confirmRemoveSuffer(item, index)" /> -->
                 </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="ทรัพย์สินถูกประทุร้าย (ถ้ามี)" />
-                    <TmmInput v-model="property" :error="errors.property"  readonly/>
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="พฤติการณ์แห่งคดีโดยย่อ" />
-                    <TmmInputTextarea v-model="text_details" :error="errors.text_details" readonly />
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="ชื่อหัวหน้าสถานี" />
-                    <TmmInputDropDown v-model="police_head_station_employee_id" placeholder="" className=""
-                        @change="headerStationChange()" :options="resPoliceHeadStation" class="w-full" value="id"
-                        label="fullname" :error="errors.police_head_station_employee_id" readonly />
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                    <div class="">
+                        <TmmTypographyLabelForm label="ชื่อ" />
+                        <TmmInput v-model="item.value.suffer_firstname" className="readonly" placeholder="ชื่อ..."
+                            :error="errors[`sufferer_array[${index}].suffer_firstname`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="นามสกุล" />
+                        <TmmInput v-model="item.value.suffer_lastname" className="readonly" placeholder="นามสกุล..."
+                            :error="errors[`sufferer_array[${index}].suffer_lastname`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="อายุ" />
+                        <TmmInputNumber v-model="item.value.suffer_age" className="readonly" placeholder="อายุ..."
+                            :error="errors[`sufferer_array[${index}].suffer_age`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="สัญชาติ" />
+                        <TmmInputDropDown className="readonly" v-model="item.value.suffer_nationality"
+                            placeholder="สัญชาติ..." :options="resNational" class="w-full" value="nation_name_th"
+                            label="nation_name_th" :error="errors[`sufferer_array[${index}].suffer_nationality`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="หมายเลขหนังสือเดินทาง" />
+                        <TmmInput v-model="item.value.suffer_passport_number" className="readonly"
+                            placeholder="หมายเลขหนังสือเดินทาง..."
+                            :error="errors[`sufferer_array[${index}].suffer_passport_number`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="ความเสียหาย" />
 
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="เบอร์โทรหัวหน้าสถานี" />
-                    <TmmInput v-model="police_head_station_employee_phone"
-                        :error="errors.police_head_station_employee_phone" readonly />
-                </div>
-                <div class="mb-2">
-
-                    <TmmTypographyLabelForm label="พนักงานสอบสวนผู้รับผิดชอบ" />
-                    <TmmInputDropDown v-model="inquiry_employee_id" placeholder="" className=""
-                        @change="inquiryEmpChange()" :options="resInquiryEmp" class="w-full" value="employee_id"
-                        label="fullname" :error="errors.inquiry_employee_id" readonly />
-                </div>
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="เบอร์โทรพนักงานสอบสวนผู้รับผิดชอบ" />
-                    <TmmInput v-model="inquiry_employee_phone" :error="errors.inquiry_employee_phone" readonly />
+                        <TmmInputDropDown v-model="item.value.suffer_type_damage_code" className="readonly"
+                            placeholder="ความเสียหาย..." :options="resTypeDamage" class="w-full" value="code"
+                            label="detail" :error="errors[`sufferer_array[${index}].suffer_type_damage_code`]" />
+                    </div>
 
                 </div>
             </div>
 
-            <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลผู้รายงานเหตุ" />
-            <div class="card p-3 mb-3">
-                <!-- <div class="mb-2">
-                <TmmTypographyLabelForm  label="ผู้รายงาน" />
-                <TmmInputDropDown v-model="report_by_employee_id" placeholder="" className="" @change="Change()"
-                    :options="resMyProfile" class="w-full" value="employee_id" label="fullname" />
-            </div>
-            <div class="mb-2">
-                <TmmTypographyLabelForm label="พนง.วิทยุ บก./ภ.จว" />
-                <TmmInput />
-            </div>
-            <div class="mb-2">
-                <TmmTypographyLabelForm label="เบอร์โทร" />
-                <TmmInput />
+            <!-- <div class="flex justify-center py-2 pb-3 mb-3">
+                <TmmButton type="primary" severity="secondary" icon="mdi mdi-plus" label="เพิ่มผู้เสียหาย" @click="pushSufferer({
+                    suffer_firstname: undefined,
+                    suffer_lastname: undefined,
+                    suffer_age: undefined,
+                    suffer_nationality: undefined,
+                    suffer_passport_number: undefined,
+                    suffer_type_damage_code: undefined,
+                })" className="" />
             </div> -->
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="หมายเหตุ" />
-                    <TmmInput v-model="note" :error="errors.note" readonly />
+
+            <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
+            <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
+            <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
+            <TmmLabelSubtitle class="text-gray-500" label="ทรัพย์สินที่เสียหาย" />
+            <div class="card p-3 mb-3" v-for="(item, index) in propertyFields" :key="item.key">
+                <div class="flex justify-between">
+                    <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
+                    <!-- <CloseCircleTwoTone v-if="propertyFields.length > 1" @click="confirmRemoveProperty(item, index)" /> -->
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+
+                    <div class="">
+                        <TmmTypographyLabelForm label="ประเภทสินทรัพย์" />
+                        <TmmInputDropDown v-model="item.value.type_property_code" className="readonly"
+                            placeholder="ประเภทสินทรัพย์" :options="resTypeProperty" class="w-full" value="detail"
+                            label="detail" :error="errors[`property_array[${index}].type_property_code`]" />
+                    </div>
+                    <div class=""
+                        v-if="item.value.type_property_code == 'รถยนต์' || item.value.type_property_code == 'รถจักรยานยนต์'">
+                        <TmmTypographyLabelForm label="ยี่ห้อ" />
+                        <TmmInput v-model="item.value.type_property_brand" className="readonly" placeholder="ยี่ห้อ..."
+                            :error="errors[`property_array[${index}].type_property_brand`]" />
+                    </div>
+                    <div class=""
+                        v-if="item.value.type_property_code == 'อาคาร/บ้านเรือน' || item.value.type_property_code == 'อื่นๆ'">
+                        <TmmTypographyLabelForm label="จำนวน" />
+                        <TmmInputNumber v-model="item.value.type_property_qty" className="readonly"
+                            placeholder="จำนวน..." :error="errors[`property_array[${index}].type_property_qty`]" />
+                        <!-- error:{{ errors[`property_array[${index}].type_property_qty`] }} -->
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="มูลค่าโดยประมาณ" />
+                        <TmmInputNumber v-model="item.value.type_property_price" className="readonly"
+                            placeholder="มูลค่าโดยประมาณ..."
+                            :error="errors[`property_array[${index}].type_property_price`]" />
+                    </div>
+
+
+                </div>
+
+            </div>
+            <!-- <div class="flex justify-center py-2 pb-3 mb-3">
+                <TmmButton type="primary" severity="secondary" icon="mdi mdi-plus" label="เพิ่มสินทรัพย์เสียหาย" @click="pushProperty({
+                    type_property_code: undefined,
+                    type_property_brand: undefined,
+                    type_property_qty: undefined,
+                    type_property_price: undefined,
+                })" className="" />
+            </div> -->
+
+            <!-- ############################### [[ คนร้าย ]] ################################## -->
+            <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
+            <div class="card p-3 mb-3" v-for="(item, index) in villainFields" :key="item.key">
+                <div class="flex justify-between">
+                    <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
+                    <!-- <CloseCircleTwoTone v-if="villainFields.length > 1" @click="confirmRemoveVilain(item, index)" /> -->
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                    <div class="">
+                        <TmmTypographyLabelForm label="ชื่อ" />
+                        <TmmInput v-model="item.value.gangster_firstname" className="readonly" placeholder="ชื่อ..."
+                            :error="errors[`villain_array[${index}].gangster_firstname`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="นามสกุล" />
+                        <TmmInput v-model="item.value.gangster_lastname" className="readonly" placeholder="นามสกุล..."
+                            :error="errors[`villain_array[${index}].gangster_lastname`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="อายุ" />
+                        <TmmInputNumber v-model="item.value.gangster_age" className="readonly" placeholder="อายุ..."
+                            :error="errors[`villain_array[${index}].gangster_age`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="สัญชาติ" />
+                        <TmmInputDropDown className="readonly" v-model="item.value.gangster_nationality"
+                            placeholder="สัญชาติ..." :options="resNational" class="w-full" value="nation_name_th"
+                            label="nation_name_th" :error="errors[`villain_array[${index}].gangster_nationality`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="จำนวนครั้งที่กระทำความผิด" />
+                        <TmmInputNumber :min="0" v-model="item.value.gangster_offense_count" className="readonly"
+                            placeholder="จำนวนครั้งที่กระทำความผิด..."
+                            :error="errors[`villain_array[${index}].gangster_offense_count`]" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="อาวุธเครื่องมือที่ใช้" />
+                        <TmmInput v-model="item.value.gangster_weapon" className="readonly"
+                            placeholder="อาวุธเครื่องมือที่ใช้..."
+                            :error="errors[`villain_array[${index}].gangster_weapon`]" />
+                    </div>
+
                 </div>
             </div>
 
-            <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลค่าใช้จ่าย" />
-            <div class="card p-3 mb-3">
-                <div class="mb-2">
-                    <TmmTypographyLabelForm label="ค่าใช้จ่าย" />
-                    <TmmInput v-model="expenses" class="w-full" :error="errors.expenses" readonly />
-                </div>
+            <!-- <div class="flex justify-center py-2 pb-3 mb-3">
+                <TmmButton type="primary" severity="secondary" icon="mdi mdi-plus" label="เพิ่มคนร้าย" @click="pushVillain({
+                    gangster_firstname: undefined,
+                    gangster_lastname: undefined,
+                    gangster_age: undefined,
+                    gangster_nationality: undefined,
+                    gangster_offense_count: undefined,
+                    gangster_weapon: undefined,
+                })" className="" />
+            </div> -->
 
-                <div class="flex flex-col">
-                    <TmmTypographyLabelForm label="เอกสารค่าใช้จ่าย" />
-                    <!-- <TmmInputUploadFile :maxCount="10" :multiple="true" v-model="image_detail"
-                        :error="errors.image_detail" /> -->
-                    <a-upload v-model:file-list="image_detail" accept="image/*" @preview="handlePreview"
-                        list-type="picture" multiple name="file" 
-                         disabled>
+            <div class="card p-3 mb-3">
+                <div class="">
+                    <div class="">
+                        <TmmTypographyLabelForm label="ยานพานะที่ใช้ทำผิด" />
+                        <TmmInputDropDown v-model="type_vehicle_code" className="readonly"
+                            placeholder="ยานพานะที่ใช้ทำผิด..." :options="resVehicle" class="w-full" value="code"
+                            label="detail" :error="errors.type_vehicle_code" />
+                    </div>
+                    <div>
+                        <TmmTypographyLabelForm label="ทะเบียนรถที่ใช้กระทำความผิด" />
+                        <TmmInput v-model="type_vehicle_license_plate" className="readonly" class="w-full"
+                            placeholder="ทะเบียนรถ..." :error="errors.type_vehicle_license_plate" />
+                    </div>
+                    <div class="col-span-2">
+                        <TmmTypographyLabelForm label="รายละเอียด/พฤติการณ์แห่งคดี" />
+                        <TmmInputTextarea :auto-size="{ minRows: 3, maxRows: 99 }" className="readonly"
+                            v-model="incident_detail" placeholder="รายละเอียด/พฤติการณ์แห่งคดี..."
+                            :error="errors.incident_detail" />
+                    </div>
+                    <div class="flex flex-col">
+                        <TmmTypographyLabelForm label="พนักงานสอบสวนผู้รับผิดชอบ" />
+
+                        <TmmInputDropDown @change="inquiryEmpChange()" v-model="inquiry_employee_id"
+                            className="readonly" placeholder="พนักงานสอบสวนผู้รับผิดชอบ..." :options="resInquiryEmp"
+                            class="w-full !mb-2" value="employee_id" label="fullname"
+                            :error="errors.inquiry_employee_id" />
+                        <TmmInput readonly v-model="inquiry_employee_license_number" className="readonly"
+                            placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ..."
+                            :error="errors.inquiry_employee_license_number" />
+                    </div>
+
+                    <div class="">
+                        <TmmTypographyLabelForm label="นายตำรวจเวรชั้นผู้ใหญ่ควบคุม" />
+                        <TmmInputDropDown @change="seniorPoliceChange" v-model="senior_police_control_employee_id"
+                            className="readonly" placeholder="นายตำรวจเวรชั้นผู้ใหญ่ควบคุม..."
+                            :options="resSeniorPolice" class="w-full" value="id" label="fullname"
+                            :error="errors.senior_police_control_employee_id" />
+                    </div>
+                    <div class="">
+                        <TmmTypographyLabelForm label="การดำเนินการของ ส.ทท." />
+                        <TmmInputTextarea :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_process_text"
+                            className="readonly" placeholder="คำอธิบาย...." :error="errors.incident_process_text" />
+                    </div>
+
+                    <!-- <div class="flex flex-col">
+                        <TmmTypographyLabelForm label="รูปภาพที่เกี่ยวข้อง" />
+                        <TmmInputUploadFile accept=".jpg,.jpeg,.png" :maxCount="99" :multiple="true"
+                            v-model="image_detail" :error="errors.image_detail" />
+                        <TmmTypographyTextValidator v-if="errors.image_detail" errors="กรุณาอัพโหลดไฟล์" />
+                    </div> -->
+
+
+
+                    <!-- <div class="flex gap-2">
+                        <TmmTypographyLabelForm label="เปิดให้แชร์สู่สารธารณะ" />
+                        <span>
+                            <TmmInputSwitch v-model="is_share_public" />
+                        </span>
+                    </div> -->
+
+
+                </div>
+            </div>
+
+            <!-- <div class="card p-3 mb-3">
+                <div>
+                    <TmmTypographyLabelForm label="แนบรูป" />
+                    <TmmInput placeholder="พิมพ์ข้อความรายละเอียด" />
+                    <a-upload v-model:file-list="image_detail_expenses" accept="image/*" @preview="handlePreview"
+                        list-type="picture" multiple name="file" disabled>
                         <a-button>
                             <upload-outlined></upload-outlined>
                             เลือกไฟล์
                         </a-button>
                     </a-upload>
-                    <TmmTypographyTextValidator v-if="errors.image_detail" errors="กรุณาอัพโหลดไฟล์" />
+                    <TmmInputUploadImage multiple  :maxCount="3" />
+                </div>
+            </div> -->
+            <TmmTypographyLabelForm label="แนบรูปภาพและรายละเอียด" />
+            <div class="card p-3 mb-3" v-for="(item, index) in attachFields" :key="item.key">
+                <div class="flex justify-between">
+                    <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
+                    <!-- <CloseCircleTwoTone v-if="attachFields.length > 1" @click="confirmRemoveAttach(item, index)" /> -->
+                </div>
+                <div class="grid grid-cols-1 gap-2">
+                    <div class="">
+                        <TmmTypographyLabelForm label="รายละเอียด..." />
+                        <TmmInput v-model="item.value.group_text_detail" className="readonly"
+                            placeholder="รายละเอียด..." :error="errors[`attach_array[${index}].group_text_detail`]" />
+                    </div>
+
+                    <div class="flex flex-col">
+                        <TmmTypographyLabelForm label="ประเภทรูปภาพ" />
+                        <TmmInputDropDown v-model="item.value.type_group_image_id" placeholder="ประเภทรูปภาพ..."
+                            className="readonly" :options="resTypeGroupImage" class="w-full !mb-2" value="id"
+                            label="type_group_image_name"
+                            :error="errors[`attach_array[${index}].type_group_image_id`]" />
+                    </div>
+                    <div class="flex flex-col">
+                        <TmmTypographyLabelForm label="แนบรูปภาพ" />
+                        <a-upload v-model:file-list="item.value.image_detail" disabled accept="image/*"
+                            @preview="handlePreview" list-type="picture" multiple name="file"
+                            :show-upload-list="{ showRemoveIcon: false }">
+                            <a-button>
+                                <upload-outlined></upload-outlined>
+                                เลือกไฟล์รูปภาพ
+                            </a-button>
+                        </a-upload>
+                        <TmmTypographyTextValidator v-if="errors[`attach_array[${index}].image_detail`]"
+                            errors="กรุณาอัพโหลดไฟล์" />
+                    </div>
                 </div>
             </div>
 
+            <!-- <div class="flex justify-center py-2 pb-3 mb-3">
+                <TmmButton type="primary" severity="secondary" icon="mdi mdi-plus" label="เพิ่มชุดแนบรูปภาพ" @click="pushAttach({
+                    group_text_detail: undefined,
+                    type_group_image_id: undefined,
+                    image_detail: [],
+                })" className="" />
+            </div> -->
 
-            <div class="flex flex-col card p-3 mb-7">
-                <TmmTypographyLabelForm label="เอกสารที่เกี่ยวข้อง (ถ้ามี)" />
-                <!-- <TmmInputUploadFile v-model="image_detail_expenses" :multiple="true" :maxCount="10"
-                    :error="errors.image_detail_expenses" /> -->
-                <a-upload v-model:file-list="image_detail_expenses" accept="image/*" @preview="handlePreview"
-                    list-type="picture" multiple name="file" 
-                     disabled>
-                    <a-button>
-                        <upload-outlined></upload-outlined>
-                        เลือกไฟล์
-                    </a-button>
-                </a-upload>
-                <!-- accept="image/*" -->
-            </div>
+
+            <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
+                <!-- <img alt="example" style="width: 100%" :src="previewImage" /> -->
+                <a-image style="width: 100%" :src="previewImage" />
+            </a-modal>
+
 
             <!-- <div class="flex gap-5 justify-center max-w-[20rem] mx-auto">
-                <TmmButton type="primary" severity="secondary" className="w-full rounded-xl" label="ยกเลิก" />
+                <TmmButton type="primary" severity="secondary" className="w-full rounded-xl" label="ยกเลิก"
+                    @click="router.push('/')" />
                 <TmmButton type="primary" severity="primary" className="w-full rounded-xl" htmlType="submit"
                     label="บันทึก" />
             </div> -->
-
-            <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
-                <img alt="example" style="width: 100%" :src="previewImage" />
-            </a-modal>
         </Form>
 
 
@@ -171,24 +434,37 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { format } from "date-fns";
 import * as zod from "zod";
 import { onMounted } from 'vue';
+import { fi } from 'date-fns/locale';
 const isloadingAxi = useState('isloadingAxi')
-
+const route = useRoute();
+const router = useRouter();
 const alertToast = ref({});
 const errorAlert = ref(false);
 const dataError = ref({});
 
+
+const genWord = async () => {
+    try {
+        isloadingAxi.value = true;
+        const res = await dataApi.genWordPublic(route.params.id)
+        console.log(res)
+        window.location.href = res;
+        isloadingAxi.value = false
+    } catch (error) {
+        isloadingAxi.value = false
+        console.error(error)
+    }
+}
 const open = ref(false);
-const showModal = () => {
-    handleUpload()
+const showDrawer = () => {
+    console.log('open')
     open.value = true;
+};
+const onClose = () => {
+    open.value = false;
 };
 
 
-const temp = ref(Date.now())
-
-const plan_name = ref('โครงการสายตรวจเพื่อนประชาชน')
-const planer = ref('พบ.ต.ท ยิ่งยศ ใจดี')
-const approveper = ref('พล.ต.ล สมหวัง ใจแข็งแกร่ง')
 
 
 const requireValue = "กรุณาระบุข้อมูล";
@@ -198,32 +474,112 @@ const validationSchema = toTypedSchema(
             required_error: requireValue,
             invalid_type_error: requireValue,
         }),
-        station_id: zod.number({
-            required_error: requireValue,
-            invalid_type_error: requireValue,
-        }),
-        name: zod.string().nonempty(requireValue).default(""),
-        date_incident: zod.string().nonempty(requireValue).default(""),
-        time_incident: zod.string().nonempty(requireValue).default(""),
-        locale_text: zod.string().nonempty(requireValue).default(""),
-        sufferer_text: zod.string().nonempty(requireValue).default(""),
-        accuser_name: zod.string().nonempty(requireValue).default(""),
-        text_details: zod.string().nonempty(requireValue).default(""),
-        police_head_station_employee_id: zod.number({
-            required_error: requireValue,
-            invalid_type_error: requireValue,
-        }),
-        police_head_station_employee_fullname: zod.string().nonempty(requireValue).default(""),
-        police_head_station_employee_phone: zod.string().min(10, requireValue).max(10, requireValue).nonempty(requireValue).regex(/^\d+$/, 'Please enter a valid phone number with digits only').default(""),
-        note: zod.string().nonempty(requireValue).default(""),
+        incident_date: zod.string().nonempty(requireValue).default(""),
+        incident_time: zod.string().nonempty(requireValue).default(""),
+        type_report_code: zod.string().nonempty(requireValue).default(""),
+        incident_cause_text: zod.string().nonempty(requireValue).default(""),
+        incident_area_text: zod.string().nonempty(requireValue).default(""),
+        incident_structure_text: zod.string().nonempty(requireValue).default(""),
+
+        // type_vehicle_code: zod.string().nonempty(requireValue).default(""),
+        // type_vehicle_license_plate: zod.string().nonempty(requireValue).default(""),
+        incident_detail: zod.string().nonempty(requireValue).default(""),
         inquiry_employee_id: zod.number({
             required_error: requireValue,
             invalid_type_error: requireValue,
         }),
-
-        image_detail: zod.custom((value) => {
-            return Array.isArray(value) && value.length > 0 ? value : null;
+        inquiry_employee_fullname: zod.string().nonempty(requireValue).default(""),
+        // inquiry_employee_license_number: zod.string().nonempty(requireValue).default(""),
+        senior_police_control_employee_id: zod.number({
+            required_error: requireValue,
+            invalid_type_error: requireValue,
         }),
+        senior_police_control_employee_name: zod.string().nonempty(requireValue).default(""),
+        incident_process_text: zod.string().nonempty(requireValue).default(""),
+
+        sufferer_array: zod.array(
+            zod.object({
+                suffer_firstname: zod.string().nonempty(requireValue).default(""),
+                suffer_lastname: zod.string().nonempty(requireValue).default(""),
+                suffer_age: zod.number({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }),
+                suffer_nationality: zod.string().nonempty(requireValue).default(""),
+                suffer_passport_number: zod.string().nonempty(requireValue).default(""),
+                suffer_type_damage_code: zod.string().nonempty(requireValue).default(""),
+            })
+        ),
+        property_array: zod.array(
+            zod.object({
+                type_property_code: zod.string().nonempty(requireValue).default(""),
+                // type_property_brand: zod.string().nonempty(requireValue).default(""),
+                type_property_brand: zod.union([zod.string({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }).nonempty(requireValue), zod.undefined()]).optional(),
+                type_property_qty: zod.union([zod.number({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }), zod.undefined()]).optional(),
+                type_property_price: zod.number({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }),
+            })
+                .refine(data => {
+                    if (data.type_property_code == 'อาคาร/บ้านเรือน' || data.type_property_code == 'อื่นๆ') {
+                        return data.type_property_qty !== undefined && data.type_property_qty !== null && typeof data.type_property_qty === 'number';
+                    }
+                    return true;
+                }, {
+                    message: requireValue,
+                    path: ['type_property_qty'],
+                })
+                .refine(data => {
+                    if (data.type_property_code == 'รถยนต์' || data.type_property_code == 'รถจักรยานต์ยนต์') {
+                        return data.type_property_brand !== undefined && data.type_property_brand !== null && typeof data.type_property_brand === 'string';
+                    }
+                    return true;
+                }, {
+                    message: requireValue,
+                    path: ['type_property_brand'],
+                })
+        ),
+        villain_array: zod.array(
+            zod.object({
+                gangster_firstname: zod.string().nonempty(requireValue).default(""),
+                gangster_lastname: zod.string().nonempty(requireValue).default(""),
+                gangster_age: zod.number({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }),
+                gangster_nationality: zod.string().nonempty(requireValue).default(""),
+                gangster_offense_count: zod.number({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }),
+                gangster_weapon: zod.string().nonempty(requireValue).default(""),
+
+            })
+        ),
+        attach_array: zod.array(
+            zod.object({
+                group_text_detail: zod.string().nonempty(requireValue).default(""),
+                // type_group_image_id: zod.number({
+                //     required_error: requireValue,
+                //     invalid_type_error: requireValue,
+                // }),
+                image_detail: zod.custom((value) => {
+                    return Array.isArray(value) && value.length > 0 ? value : null;
+                }),
+
+            })
+        ),
+
+        // image_detail: zod.custom((value) => {
+        //     return Array.isArray(value) && value.length > 0 ? value : null;
+        // }),
         // image_detail_expenses: zod.custom((value) => {
         //     if (isEdit.value === true) {
         //         return value;
@@ -235,139 +591,82 @@ const validationSchema = toTypedSchema(
 );
 
 const { handleReset, handleSubmit, errors } = useForm({
+    initialValues: {
+        // sufferer_array: [
+        //     {
+        //         suffer_firstname: undefined,
+        //         suffer_lastname: undefined,
+        //         suffer_age: undefined,
+        //         suffer_nationality: undefined,
+        //         suffer_passport_number: undefined,
+        //         suffer_type_damage_code: undefined,
+
+        //     },
+        // ],
+        // property_array: [
+        //     {
+        //         type_property_code: undefined,
+        //         type_property_brand: undefined,
+        //         type_property_qty: undefined,
+        //         type_property_price: undefined,
+        //     },
+        // ],
+
+        // villain_array: [
+        //     {
+        //         gangster_firstname: undefined,
+        //         gangster_lastname: undefined,
+        //         gangster_age: undefined,
+        //         gangster_nationality: undefined,
+        //         gangster_offense_count: undefined,
+        //         gangster_weapon: undefined,
+        //     },
+        // ],
+        // attach_array: [
+        //     {
+        //         group_text_detail: undefined,
+        //         type_group_image_id: undefined,
+        //         image_detail: [],
+        //     },
+        // ],
+    },
     validationSchema
 })
 
-const route = useRoute();
-
-const loadReport = async () => {
-    try {
-        const res = await dataApi.getReportById(route.params.id);
-        police_province_id.value = res.data.data.police_province_id
-        station_id.value = res.data.data.station_id
-        name.value = res.data.data.name
-        date_incident.value = res.data.data.date_incident
-        time_incident.value = res.data.data.time_incident
-        locale_text.value = res.data.data.locale_text
-        sufferer_text.value = res.data.data.sufferer_text
-        accuser_name.value = res.data.data.accuser_name
-        property.value = res.data.data.property
-        text_details.value = res.data.data.text_details
-        police_head_station_employee_id.value = res.data.data.police_head_station_employee_id
-        police_head_station_employee_fullname.value = res.data.data.police_head_station_employee_fullname
-        police_head_station_employee_phone.value = res.data.data.police_head_station_employee_phone
-        note.value = res.data.data.note
-        inquiry_employee_id.value = res.data.data.inquiry_employee_id
-        inquiry_employee_fullname.value = res.data.data.inquiry_employee_fullname
-        inquiry_employee_phone.value = res.data.data.inquiry_employee_phone
-        expenses.value = res.data.data.expenses
-
-        if (res.data.data?.report_image.length > 0) {
-            image_detail.value = res.data.data?.report_image?.map((e, i) => ({
-                ...e,
-                name: e?.image_path,
-                uid: i + 1,
-                url: e?.image_path,
-            }));
-        }
-        if (res.data.data?.report_expenses_image.length > 0) {
-            image_detail_expenses.value = res.data.data?.report_expenses_image?.map((e, i) => ({
-                ...e,
-                name: e?.image_path,
-                uid: i + 1,
-                url: e?.image_path,
-            }));
-        }
-
-    } catch (error) {
-
-    }
-}
-onMounted(() => loadReport())
 
 const { value: police_province_id } = useField("police_province_id");
-const { value: station_id } = useField("station_id");
-const { value: station_name } = useField("station_name");
-const { value: name } = useField("name");
-const { value: date_incident } = useField("date_incident");
-const { value: time_incident } = useField("time_incident");
-const { value: locale_text } = useField("locale_text");
-const { value: sufferer_text } = useField("sufferer_text");
-const { value: accuser_name } = useField("accuser_name");
-const { value: property } = useField("property");
-const { value: text_details } = useField("text_details");
-const { value: police_head_station_employee_id } = useField("police_head_station_employee_id");
-const { value: police_head_station_employee_fullname } = useField("police_head_station_employee_fullname");
-const { value: police_head_station_employee_phone } = useField("police_head_station_employee_phone");
-const { value: note } = useField("note");
+const { value: incident_date } = useField("incident_date");
+const { value: incident_time } = useField("incident_time");
+const { value: type_report_code } = useField("type_report_code");
+const { value: incident_cause_text } = useField("incident_cause_text");
+const { value: incident_area_text } = useField("incident_area_text");
+const { value: incident_structure_text } = useField("incident_structure_text");
+
+// ยานพาหนะ
+const { value: type_vehicle_code } = useField("type_vehicle_code");
+const { value: type_vehicle_license_plate } = useField("type_vehicle_license_plate");
+
+const { value: incident_detail } = useField("incident_detail");
+// พนักงานสอบสวน
 const { value: inquiry_employee_id } = useField("inquiry_employee_id");
 const { value: inquiry_employee_fullname } = useField("inquiry_employee_fullname");
-const { value: inquiry_employee_phone } = useField("inquiry_employee_phone");
-const { value: expenses } = useField("expenses");
-const { value: image_detail } = useField("image_detail", null, {
-    initialValue: [] // กำหนดค่าเริ่มต้นที่นี่
-});
-const { value: image_detail_expenses } = useField("image_detail_expenses", null, {
-    initialValue: [] // กำหนดค่าเริ่มต้นที่นี่
-});
-
-const onSubmit = handleSubmit((values) => {
-    saveReport(values);
-});
-
-const saveReport = async () => {
-    const police_head_station_employee_phone_new = police_head_station_employee_phone.value.replace(/\D/g, "");
-    const inquiry_employee_phone_new = inquiry_employee_phone.value.replace(/\D/g, "");
+const { value: inquiry_employee_license_number } = useField("inquiry_employee_license_number");
+// ตำรวจผู้ใหญ่ควบคุม
+const { value: senior_police_control_employee_id } = useField("senior_police_control_employee_id");
+const { value: senior_police_control_employee_name } = useField("senior_police_control_employee_name");
+// การดำเนินการ ส.ทท
+const { value: incident_process_text } = useField("incident_process_text");
+//เปิดแชร์
+// const { value: is_share_public } = useField('is_share_public', null, {
+//     initialValue: false // กำหนดค่าเริ่มต้นที่นี่
+// })
+// const { value: image_detail } = useField("image_detail", null, {
+//     initialValue: [] // กำหนดค่าเริ่มต้นที่นี่
+// });
 
 
-    const formData = new FormData();
-    formData.append('police_province_id', police_province_id.value);
-    formData.append('station_id', station_id.value);
-    formData.append('name', name.value);
-    formData.append('date_incident', date_incident.value);
-    formData.append('time_incident', time_incident.value);
-    formData.append('locale_text', locale_text.value);
-    formData.append('sufferer_text', sufferer_text.value);
-    formData.append('accuser_name', accuser_name.value);
-    formData.append('property', property.value);
-    formData.append('text_details', text_details.value);
-    formData.append('police_head_station_employee_id', police_head_station_employee_id.value);
-    formData.append('police_head_station_employee_fullname', police_head_station_employee_fullname.value);
-    formData.append('police_head_station_employee_phone', police_head_station_employee_phone_new);
-    formData.append('note', note.value);
-    formData.append('inquiry_employee_id', inquiry_employee_id.value);
-    formData.append('inquiry_employee_fullname', inquiry_employee_fullname.value);
-    formData.append('inquiry_employee_phone', inquiry_employee_phone_new);
-    formData.append('expenses', expenses.value);
-    image_detail.value.forEach(file => {
-        formData.append("image_detail[]", file);
-    });
-    image_detail_expenses.value.forEach(file => {
-        formData.append("image_detail_expenses[]", file);
-    });
 
-
-    console.log([...formData])
-    console.log(formData)
-
-    try {
-        const res = await dataApi.saveReport(formData);
-        errorAlert.value = false;
-        alertToast.value = {
-            severity: "success",
-            summary: "ทำรายการสำเร็จ",
-            detail: res.data.message,
-        };
-        handleReset();
-    } catch (error) {
-        errorAlert.value = true;
-        dataError.value = error;
-        console.error(error)
-    }
-
-}
-
-
+// ############################ [[ preview file upload ]]
 const previewVisible = ref(false);
 const previewImage = ref('');
 const previewTitle = ref('');
@@ -377,6 +676,8 @@ const handleCancel = () => {
     previewTitle.value = '';
 };
 const handlePreview = async file => {
+    // console.log(file)
+    // alert(file)
     if (!file.url && !file.preview) {
         file.preview = await getBase64(file.originFileObj);
     }
@@ -384,15 +685,375 @@ const handlePreview = async file => {
     previewVisible.value = true;
     previewTitle.value = '';
 };
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
 
 
+// ####################################### [[ LOAD DATA SELECT OPTIONS ]] #######################################
+
+
+
+
+
+const { remove: removeSufferer, push: pushSufferer, fields: suffererFields } = useFieldArray("sufferer_array");
+const { remove: removeProperty, push: pushProperty, fields: propertyFields, } = useFieldArray("property_array");
+const { remove: removeVillain, push: pushVillain, fields: villainFields, } = useFieldArray("villain_array");
+const { remove: removeAttach, push: pushAttach, fields: attachFields, } = useFieldArray("attach_array");
+
+
+const confirmRemoveAttach = async (item, index) => {
+    showConfirmDialog({
+        title: 'ลบข้อมูล',
+        message:
+            `ยืนยันการลบชุดข้อมูลแนบรูปภาพลำดับที่ ${index + 1} ใช่หรือไม่`,
+    })
+        .then(() => {
+            removeAttach(index)
+        })
+        .catch(() => {
+        });
+}
+
+const confirmRemoveVilain = async (item, index) => {
+    showConfirmDialog({
+        title: 'ลบข้อมูล',
+        message:
+            `ยืนยันการลบคนร้ายลำดับที่ ${index + 1} ใช่หรือไม่`,
+    })
+        .then(() => {
+            removeVillain(index)
+        })
+        .catch(() => {
+        });
+}
+const confirmRemoveSuffer = async (item, index) => {
+    showConfirmDialog({
+        title: 'ลบข้อมูล',
+        message:
+            `ยืนยันการลบลำดับผู้เสียหายชอบลำดับที่ ${index + 1} ใช่หรือไม่`,
+    })
+        .then(() => {
+            removeSufferer(index)
+        })
+        .catch(() => {
+        });
+}
+const confirmRemoveProperty = async (item, index) => {
+    showConfirmDialog({
+        title: 'ลบข้อมูล',
+        message:
+            `ยืนยันการลบสินทรัพย์เสียหายลำดับที่ ${index + 1} ใช่หรือไม่`,
+    })
+        .then(() => {
+            removeProperty(index)
+        })
+        .catch(() => {
+        });
+}
+
+
+
+const onSubmit = handleSubmit((values) => {
+    saveReport(values);
+});
+
+const saveReport = async () => {
+    // const police_head_station_employee_phone_new = police_head_station_employee_phone.value.replace(/\D/g, "");
+    // const inquiry_employee_phone_new = inquiry_employee_phone.value.replace(/\D/g, "");
+    const formData = new FormData();
+    formData.append('police_province_id', police_province_id.value ? police_province_id.value : null);
+    formData.append('incident_date', incident_date.value);
+    formData.append('incident_time', incident_time.value);
+    formData.append('type_report_code', type_report_code.value);
+    formData.append('incident_cause_text', incident_cause_text.value);
+    formData.append('incident_area_text', incident_area_text.value);
+    formData.append('incident_structure_text', incident_structure_text.value);
+    // ยานพาหนะ
+    formData.append('type_vehicle_code', type_vehicle_code.value ? type_vehicle_code.value : "");
+    formData.append('type_vehicle_license_plate', type_vehicle_license_plate.value ? type_vehicle_license_plate.value : "");
+    // รายละเอียดเหตุ
+    formData.append('incident_detail', incident_detail.value);
+    // พนักงานสอบสวน
+    formData.append('inquiry_employee_id', inquiry_employee_id.value);
+    formData.append('inquiry_employee_fullname', inquiry_employee_fullname.value);
+    formData.append('inquiry_employee_license_number', inquiry_employee_license_number.value);
+    // ตำรวจผู้ใหญ่ควบคุม
+    formData.append('senior_police_control_employee_id', senior_police_control_employee_id.value);
+    formData.append('senior_police_control_employee_name', senior_police_control_employee_name.value);
+    // การดำเนินการ ส.ทท
+    formData.append('incident_process_text', incident_process_text.value);
+    // เปิดแชร์
+    // formData.append('is_share_public', is_share_public.value ? 1 : 0);
+
+    suffererFields.value.forEach((e, i) => {
+        formData.append('suffer_firstname[]', e.value.suffer_firstname ? e.value.suffer_firstname : null);
+        formData.append('suffer_lastname[]', e.value.suffer_lastname ? e.value.suffer_lastname : null);
+        formData.append('suffer_age[]', e.value.suffer_age ? e.value.suffer_age : null);
+        formData.append('suffer_nationality[]', e.value.suffer_nationality ? e.value.suffer_nationality : null);
+        formData.append('suffer_passport_number[]', e.value.suffer_passport_number ? e.value.suffer_passport_number : null);
+        formData.append('suffer_type_damage_code[]', e.value.suffer_type_damage_code ? e.value.suffer_type_damage_code : null);
+    });
+    propertyFields.value.forEach((e, i) => {
+        formData.append('type_property_code[]', e.value.type_property_code ? e.value.type_property_code : "");
+        formData.append('type_property_brand[]', e.value.type_property_brand ? e.value.type_property_brand : "");
+        formData.append('type_property_qty[]', e.value.type_property_qty ? e.value.type_property_qty : "");
+        formData.append('type_property_price[]', e.value.type_property_price ? e.value.type_property_price : "");
+    });
+    villainFields.value.forEach((e, i) => {
+        formData.append('gangster_firstname[]', e.value.gangster_firstname ? e.value.gangster_firstname : null);
+        formData.append('gangster_lastname[]', e.value.gangster_lastname ? e.value.gangster_lastname : null);
+        formData.append('gangster_age[]', e.value.gangster_age ? e.value.gangster_age : null);
+        formData.append('gangster_nationality[]', e.value.gangster_nationality ? e.value.gangster_nationality : null);
+        formData.append('gangster_offense_count[]', e.value.gangster_offense_count ? e.value.gangster_offense_count : 0);
+        formData.append('gangster_weapon[]', e.value.gangster_weapon ? e.value.gangster_weapon : null);
+    });
+
+    attachFields.value.forEach((e, i) => {
+        formData.append('group_text_detail[]', e.value.group_text_detail ? e.value.group_text_detail : "");
+        formData.append('type_group_image_id[]', e.value.type_group_image_id ? e.value.type_group_image_id : "");
+        // formData.append('image_detail[][]', e.value.image_detail ? e.value.image_detail : "");
+        e.value.image_detail.forEach(file => {
+            console.log(file)
+            formData.append('image_detail[][]', file.originFileObj);
+        });
+    });
+
+
+    // image_detail.value.forEach(file => {
+    //     formData.append("image_detail[]", file);
+    // });
+
+
+    console.log([...formData])
+    console.log(formData)
+
+    try {
+        const res = await dataApi.saveReportV2(formData);
+        errorAlert.value = false;
+        alertToast.value = {
+            severity: "success",
+            summary: "ทำรายการสำเร็จ",
+            detail: res.data.message,
+        };
+        handleReset();
+        // navigateTo('/news')
+    } catch (error) {
+        errorAlert.value = true;
+        dataError.value = error;
+        console.error(error)
+    }
+
+}
+
+const handleUpload = () => {
+    console.log('image_detail', image_detail.value);
+    const formData = new FormData();
+    image_detail.value.forEach(file => {
+        formData.append("image_detail[]", file);
+    });
+    formData.append("name", 'amm');
+    console.log([...formData])
+    console.log(formData)
+};
+
+const handleChange = async () => {
+    console.log('image_detail', image_detail.value)
+}
+const generateRandomUid = () => Math.random().toString(36).substring(2, 15);
+const loadReport = async () => {
+    try {
+        const res = await dataApi.getReportByIdV2(route.params.id)
+        police_province_id.value = res?.data?.data?.police_province_id;
+        incident_date.value = res?.data?.data?.incident_date;
+        incident_time.value = res?.data?.data?.incident_time;
+        type_report_code.value = res?.data?.data?.type_report_code;
+        incident_cause_text.value = res?.data?.data?.incident_cause_text;
+        incident_area_text.value = res?.data?.data?.incident_area_text;
+        incident_structure_text.value = res?.data?.data?.incident_structure_text;
+
+        // ยานพนะ
+        type_vehicle_code.value = res?.data?.data?.type_vehicle_code;
+        type_vehicle_license_plate.value = res?.data?.data?.type_vehicle_license_plate;
+        incident_detail.value = res?.data?.data?.incident_detail;
+        // พนักงานสอบสวน
+        inquiry_employee_id.value = res?.data?.data?.inquiry_employee_id;
+        inquiry_employee_fullname.value = res?.data?.data?.inquiry_employee_fullname;
+        inquiry_employee_license_number.value = res?.data?.data?.inquiry_employee_license_number;
+        // ตำรวจผู้ใหญ่ควบคุม
+        senior_police_control_employee_id.value = res?.data?.data?.senior_police_control_employee_id;
+        senior_police_control_employee_name.value = res?.data?.data?.senior_police_control_employee_name;
+        // การดำเนินการ ส.ทท
+        incident_process_text.value = res?.data?.data?.incident_process_text;
+
+        res.data.data?.report_suffer.forEach((e, i) => {
+            // if (suffererFields.value[i]) {
+            //     suffererFields.value[i].value.suffer_firstname = e.firstname || undefined;
+            //     suffererFields.value[i].value.suffer_lastname = e.lastname || undefined;
+            //     suffererFields.value[i].value.suffer_age = e.age ? parseInt(e.age) : undefined;
+            //     suffererFields.value[i].value.suffer_nationality = e.nationality || undefined;
+            //     suffererFields.value[i].value.suffer_passport_number = e.passport_number || undefined;
+            //     suffererFields.value[i].value.suffer_type_damage_code = e.type_damage_code || undefined;
+            // }
+            pushSufferer({
+                suffer_firstname: e.firstname || undefined,
+                suffer_lastname: e.lastname || undefined,
+                suffer_age: e.age ? parseInt(e.age) : undefined,
+                suffer_nationality: e.nationality || undefined,
+                suffer_passport_number: e.passport_number || undefined,
+                suffer_type_damage_code: e.type_damage_code || undefined
+            })
+        });
+
+        // Process property data
+        res.data.data?.type_property.forEach((e, i) => {
+            // if (propertyFields.value[i]) {
+            //     propertyFields.value[i].value.type_property_code = e.property_code || undefined;
+            //     propertyFields.value[i].value.type_property_brand = e.brand || undefined;
+            //     propertyFields.value[i].value.type_property_qty = e.qty ? parseInt(e.qty) : undefined;
+            //     propertyFields.value[i].value.type_property_price = e.price ? parseInt(e.price) : undefined;
+            // }
+            pushProperty({
+                type_property_code: e.property_code || undefined,
+                type_property_brand: e.brand || undefined,
+                type_property_qty: e.qty ? parseInt(e.qty) : undefined,
+                type_property_price: e.price ? parseInt(e.price) : undefined
+            })
+        });
+
+        // Process gangster data
+        res.data.data?.report_gangster.forEach((e, i) => {
+            pushVillain({
+                gangster_firstname: e.firstname || undefined,
+                gangster_lastname: e.lastname || undefined,
+                gangster_age: e.age ? parseInt(e.age) : undefined,
+                gangster_nationality: e.nationality || undefined,
+                gangster_offense_count: e.offense_count ? parseInt(e.offense_count) : undefined,
+                gangster_weapon: e.weapon || undefined
+            })
+        });
+
+        // const { remove: removeSufferer, push: pushSufferer, fields: suffererFields } = useFieldArray("sufferer_array");
+        // const { remove: removeProperty, push: pushProperty, fields: propertyFields, } = useFieldArray("property_array");
+
+        res.data.data?.report_group_image.forEach((e, i) => {
+            pushAttach({
+                group_text_detail: e.group_text_detail ? e.group_text_detail : undefined,
+                type_group_image_id: e.type_group_image_id ? e.type_group_image_id : undefined,
+                image_detail: e?.report_image.map((img, index) => ({
+                    uid: generateRandomUid(), // กำหนดค่า uid ถ้าไม่มีในข้อมูลเดิม
+                    name: img?.image_path,
+                    status: 'done',
+                    url: img?.image_path,
+                })),
+            })
+            // if (attachFields.value[i]) {
+            //     attachFields.value[i].value.group_text_detail = e.group_text_detail?e.group_text_detail : undefined;
+            //     attachFields.value[i].value.type_group_image_id = e.type_group_image_id?e.type_group_image_id: undefined;
+            //     attachFields.value[i].value.image_detail = e?.report_image.map((img, index) => ({
+            //         uid: generateRandomUid(), // กำหนดค่า uid ถ้าไม่มีในข้อมูลเดิม
+            //         name: img?.image_path,
+            //         status: 'done',
+            //         url: img?.image_path,
+            //     }));
+            // }
+            console.log('attachFields', attachFields.value)
+
+        });
+
+    } catch (error) {
+        console.error(error)
+    }
+}
 onMounted(() => {
+    loadReport()
+    // connectLineNotifycheck();
+    // checkIsError();
     loadPoliceProvince();
-    loadMyStation();
-    loadPoliceHeadStation();
+    loadTypeReport();
+    loadTypeDamage();
+    loadTypeProperty();
+    loadVehicle();
     loadInquiryEmp();
+    loadSeniorPolice();
+    loadPoliceHeadStation();
+    loadTypeGroupImage();
+    loadNational();
+
     //loadMyProfile();
 })
+const { $swal } = useNuxtApp()
+const warningModal = ref(false);
+const messageError = ref('');
+const checkIsError = async () => {
+
+    const isError = route.query.iserror;
+    const message = route.query.message;
+    if (isError == 'true') {
+        warningModal.value = true;
+        messageError.value = message
+
+
+        const newQuery = { ...route.query };
+        delete newQuery.iserror;
+        delete newQuery.message;
+        // Update the URL without reloading the page
+        router.replace({ query: newQuery });
+    }
+};
+const connectLineModal = ref(false);
+
+const connectLineNotifycheck = async () => {
+    try {
+        const res = await dataApi.getCheckConnectLineNotify();
+        console.log('คอลเช็ค conect line notify')
+        if (res.data.data.connect == false) { //ถ้ายังไม่เชื่อม
+            connectLineModal.value = true; //เปิด modal
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const connectLineNotify = async () => {
+    try {
+        const res = await dataApi.getCheckConnectLineNotify();
+        if (res.data.data.connect == false) { //ถ้ายังไม่เชื่อม
+            window.location.href = res.data.data.generateAuthorizeLink; //รีไดเร็ก
+        } else {
+            connectLineModal.value = false //ถ้าเชื่อมแล้ว ปิดmodal
+        }
+        return;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resNational = ref()
+const loadNational = async () => {
+    try {
+        const res = await dataApi.getNation()
+        resNational.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resTypeGroupImage = ref()
+const loadTypeGroupImage = async () => {
+    try {
+        const res = await dataApi.getTypeGroupImage()
+        resTypeGroupImage.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const resPoliceProvince = ref()
 const loadPoliceProvince = async () => {
     try {
@@ -403,17 +1064,69 @@ const loadPoliceProvince = async () => {
     }
 }
 
-const resMyStation = ref()
-const loadMyStation = async () => {
+const resTypeReport = ref()
+const loadTypeReport = async () => {
     try {
-        const res = await dataApi.getMyStation()
-        resMyStation.value = res.data.data;
-        station_id.value = res.data.data.id
-        station_name.value = res.data.data.station_name;
+        const res = await dataApi.getTypeReport()
+        resTypeReport.value = res.data.data;
+        resTypeReport.value = resTypeReport.value?.map((e, i) => ({
+            ...e,
+            value: e?.code,
+        }));
     } catch (error) {
         console.error(error);
     }
 }
+
+const resTypeDamage = ref()
+const loadTypeDamage = async () => {
+    try {
+        const res = await dataApi.getTypeDamage()
+        resTypeDamage.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+const resTypeProperty = ref()
+const loadTypeProperty = async () => {
+    try {
+        const res = await dataApi.getTypeProperty()
+        resTypeProperty.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resVehicle = ref()
+const loadVehicle = async () => {
+    try {
+        const res = await dataApi.getVehicle()
+        resVehicle.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resSeniorPolice = ref()
+const loadSeniorPolice = async () => {
+    try {
+        const res = await dataApi.getSeniorPolice()
+        resSeniorPolice.value = res.data.data;
+        resSeniorPolice.value = resSeniorPolice.value.map((e, i) => ({
+            ...e,
+            fullname: `${e.rank_name_th_abb} ${e.first_name} ${e.last_name}`,
+        }));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+
+
+
+
+
 
 const resPoliceHeadStation = ref();
 const loadPoliceHeadStation = async () => {
@@ -451,39 +1164,35 @@ const loadInquiryEmp = async () => {
         resInquiryEmp.value = res.data.data;
         resInquiryEmp.value = resInquiryEmp.value.map((e, i) => ({
             ...e,
-            fullname: `${e.rank_name_th_abb} ${e.first_name} ${e.last_name} ${e.position_name_th_abb}`,
+            fullname: `${e.rank_name_th_abb} ${e.first_name} ${e.last_name}`,
         }));
     } catch (error) {
         console.error(error);
     }
 }
 const inquiryEmpChange = async () => {
-    console.log('inquiry_employee_id', inquiry_employee_id.value)
     resInquiryEmp.value.forEach(item => {
         if (item.employee_id == inquiry_employee_id.value) {
-            console.log('item.id', item.employee_id)
-            // Assign fullname to name
-            inquiry_employee_fullname.value = item.fullname;
-            inquiry_employee_phone.value = item.employee_phone
+            inquiry_employee_license_number.value = item.license_number;
         }
     });
-    console.log('change')
+}
+const seniorPoliceChange = async (e) => {
+
+    resSeniorPolice.value.forEach(item => {
+        if (item.id == e) {
+
+            return senior_police_control_employee_name.value = item.fullname;
+        }
+    });
 }
 
-// const resMyProfile = ref();
-// const loadMyProfile = async () => {
-//     try {
-//         const res = await dataApi.getMyProfile();
-//         resMyProfile.value = res.data.data;
-//         resMyProfile.value = resMyProfile.value.map((e, i) => ({
-//             ...e,
-//             fullname: `${e.rank_name_th_abb} ${e.first_name} ${e.last_name} ${e.position_name_th_abb}`,
-//         }));
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
-
-
-
 </script>
+
+<style>
+.readonly {
+    pointer-events: none;
+    background-color: #ffffff;
+    /* Optional: to give it a readonly look */
+}
+</style>

@@ -2,7 +2,9 @@ import axios from "axios";
 import liff from "@line/liff";
 // const config = useRuntimeConfig();
 // axios.defaults.baseURL = "https://api_incident_report.tech-me-mars.com";
-axios.defaults.baseURL = "https://api_uat_incident_report.tech-me-mars.com"; //uat
+// axios.defaults.baseURL = "https://api.eop-thaipolice.com"; //
+axios.defaults.baseURL = "https://uat-api.eop-thaipolice.com"; //uat
+
 
 const getToken = function () {
   return localStorage.getItem("token");
@@ -34,7 +36,7 @@ export async function request(method, url, data, auth = true, type = 'json') {
     if (response) {
       isloadingAxi.value = false;
     }
-
+    isloadingAxi.value = false;
     return response;
   } catch (error) {
     isloadingAxi.value = false;
@@ -48,7 +50,7 @@ export async function request(method, url, data, auth = true, type = 'json') {
       // }
       // หาก401 (token หมดเวลา) ให้Logout line แล้วLogin=>init ใหม่
       console.log("Login รหัสผ่านผิด | Token ไม่ถูกต้อง | ไม่มี Token");
-      // localStorage.removeItem("token");
+      localStorage.removeItem("token");
       await navigateTo("/auth/login-line");
     } else if (error.response.status === 422) {
       console.log("ติด validate");

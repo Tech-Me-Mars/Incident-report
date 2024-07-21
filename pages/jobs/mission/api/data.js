@@ -7,3 +7,7 @@ export function getJobProcess(id) {
   return request("get", url, {}, true);
 }
 
+export function deleteJobProcess(id) {
+  const url = `/api/v1/jobs_process/${id}`;
+  return request("delete", url, {}, true);
+}

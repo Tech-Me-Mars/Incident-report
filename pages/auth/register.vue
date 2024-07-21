@@ -150,7 +150,9 @@ const saveUsers = async (values) => {
         formData.append('cid', cid.value);
         formData.append('phone', phone_no_string);
         formData.append('police_position_id', police_position_id.value);
-        formData.append('upload_avatar', upload_avatar.value[0].originFileObj);
+        if (upload_avatar.value) {
+            formData.append('upload_avatar', upload_avatar?.value[0].originFileObj);
+        }
 
         const res = await dataApi.register(formData)
         await localStorage.setItem("token", res.data.data.token);

@@ -1,11 +1,12 @@
 <template>
-  <HeaderMenu class="flex justify-start items-center gap-5">
+  <HeaderMainProfile />
+  <section class="p-3">
+    <HeaderMenu class="flex justify-start items-center gap-5">
     <!-- <NuxtLink :to="`/jobs/mission/view/${route.params.id}`"> -->
       <TmmButtonBackPage @click="redirectToJobPage()" />
     <!-- </NuxtLink> -->
     <p class="font-bold text-lg">ออกรายงาน PDF</p>
   </HeaderMenu>
-  <section class="p-3">
     <!-- แสดงเอกสาร PDF โดยใช้ Vue PDF Embed -->
     <!-- {{ resPdf }} -->
     <div ref="pdfSection">

@@ -1,8 +1,9 @@
 <template>
+    <HeaderMainProfile />
     <HeaderMenu class="flex justify-start items-center gap-5">
-        <NuxtLink to="/">
-            <TmmButtonBackPage />
-        </NuxtLink>
+        <!-- <NuxtLink to="/"> -->
+            <TmmButtonBackPage @click="router.back()" />
+        <!-- </NuxtLink> -->
         <p class="font-bold text-lg">การแจ้งเตือน</p>
     </HeaderMenu>
 
@@ -18,10 +19,10 @@
                 <div class="flex w-full items-start gap-3">
                     <TmmIcon icon="mdi mdi-bell text-2xl text-blue-500" rounded />
                     <div class="flex flex-col">
-                        <span class="text-md mb-3">{{ item?.title }}</span>
-                        <div class="flex justify-between items-center">
+                        <span v-html="item?.title" class="text-md mb-3"></span>
+                        <!-- <div class="flex justify-between items-center">
                             <small class="text-gray-300 text-xs text-gray-900 mb-2">เหลือเวลาอีก 13 ชั่วโมง</small>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </NuxtLink>
@@ -45,7 +46,7 @@ import { useField, useForm, Form, useFieldArray } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 
 import * as zod from "zod";
-
+const router = useRouter();
 const isloadingAxi = useState('isloadingAxi')
 const alertToast = ref({});
 const errorAlert = ref(false);

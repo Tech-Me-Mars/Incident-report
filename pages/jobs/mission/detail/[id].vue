@@ -1,39 +1,15 @@
 <template>
-    <!-- <PageMissionDetailHeader /> -->
-    <HeaderMenu class="flex">
-        <!-- <NuxtLink :to="`/jobs/mission/${route.params.id}`"> -->
-        <TmmButtonBackPage @click="router.go(-1)" />
-        <!-- </NuxtLink> -->
-    </HeaderMenu>
-    <!-- <section class="p-3"> -->
-    <!-- <PageMissionDetailProjectname :dataProp="resJobProcessNote" /> -->
+    <HeaderMainProfile />
     <section class="p-3">
+        <HeaderMenu class="flex">
+            <TmmButtonBackPage @click="router.go(-1)" />
+        </HeaderMenu>
         <van-back-top bottom="10vh" />
-        <!-- <TmmCard class="mb-2 ">
-            <template #header>
-                <div class="py-1">
-                    <TmmLabelSubtitle class="text-blue-500" :label="resJobProcessNote?.jobs?.name" />
-                </div>
-            </template>
-<template #body>
-                <div class="flex justify-between  mb-2">
-                    <p class="font-normal text-sm">ผู้วางแผนงาน</p>
-                    <span class="ml-auto font-light text-sm">{{ resJobProcessNote?.jobs?.plan_job_employee_fullname
-                        }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <p class="font-normal text-sm">ผู้อนุมัติแผนงาน</p>
-                    <span class="ml-auto font-light text-sm">{{ resJobProcessNote?.jobs?.approve_plan_employee_fullname
-                        }}</span>
-                </div>
-            </template>
-</TmmCard> -->
+
         <TmmCard class="!bg-blue-600 mb-2 card">
             <template #header>
                 <div class="py-1">
                     <div class="flex gap-3 items-center">
-                        <!-- <TmmIcon icon="mdi mdi-clock-time-four text-2xl text-white" /> -->
-                        <ClockCircleTwoTone style="font-size: 22px;" />
                         <TmmLabelSubtitle class="text-white" :label="resJobProcessNote?.jobs?.name || ''" />
                     </div>
                 </div>
@@ -52,12 +28,24 @@
             </template>
         </TmmCard>
 
-        <!-- <hr /> -->
         <TmmCard class="mb-2 bg-white card">
-            <template #header>
+            <!-- <template #header>
                 <TmmLabelSubtitle class="text-blue-500"
                     :label="`ลำดับงานที่ ${resJobProcessNote?.jobs_process?.sort_no || ''}`" />
-            </template>
+            </template> -->
+            <template #header>
+            <div class="flex justify-between">
+            <div>
+              <TmmTag class="!px-4 !py-1"
+                :style="{ color: resJobProcessNote?.status?.color, backgroundColor: resJobProcessNote?.status?.bg_color }">
+                {{resJobProcessNote?.status?.name}}
+              </TmmTag>
+            </div>
+            <div>
+              <TmmTag color="#f0c424" class="!px-4 !py-1">ลำดับงานที่ {{resJobProcessNote?.jobs_process?.sort_no}}</TmmTag>
+            </div>
+          </div>
+        </template>
             <template #body>
                 <div class="py-3">
                     <div class="flex justify-between">
@@ -67,18 +55,24 @@
                     </div>
                     <div class="flex justify-between">
                         <p class="font-normal text-sm mb-2">ระยะเวลาดำเนินงาน</p>
-                        <span class="ml-auto font-light text-sm">12 ม.ค. 67 - 20 ม.ค. 67</span>
+                        <span class="ml-auto font-light text-sm">{{ resJobProcessNote?.jobs_process?.date_start }} - {{ resJobProcessNote?.jobs_process?.date_end }}</span>
                     </div>
-                    <div>
-                        <p class="font-normal text-sm">รายละเอียดงาน</p>
-                        <!-- <span class="font-light text-sm">
-                            ไดรับมอบหมายงานให้ลงพื้นที่ตรวจสอบความปลอดภัยให้แก่ประชาชนในพื้นที่ลาดพร้าว 71
-                        </span> -->
-                    </div>
+                    <div class="flex flex-warp">
+            <span class="font-medium text-xs">
+              รายละเอียดงาน:
+              <span class="ml-auto font-light text-sm">{{ resJobProcessNote?.jobs_process?.text_jobs_process_detail }} </span>
+            </span>
+          </div>
                 </div>
                 <hr>
             </template>
             <template #footer>
+                <div class="flex flex-warp">
+            <span class="font-medium text-xs">
+              ผลการดำเนินการ:
+              <span class="ml-auto font-light text-sm">{{ resJobProcessNote?.jobs_process?.text_process }} </span>
+            </span>
+          </div>
                 <div class="py-1 flex items-center gap-2">
                     <span class="mdi mdi-comment-text-outline"></span>
                     <TmmLabelSmall :label="`${resNote?.length || 0} ความคิดเห็น`" />
@@ -90,7 +84,11 @@
         <div class="p-1">
             <div class="mb-3">
                 <span @click="showPopup" class="text underline font-light text-md mb-5">
-                    เพิ่มโน๊ต<van-icon name="chat-o" size="20" dot /></span>
+                    รายงานผลการปฏิบัติงานเพิ่มเติม
+                    <!-- <van-icon name="chat-o" size="20" dot /> -->
+                    <van-icon name="comment-o" />
+                </span>
+
             </div>
             <van-popup v-model:show="showPopupAddnote" position="bottom" :style="{ height: '40%' }">
                 <Form @submit="onSubmit" class="!bg-gray-100">
@@ -118,10 +116,9 @@
                 <template #renderItem="{ item }">
                     <a-list-item class="mb-2 !p-0">
                         <a-comment class=" card px-1 bg-gray-100 w-full">
-                            <template #author><a class="!text-gray-600 text-sm">{{ item.author
-                                    }}ผู้เขียน..</a></template>
+                            <template #author><a class="!text-gray-600 text-sm">{{ item.by_employee?.fullname }}</a></template>
                             <template #avatar>
-                                <TmmAvatar label="ลุงตู่" :src="item.image_path" />
+                                <TmmAvatar :label="item.by_employee?.fullname" :src="item.by_employee?.upload_avatar" />
                             </template>
                             <template #content>
                                 <p class="text-gray-500 text-xs">
@@ -137,7 +134,7 @@
                             </template>
                             <template #datetime>
                                 <span class="text-gray-600">{{ formatDateTime(item.created_at) }}
-                                    <span v-if="police_employee_id == item.by_employee_id" class="mdi mdi-dots-vertical"
+                                    <span v-if="resProfile?.police_employee_id == item.by_employee_id" class="mdi mdi-dots-vertical"
                                         @click="toggleDotEvent(item)"></span>
                                 </span>
                             </template>
@@ -216,7 +213,6 @@ const alertToast = ref({});
 const errorAlert = ref(false);
 const dataError = ref({});
 
-const police_employee_id = useState("police_employee_id");
 
 const resCatagoryNot = ref()
 const loadcatagoryNot = async () => {
@@ -227,10 +223,25 @@ const loadcatagoryNot = async () => {
         console.error(error);
     }
 }
-onMounted(() => {
+
+const resProfile = ref()
+const loadProfile = async () => {
+    try {
+        // alert('loadProfile')
+        const res = await dataApi.getMyProfile()
+        resProfile.value = res.data.data;
+        resProfile.value.fullname = `${res.data.data?.rank_name_th_abb} ${res.data.data?.first_name} ${res.data.data?.last_name}`
+    } catch (error) {
+        console.error(error);
+    }
+}
+onMounted(async () => {
+    await loadProfile();
     loadcatagoryNot()
     loadJobProcessNote();
-})
+});
+
+
 const resJobProcessNote = ref();
 const resNote = ref([]);
 const loadJobProcessNote = async () => {
@@ -302,7 +313,7 @@ const saveReport = async () => {
             detail: res.data.message,
         };
         showPopupAddnote.value = false
-        handleReset();
+        // handleReset();
         loadJobProcessNote();
     } catch (error) {
         showPopupAddnote.value = false

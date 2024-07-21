@@ -40,5 +40,17 @@ export function updateJobs(payload,id) {
   return request("put", url, payload, true);
 }
 
+export function getUrgency() {
+  const url = `/api/v1/jobs_level_of_urgency`;
+  return request("get", url, {}, true);
+}
+export function getPriority() {
+  const url = `/api/v1/jobs_level_priority`;
+  return request("get", url, {}, true);
+}
+export function getSecret() {
+  const url = `/api/v1/jobs_level_secret`;
+  return request("get", url, {}, true);
+}
 
 

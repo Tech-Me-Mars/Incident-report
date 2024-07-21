@@ -31,14 +31,16 @@ const locale = thTH; // เปลี่ยนเป็น thTH
 
 import { initFlowbite } from "flowbite";
 onMounted(async () => {
+  // await loadProfile();
   initFlowbite();
-  loadProfile();
+ 
   // await connectLine();
 });
 const loadProfile = async () => {
   try {
     const res = await dataApi.getProfile();
     const police_employee_id = useState("police_employee_id", () => res.data.data.police_employee_id);
+    // localStorage.setItem("police_employee_id", res.data.data.police_employee_id);
   } catch (error) {
     console.error(error);
   }
@@ -50,6 +52,14 @@ const loadProfile = async () => {
 
 </script>
 <style>
+  #app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 @import url("@/assets/css/base.css");
 /* html *{
   padding: 0;

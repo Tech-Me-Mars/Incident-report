@@ -1,3 +1,9 @@
+
+https://vue3-infinite-loading.netlify.app/guide/installation.html
+https://www.npmjs.com/package/v3-infinite-loading
+
+เพิ่มเรื่องแอด
+
 ทำข้อความ เพิ่มโน๊ตใหม่ 
 แก้ขาjobอัพเดท ไม่ต้องส่ง //ยังไม่แก้
 แก้notify ไม่ต้องแสดง boduy กับปุ่ม คลิกการ์ดไปเลย แก้แล้ว
@@ -11,10 +17,10 @@ notification detail สร้างหน้าเพิ่ม กดแล้�
 
 ## ตรงหน้าคอมเม้นได้ ให้เพิ่ม header สีฟ้าๆ
 ////// ที่ต้องแก้
-##  /jobs/mission/edit/25 แก้กดกลับไปหน้า  /jobs/mission/24 โดย เพิ่ม parameter ที่ลิ้ง เช่น mission/edit/24/25
-##/jobs/mission/edit/26  เพิ่มฟิลดำเนินงาน (text proccess)
-##/jobs/mission/edit/26 is_complete ==1 ถึงจะมีปุ่มส่งออก เปลี่ยนรูปด้วย
-## /jobs/mission/edit/26 ตอนบันทึก โชวmodal มั่วๆ
+##  /jobs/mission/process/25 แก้กดกลับไปหน้า  /jobs/mission/24 โดย เพิ่ม parameter ที่ลิ้ง เช่น mission/edit/24/25
+##/jobs/mission/process/26  เพิ่มฟิลดำเนินงาน (text proccess)
+##/jobs/mission/process/26 is_complete ==1 ถึงจะมีปุ่มส่งออก เปลี่ยนรูปด้วย
+## /jobs/mission/process/26 ตอนบันทึก โชวmodal มั่วๆ
 ## /jobs/mission/detail/27 ตอนลบโน๊ต เพิ่มคอนเฟิม
 
 ////// ที่ต้องแก้
@@ -34,7 +40,7 @@ can_approve
 <NuxtLink v-if="item.topic != 'show' && item.topic == 'jobs' && item.showMore" :to="`/jobs/mission/${item.value_id}`">
                             <TmmButton label="ดูรายละเอียด" type="primary" className="w-[8rem]" />
                         </NuxtLink>
-                        <NuxtLink v-if="item.topic != 'show' && item.topic == 'jobs_process' && item.showMore" :to="`/jobs/mission/edit/${item.value_id}`">
+                        <NuxtLink v-if="item.topic != 'show' && item.topic == 'jobs_process' && item.showMore" :to="`/jobs/mission/process/${item.value_id}`">
                             <TmmButton label="ดูรายละเอียด" type="primary" className="w-[8rem]" />
                         </NuxtLink>
 

@@ -2,10 +2,24 @@ import { format } from 'date-fns';
 
 // ************* customDateFormat ************
 // ใช้เวลาแสงผลวันที่ให้ถูกต้อง
-export const customDateFormat = (date) => {
+// export const customDateFormat = (date) => {
+//     if (date) {
+//       const thaiYear = new Date(date).getFullYear() + 543;
+//       return format(new Date(date), `dd/MM/${thaiYear}`);
+//     }
+//   };
+  const thaiMonths = [
+    'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  
+  export const customDateFormat = (date) => {
     if (date) {
-      const thaiYear = new Date(date).getFullYear() + 543;
-      return format(new Date(date), `dd/MM/${thaiYear}`);
+      const jsDate = new Date(date);
+      const thaiYear = jsDate.getFullYear() + 543;
+      const day = jsDate.getDate();
+      const month = thaiMonths[jsDate.getMonth()];
+      return `${day} ${month} ${thaiYear}`;
     }
   };
 
@@ -57,6 +71,13 @@ export const formatNumber = (value) => {
   value = parseInt(value);
   return value.toLocaleString({ style: "currency", currency: "THB" });
 };
+
+export const formatNumberDecimal = (value) => {
+  value = parseFloat(value); // แปลงค่าเป็น float เพื่อรองรับทศนิยม
+  return value.toLocaleString({ style: 'currency', currency: 'THB', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+
 
 export const limitLengthAndNumber = (event,length) => {
   if (!/^\d$|^Backspace$|^Delete$/.test(event.key)) {

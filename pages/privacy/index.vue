@@ -1,4 +1,6 @@
 <template>
+<HeaderMainProfile />
+<section class="p-3" >
     <HeaderMenu class="flex justify-between items-center gap-5 sticky top-0 z-50">
     <div class="flex items-center gap-3">
         <NuxtLink to="/profile">
@@ -7,7 +9,6 @@
         <p class="font-bold text-lg">นโยบายความเป็นส่วนตัว</p>
     </div>
 </HeaderMenu>
-<section class="p-3" >
 <p v-html="resPrivacy?.html">
 </p>
 </section>

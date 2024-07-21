@@ -7,6 +7,10 @@ export function getJobProcessNoteById(id) {
   return request("get", url, {}, true);
 }
 
+export function getMyProfile() {
+  const url = `/api/v1/profile/me`;
+  return request("get", url, {}, true);
+}
 
 // เพิ่มรูปในคอมเม้น
 export function addJobProcessImage(payload) {

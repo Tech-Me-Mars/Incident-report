@@ -1,11 +1,12 @@
 <template>
-    <HeaderMenu class="flex justify-start items-center gap-5">
+    <HeaderMainProfile />
+    <section class="p-3">
+        <HeaderMenu class="flex justify-start items-center gap-5">
         <NuxtLink to="/profile">
             <TmmButtonBackPage />
         </NuxtLink>
         <p class="font-bold text-lg">แก้ไขข้อมูล</p>
     </HeaderMenu>
-    <section class="p-3">
         <div class="card p-3">
             <Form @submit="onSubmit">
                 <div class="mb-5">
@@ -13,7 +14,7 @@
                         <div class="">
                             <a-upload v-model:file-list="upload_avatar_file" name="avatar" list-type="picture-card"
                                 class="avatar-uploader" :show-upload-list="false" :before-upload="beforeUpload"
-                                @change="handleChange">
+                                @change="handleChange" accept="image/*">
                                 <img v-if="upload_avatar_url" :src="upload_avatar_url" alt="avatar" />
                                 <div v-else>
                                     <loading-outlined v-if="loading"></loading-outlined>
