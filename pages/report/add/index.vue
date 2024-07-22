@@ -109,11 +109,12 @@
                             </LongdoMap>
                         </client-only> -->
                         <div class="relative flex flex-col items-center h-[30rem]">
-    <longdo-map class="h-full w-full" @load="getMap" />
-    <button class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white" @click="confirmLocation">
-        <i class="mdi mdi-map-marker-radius"></i>ยืนยันตำแหน่ง
-    </button>
-</div>
+                            <longdo-map class="h-full w-full" @load="getMap" />
+                            <button class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white"
+                                @click="confirmLocation">
+                                <i class="mdi mdi-map-marker-radius text-red-600"></i>ยืนยันตำแหน่ง
+                            </button>
+                        </div>
 
                         <div class="flex gap-2">
 
@@ -325,51 +326,71 @@
                         <TmmInputTextarea :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_detail"
                             placeholder="รายละเอียด/พฤติการณ์แห่งคดี..." :error="errors.incident_detail" />
                     </div>
-                    <div class="flex flex-col">
-                        <TmmTypographyLabelForm label="พนักงานสอบสวนผู้รับผิดชอบ" />
+                </div>
+            </div>
+            <div class="card p-3 mb-3">
+                <div class="">
 
-                        <TmmInputDropDown @change="inquiryEmpChange()" v-model="inquiry_employee_id"
-                            placeholder="พนักงานสอบสวนผู้รับผิดชอบ..." className="" :options="resInquiryEmp"
-                            class="w-full !mb-2" value="employee_id" label="fullname"
-                            :error="errors.inquiry_employee_id" />
-                        <TmmInput readonly v-model="inquiry_employee_license_number"
-                            placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ..."
-                            :error="errors.inquiry_employee_license_number" />
+                    <div class="flex flex-col ">
+                        <TmmTypographyLabelForm label="พนักงานสอบสวนผู้รับผิดชอบ" />
+                        <a-auto-complete :status="(errors?.inquiry_employee_fullname ? 'error' : '')"
+                            class="!w-full !mb-2" v-model:value="inquiry_employee_fullname"
+                            :options="resSuggestionEmployee" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
+                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange" />
+                        <a-auto-complete :status="(errors?.inquiry_employee_position ? 'error' : '')"
+                            class="!w-full !mb-2" v-model:value="inquiry_employee_position" :options="resPositions"
+                            placeholder="ตำแหน่ง"
+                            :field-names="{ label: 'position_name_th', value: 'position_name_th' }" />
+
+                        <TmmInput v-model="inquiry_employee_phone" class="w-full !mb-2" placeholder="เบอร์โทร..."
+                            :error="errors.inquiry_employee_phone" />
                     </div>
 
+                </div>
+            </div>
+
+            <div class="card p-3 mb-3">
+                <div class="">
                     <div class="">
                         <TmmTypographyLabelForm label="นายตำรวจเวรชั้นผู้ใหญ่ควบคุม" />
-                        <TmmInputDropDown @change="seniorPoliceChange" v-model="senior_police_control_employee_id"
-                            placeholder="นายตำรวจเวรชั้นผู้ใหญ่ควบคุม..." className="" :options="resSeniorPolice"
-                            class="w-full" value="id" label="fullname"
-                            :error="errors.senior_police_control_employee_id" />
+                        <a-auto-complete :status="(errors?.senior_police_control_employee_fullname ? 'error' : '')"
+                            class="!w-full !mb-2" v-model:value="senior_police_control_employee_fullname"
+                            :options="resSuggestionEmployee" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
+                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="seniorChange" />
+                        <a-auto-complete :status="(errors?.senior_police_control_employee_position ? 'error' : '')"
+                            class="!w-full !mb-2" v-model:value="senior_police_control_employee_position"
+                            :options="resPositions" placeholder="ตำแหน่ง"
+                            :field-names="{ label: 'position_name_th', value: 'position_name_th' }" />
+
+
+                        <TmmInput v-model="senior_police_control_employee_phone" class="w-full !mb-2"
+                            placeholder="เบอร์โทร..." :error="errors.senior_police_control_employee_phone" />
                     </div>
+                </div>
+            </div>
+            <div class="card p-3 mb-3">
+                <div class="">
                     <div class="">
                         <TmmTypographyLabelForm v-if="areaLabel" :label="`การดำเนินการของ ${areaLabel}`" />
                         <TmmTypographyLabelForm v-else="areaLabel" :label="`การดำเนินการของ`" />
                         <TmmInputTextarea :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_process_text"
                             placeholder="คำอธิบาย...." :error="errors.incident_process_text" />
                     </div>
-
-                    <!-- <div class="flex flex-col">
-                        <TmmTypographyLabelForm label="รูปภาพที่เกี่ยวข้อง" />
-                        <TmmInputUploadFile accept=".jpg,.jpeg,.png" :maxCount="99" :multiple="true"
-                            v-model="image_detail" :error="errors.image_detail" />
-                        <TmmTypographyTextValidator v-if="errors.image_detail" errors="กรุณาอัพโหลดไฟล์" />
-                    </div> -->
-
-
-
-                    <!-- <div class="flex gap-2">
-                        <TmmTypographyLabelForm label="เปิดให้แชร์สู่สารธารณะ" />
-                        <span>
-                            <TmmInputSwitch v-model="is_share_public" />
-                        </span>
-                    </div> -->
-
-
                 </div>
             </div>
+
+            <div class="card p-3 mb-3">
+                <div class="">
+                    <div class="">
+                        <TmmTypographyLabelForm :label="`เสนอรายงาน`" />
+                        <TmmInputDropDown v-model="police_head_station_employee_id" placeholder="เลือก ชื่อ-นามสกุล"
+                            className="" :options="resHeadeStation" class="w-full" value="employee_id" label="fullname"
+                            :error="errors.police_head_station_employee_id" />
+                    </div>
+                </div>
+            </div>
+
+
 
             <!-- <div class="card p-3 mb-3">
                 <div>
@@ -624,7 +645,7 @@ const LocationChange = async (val) => {
         const matchingLocation = resLocation.value.find(location => location.name == locationValue.value);
         if (matchingLocation) {
             resObjectPinLocation.value = matchingLocation;
-            addMarker({lat:resObjectPinLocation.value.lat,lon:resObjectPinLocation.value.lon})
+            addMarker({ lat: resObjectPinLocation.value.lat, lon: resObjectPinLocation.value.lon })
         }
 
     } catch (error) {
@@ -663,20 +684,27 @@ const validationSchema = toTypedSchema(
             required_error: requireValue,
             invalid_type_error: requireValue,
         }),
+
+        police_head_station_employee_id: zod.number({
+            required_error: requireValue,
+            invalid_type_error: requireValue,
+        }),
         // type_vehicle_code: zod.string().nonempty(requireValue).default(""),
         // type_vehicle_license_plate: zod.string().nonempty(requireValue).default(""),
         incident_detail: zod.string().nonempty(requireValue).default(""),
-        inquiry_employee_id: zod.number({
-            required_error: requireValue,
-            invalid_type_error: requireValue,
-        }),
+        // inquiry_employee_id: zod.number({
+        //     required_error: requireValue,
+        //     invalid_type_error: requireValue,
+        // }),
+        // inquery
         inquiry_employee_fullname: zod.string().nonempty(requireValue).default(""),
-        // inquiry_employee_license_number: zod.string().nonempty(requireValue).default(""),
-        senior_police_control_employee_id: zod.number({
-            required_error: requireValue,
-            invalid_type_error: requireValue,
-        }),
-        senior_police_control_employee_name: zod.string().nonempty(requireValue).default(""),
+        inquiry_employee_position: zod.string().nonempty(requireValue).default(""),
+        inquiry_employee_phone: zod.string().nonempty(requireValue).default(""),
+        // senior
+        senior_police_control_employee_fullname: zod.string().nonempty(requireValue).default(""),
+        senior_police_control_employee_position: zod.string().nonempty(requireValue).default(""),
+        senior_police_control_employee_phone: zod.string().nonempty(requireValue).default(""),
+
         incident_process_text: zod.string().nonempty(requireValue).default(""),
 
         sufferer_array: zod.array(
@@ -853,14 +881,21 @@ const { value: type_vehicle_license_plate } = useField("type_vehicle_license_pla
 
 const { value: incident_detail } = useField("incident_detail");
 // พนักงานสอบสวน
-const { value: inquiry_employee_id } = useField("inquiry_employee_id");
+// const { value: inquiry_employee_id } = useField("inquiry_employee_id");
 const { value: inquiry_employee_fullname } = useField("inquiry_employee_fullname");
-const { value: inquiry_employee_license_number } = useField("inquiry_employee_license_number");
+const { value: inquiry_employee_position } = useField("inquiry_employee_position");
+const { value: inquiry_employee_phone } = useField("inquiry_employee_phone");
+
 // ตำรวจผู้ใหญ่ควบคุม
-const { value: senior_police_control_employee_id } = useField("senior_police_control_employee_id");
-const { value: senior_police_control_employee_name } = useField("senior_police_control_employee_name");
+const { value: senior_police_control_employee_fullname } = useField("senior_police_control_employee_fullname");
+const { value: senior_police_control_employee_position } = useField("senior_police_control_employee_position");
+const { value: senior_police_control_employee_phone } = useField("senior_police_control_employee_phone");
+
 // การดำเนินการ ส.ทท
 const { value: incident_process_text } = useField("incident_process_text");
+
+const { value: police_head_station_employee_id } = useField("police_head_station_employee_id");
+
 //เปิดแชร์
 // const { value: is_share_public } = useField('is_share_public', null, {
 //     initialValue: false // กำหนดค่าเริ่มต้นที่นี่
@@ -991,14 +1026,18 @@ const saveReport = async () => {
         // รายละเอียดเหตุ
         formData.append('incident_detail', incident_detail.value);
         // พนักงานสอบสวน
-        formData.append('inquiry_employee_id', inquiry_employee_id.value);
+        // formData.append('inquiry_employee_id', inquiry_employee_id.value);
         formData.append('inquiry_employee_fullname', inquiry_employee_fullname.value);
-        formData.append('inquiry_employee_license_number', inquiry_employee_license_number.value);
+        formData.append('inquiry_employee_position', inquiry_employee_position.value);
+        formData.append('inquiry_employee_phone', inquiry_employee_phone.value);
         // ตำรวจผู้ใหญ่ควบคุม
-        formData.append('senior_police_control_employee_id', senior_police_control_employee_id.value);
-        formData.append('senior_police_control_employee_name', senior_police_control_employee_name.value);
+        formData.append('senior_police_control_employee_fullname', senior_police_control_employee_fullname.value);
+        formData.append('senior_police_control_employee_position', senior_police_control_employee_position.value);
+        formData.append('senior_police_control_employee_phone', senior_police_control_employee_phone.value);
         // การดำเนินการ ส.ทท
         formData.append('incident_process_text', incident_process_text.value);
+        formData.append('police_head_station_employee_id', police_head_station_employee_id.value);
+
         // เปิดแชร์
         // formData.append('is_share_public', is_share_public.value ? 1 : 0);
 
@@ -1084,7 +1123,7 @@ const handleUpload = () => {
 };
 
 const beforeUpload = file => {
-    resInquiryEmp.value.forEach((e, i) => {
+    resSuggestionEmployee.value.forEach((e, i) => {
         fields.value[i].value.image_detail.forEach((item, index) => {
             fields.value[i].value.image_detail[index].status = "done"
         })
@@ -1105,7 +1144,9 @@ onMounted(() => {
     loadPoliceHeadStation();
     loadTypeGroupImage();
     loadNational()
-
+    loadEmployeeSuggestion()
+    loadHeadeStation();
+    loadPositions();
     //loadMyProfile();
 })
 const { $swal } = useNuxtApp()
@@ -1155,6 +1196,72 @@ const connectLineNotify = async () => {
     }
 }
 
+const resPositions = ref()
+const loadPositions = async () => {
+    try {
+        const res = await dataApi.getPositions()
+        resPositions.value = res.data.data;
+    } catch (error) {
+        console.error(error)
+    }
+}
+const resHeadeStation = ref()
+const loadHeadeStation = async () => {
+    try {
+        const res = await dataApi.getPoliceHeadeStation()
+
+        resHeadeStation.value = res.data?.data?.map((e, i) => ({
+            ...e,
+            fullname: `${e.rank_name_th_abb} ${e.first_name} ${e.last_name}`,
+        }));
+    } catch (error) {
+        console.error(error)
+    }
+}
+const resSuggestionEmployee = ref();
+const loadEmployeeSuggestion = async () => {
+    try {
+        const res = await dataApi.getEmployeeSuggestion()
+        resSuggestionEmployee.value = res.data.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+const inquiryChange = async () => {
+    try {
+        for (const item of resSuggestionEmployee.value) {
+            if (inquiry_employee_fullname.value === item.fullname) {
+                inquiry_employee_position.value = item.position;
+                inquiry_employee_phone.value = item.phone;
+
+                break;  // Stop the loop once a match is found
+            } else {
+
+                inquiry_employee_position.value = undefined;
+                inquiry_employee_phone.value = undefined;
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const seniorChange = async () => {
+    try {
+        for (const item of resSuggestionEmployee.value) {
+            if (senior_police_control_employee_fullname.value === item.fullname) {
+                senior_police_control_employee_position.value = item.position;
+                senior_police_control_employee_phone.value = item.phone;
+                break;  // Stop the loop once a match is found
+            } else {
+                senior_police_control_employee_position.value = undefined;
+                senior_police_control_employee_phone.value = undefined;
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 const resNational = ref()
 const loadNational = async () => {
@@ -1278,20 +1385,7 @@ const loadPoliceHeadStation = async () => {
         console.error(error);
     }
 }
-const headerStationChange = async () => {
-    console.log('police_head_station_employee_id', police_head_station_employee_id.value)
-    resPoliceHeadStation.value.forEach(item => {
 
-        // Compare id with val
-        if (item.id == police_head_station_employee_id.value) {
-            console.log('item.id', item.id)
-            // Assign fullname to name
-            police_head_station_employee_fullname.value = item.fullname;
-            police_head_station_employee_phone.value = item.employee_phone
-        }
-    });
-    console.log('change')
-}
 const resInquiryEmp = ref();
 const loadInquiryEmp = async () => {
     try {
@@ -1306,23 +1400,15 @@ const loadInquiryEmp = async () => {
         console.error(error);
     }
 }
-const inquiryEmpChange = async () => {
-    resInquiryEmp.value.forEach(item => {
-        if (item.employee_id == inquiry_employee_id.value) {
-            inquiry_employee_fullname.value = item.fullname
-            inquiry_employee_license_number.value = item.license_number;
-        }
-    });
-}
-const seniorPoliceChange = async (e) => {
+// const inquiryEmpChange = async () => {
+//     resInquiryEmp.value.forEach(item => {
+//         // if (item.employee_id == inquiry_employee_id.value) {
+//         //     inquiry_employee_fullname.value = item.fullname
+//         //     inquiry_employee_license_number.value = item.license_number;
+//         // }
+//     });
+// }
 
-    resSeniorPolice.value.forEach(item => {
-        if (item.id == e) {
-
-            return senior_police_control_employee_name.value = item.fullname;
-        }
-    });
-}
 
 
 // const resMyProfile = ref();

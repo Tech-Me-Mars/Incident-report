@@ -89,3 +89,15 @@ export function getEmployeeSuggestion() {
   const url = `/api/v2/report/suggest/police_employee`;
   return request("get", url, {}, true);
 }
+
+
+export function getPoliceHeadeStation() {
+  const url = `/api/v2/std/report_police_head_station`;
+  return request("get", url, {}, true);
+}
+
+export function getPositions() {
+  const url = `/api/v1/public/std/police_position`;
+  return request("get", url, {}, false);
+}
+
