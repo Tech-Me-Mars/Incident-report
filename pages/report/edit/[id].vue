@@ -108,12 +108,11 @@
                     <div class="space-y-1 lg:col-span-2">
                         <TmmTypographyLabelForm label="ระบุตำแหน่งสถานที่เกิดเหตุ" />
 
-                        <div class="relative flex flex-col items-center h-[30rem]">
+                        <div class="relative flex flex-col items-center h-[30rem] ">
                             <longdo-map class="h-full w-full" @load="getMap" />
-                            <button class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white"
-                                >
+                            <!-- <button class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white">
                                 <i class="mdi mdi-map-marker-radius text-red-600"></i>ยืนยันตำแหน่ง
-                            </button>
+                            </button> -->
                         </div>
 
                         <div class="flex gap-2">
@@ -497,6 +496,9 @@ function addMarker(location_param) {
     script.onload = () => {
         console.log(map.value)
         if (map.value && location_param) {
+            // Disable map panning and zooming
+
+
             map.value.zoom(14)
             map.value.location({ lon: location_param.lon, lat: location_param.lat }, true);
             const longdo = window.longdo;
@@ -507,6 +509,11 @@ function addMarker(location_param) {
                 });
             map.value.Overlays.clear();
             map.value.Overlays.add(marker.value);
+
+            map.value.Ui.Mouse.enable(false);
+            map.value.Ui.Keyboard.enable(false);
+            map.value.Ui.Dragging.enable(false);
+            map.value.Ui.ScrollZoom.enable(true);
             // updateLatAntLon()
 
 
@@ -646,7 +653,7 @@ const validationSchema = toTypedSchema(
         ),
         attach_array: zod.array(
             zod.object({
-                group_text_detail: zod.string().nonempty(requireValue).default(""),
+                // group_text_detail: zod.string().nonempty(requireValue).default(""),
                 // type_group_image_id: zod.number({
                 //     required_error: requireValue,
                 //     invalid_type_error: requireValue,
@@ -967,11 +974,11 @@ const loadReport = async () => {
         incident_area_text.value = res?.data?.data?.incident_area_text;
         incident_structure_text.value = res?.data?.data?.incident_structure_text;
         //ที่ตั้งอุบัติเหตุ
-        incident_area_lat.value =await parseFloat(res?.data?.data?.incident_area_lat)
-        incident_area_long.value =await parseFloat(res?.data?.data?.incident_area_long)
+        incident_area_lat.value = await parseFloat(res?.data?.data?.incident_area_lat)
+        incident_area_long.value = await parseFloat(res?.data?.data?.incident_area_long)
 
         if (incident_area_lat.value && incident_area_long.value) {
-            addMarker({lat:incident_area_lat.value,lon:incident_area_long.value})
+            addMarker({ lat: incident_area_lat.value, lon: incident_area_long.value })
         }
         // เสนอ
         police_head_station_employee_id.value = res?.data?.data?.police_head_station_employee_id

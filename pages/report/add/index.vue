@@ -99,6 +99,7 @@
                             :not-found-content="null" :options="resLocation" class="w-full"
                             :field-names="{ label: 'name', value: 'name' }" @search="locationSearch"
                             @change="LocationChange"></a-select>
+
                         <!-- :status="errors.incident_area_lat ? 'error' : ''" -->
                         <!-- <client-only>
                             <LongdoMap v-if="showmap == true" class="h-[30rem] w-full" @load="initializeMap"
@@ -335,8 +336,8 @@
                         <TmmTypographyLabelForm label="พนักงานสอบสวนผู้รับผิดชอบ" />
                         <a-auto-complete :status="(errors?.inquiry_employee_fullname ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="inquiry_employee_fullname"
-                            :options="resSuggestionEmployee" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
-                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange" />
+                            :options="resSuggestionEmployeeInquiry" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
+                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange"  @search="inquirySearch" />
                         <a-auto-complete :status="(errors?.inquiry_employee_position ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="inquiry_employee_position" :options="resPositions"
                             placeholder="ตำแหน่ง"
@@ -355,8 +356,8 @@
                         <TmmTypographyLabelForm label="นายตำรวจเวรชั้นผู้ใหญ่ควบคุม" />
                         <a-auto-complete :status="(errors?.senior_police_control_employee_fullname ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_fullname"
-                            :options="resSuggestionEmployee" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
-                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="seniorChange" />
+                            :options="resSuggestionEmployeeSenior" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
+                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="seniorChange" @search="seniorSearch" />
                         <a-auto-complete :status="(errors?.senior_police_control_employee_position ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_position"
                             :options="resPositions" placeholder="ตำแหน่ง"
@@ -1218,11 +1219,17 @@ const loadHeadeStation = async () => {
         console.error(error)
     }
 }
+
+
 const resSuggestionEmployee = ref();
+const resSuggestionEmployeeInquiry = ref();
+const resSuggestionEmployeeSenior = ref();
 const loadEmployeeSuggestion = async () => {
     try {
         const res = await dataApi.getEmployeeSuggestion()
         resSuggestionEmployee.value = res.data.data;
+        resSuggestionEmployeeInquiry.value= res.data.data;
+        resSuggestionEmployeeSenior.value= res.data.data;
     } catch (error) {
         console.error(error);
     }
@@ -1246,6 +1253,21 @@ const inquiryChange = async () => {
     }
 }
 
+const inquirySearch = (val) => {
+    try {
+        if (val.length > 1) {
+            resSuggestionEmployeeInquiry.value = resSuggestionEmployee.value.filter(employee =>
+                employee.fullname.toLowerCase().includes(val.toLowerCase())
+            );
+            
+        } else {
+            resSuggestionEmployeeInquiry.value = resSuggestionEmployee.value
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const seniorChange = async () => {
     try {
         for (const item of resSuggestionEmployee.value) {
@@ -1257,6 +1279,20 @@ const seniorChange = async () => {
                 senior_police_control_employee_position.value = undefined;
                 senior_police_control_employee_phone.value = undefined;
             }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const seniorSearch = (val) => {
+    try {
+        if (val.length > 1) {
+            resSuggestionEmployeeSenior.value = resSuggestionEmployee.value.filter(employee =>
+                employee.fullname.toLowerCase().includes(val.toLowerCase())
+            );
+        } else {
+            resSuggestionEmployeeSenior.value = resSuggestionEmployee.value
         }
     } catch (error) {
         console.error(error);

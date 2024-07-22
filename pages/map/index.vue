@@ -1,58 +1,59 @@
 <template>
-    <HeaderMainProfile />
-    <section class="p-3">
-        <Form @submit="onSubmit" class="space-y-1 mb-3">
+  <HeaderMainProfile />
+  <section class="p-3">
+    <Form @submit="onSubmit" class="space-y-1 mb-3">
 
-            <div class="grid grid-cols-12 gap-1">
-                <div class="col-span-4">
-                    <TmmInputDropDown v-model="type_report_code" placeholder="ประเภทรายงาน" className=""
-                        :options="resReportType" class="w-full" value="code" label="detail"
-                        :error="errors.type_report_code" />
-                </div>
-                <div class="col-span-4">
-                    <TmmInputCalendar v-model="incident_date_start" class="w-full" placeholder="ตั้งแต่วันที่"
-                        :error="errors.incident_date_start" />
-                </div>
-                <div class="col-span-4">
-                    <TmmInputCalendar v-model="incident_date_end" class="w-full" placeholder="ถึงวันที่"
-                        :error="errors.incident_date_end" />
-                </div>
-            </div>
-            <div class="grid grid-cols-12 gap-1">
-                <div class="col-span-7">
-                    <a-select v-model:value="locationValue" show-search placeholder="ค้นหาพื้นที่"
-                        :default-active-first-option="false" :show-arrow="false" :filter-option="false"
-                        :not-found-content="null" :options="resLocation" class="w-full"
-                        :field-names="{ label: 'name', value: 'name' }" @search="locationSearch"
-                         :status="errors.incident_area_lat ? 'error' : ''"></a-select>
-                </div>
-                <div class="col-span-5">
-                    <TmmInputDropDown v-model="radius_km" placeholder="รัศมี" className="" :options="resRadius"
-                        value="value" label="label" class="w-full" />
-                </div>
+      <div class="grid grid-cols-12 gap-1">
+        <div class="col-span-4">
+          <TmmInputDropDown v-model="type_report_code" placeholder="ประเภทรายงาน" className="" :options="resReportType"
+            class="w-full" value="code" label="detail" :error="errors.type_report_code" />
+        </div>
+        <div class="col-span-4">
+          <TmmInputCalendar v-model="incident_date_start" class="w-full" placeholder="ตั้งแต่วันที่"
+            :error="errors.incident_date_start" />
+        </div>
+        <div class="col-span-4">
+          <TmmInputCalendar v-model="incident_date_end" class="w-full" placeholder="ถึงวันที่"
+            :error="errors.incident_date_end" />
+        </div>
+      </div>
+      <div class="grid grid-cols-12 gap-1">
+        <div class="col-span-7">
+          <a-select v-model:value="locationValue" show-search placeholder="ค้นหาพื้นที่"
+            :default-active-first-option="false" :show-arrow="false" :filter-option="false" :not-found-content="null"
+            :options="resLocation" class="w-full" :field-names="{ label: 'name', value: 'name' }"
+            @search="locationSearch" :status="errors.incident_area_lat ? 'error' : ''"></a-select>
+        </div>
+        <div class="col-span-5">
+          <TmmInputDropDown v-model="radius_km" placeholder="รัศมี" className="" :options="resRadius" value="value"
+            label="label" class="w-full" />
+        </div>
 
-            </div>
-            <div class="flex justify-between">
-                <TmmButton v-if="!showIconLoadAll" @click="loadFindMapAll()" label="แสดงที่หมด"
-                    icon="mdi mdi-checkbox-blank-outline" type="primary" severity="warning" />
-                <TmmButton v-else @click="loadFindMapAll()" label="แสดงที่หมด" icon="mdi mdi-checkbox-outline"
-                    type="primary" severity="warning" />
-                <TmmButton label="ค้นหา" icon="mdi mdi-map" type="primary" htmlType="submit" severity="info" />
-            </div>
-        </Form>
-        <!-- <client-only>
+      </div>
+      <div class="flex justify-between">
+        <TmmButton v-if="!showIconLoadAll" @click="loadFindMapAll()" label="แสดงที่หมด"
+          icon="mdi mdi-checkbox-blank-outline" type="primary" severity="warning" />
+        <TmmButton v-else @click="loadFindMapAll()" label="แสดงที่หมด" icon="mdi mdi-checkbox-outline" type="primary"
+          severity="warning" />
+        <TmmButton label="ค้นหา" icon="mdi mdi-map" type="primary" htmlType="submit" severity="info" />
+      </div>
+    </Form>
+    <!-- <client-only>
             <LongdoMap v-if="showMap" class="h-[30rem] w-full" @load="initializeMap">
             </LongdoMap>
             <LongdoMap v-else class="h-[30rem] w-full">
             </LongdoMap>
         </client-only> -->
-        <div class="flex justify-center w-[95%] h-[60vh] mx-auto">
-            <longdo-map class="h-full w-full" @load="getMap" v-if="showMap == true" />
-            <longdo-map class="h-full w-full" v-else />
-        </div>
-    </section>
+    <div class="flex justify-center w-[95%] h-[60vh] mx-auto">
+      <longdo-map class="h-full w-full" @load="getMap" v-if="showMap == true" />
+      <longdo-map class="h-full w-full" v-else />
+    </div>
+    <div class="text-end pr-6">
+      <span class="text-xs text-blue-400">จำนวนข้องมูลที่แสดง <span v-if="resMap?.items?.length>0">{{ resMap?.items?.length }}</span><span v-else>0</span>  รายการ</span>
+    </div>
+  </section>
 
-    <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
+  <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
 </template>
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
@@ -153,14 +154,14 @@ const search = async () => {
       showMap.value = true
 
       setTimeout(() => {
-      initialCluster();
-    }, 300);
+        initialCluster();
+      }, 300);
     } else {
       // หากไม่มีข้อมูล แสดงmapเปล่า ๆ
       showIconLoadAll.value = false
       showMap.value = false
     }
-    
+
   } catch (error) {
     errorAlert.value = true;
     dataError.value = error;
@@ -252,11 +253,36 @@ function initialCluster() {
         )
       );
     });
-    
+
 
     markercluster.render();
   };
 }
+
+function setCustomGeolocationIcon() {
+    const geolocationButton = document.querySelector('ldmap_button ldmap_geolocation');
+    geolocationButton.addEventListener('click', () => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const { latitude, longitude } = position.coords;
+            const longdo = window.longdo;
+            const geolocationMarker = new longdo.Marker(
+                { lat: latitude, lon: longitude },
+                {
+                    icon: {
+                        url: 'https://w7.pngwing.com/pngs/457/630/png-transparent-location-logo-location-computer-icons-symbol-location-miscellaneous-angle-heart.png',
+                        offset: { x: 12, y: 45 }, // Adjust offset if needed
+                    },
+                    title: 'Your Location',
+                }
+            );
+            map.value.Overlays.add(geolocationMarker);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setCustomGeolocationIcon();
+});
 
 onMounted(async () => {
   await loadFindMapAll();

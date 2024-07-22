@@ -31,10 +31,14 @@
                     <!-- <TmmInputDropDown v-model="jobs_level_of_urgency_code" placeholder="" className=""
                         :options="resgetUrgency" class="w-full" value="code" label="name"
                         :error="errors.jobs_level_of_urgency_code" >dd</TmmInputDropDown> -->
-                    <a-select allowClear v-model:value="jobs_level_of_urgency_code"
-                        :status="(errors?.jobs_level_of_urgency_code ? 'error' : '')" class="w-full">
+                    <a-select @change="urgencyChange" allowClear v-model:value="jobs_level_of_urgency_code"
+                        :status="errors?.jobs_level_of_urgency_code ? 'error' : ''" class="custom-select w-full"
+                        :style="{ backgroundColor: urgencyBgColor, color: urgencyTextColor }">
                         <a-select-option v-for="(item, index) in resgetUrgency" :key="index"
-                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code">{{ item?.name }}</a-select-option>
+                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code"
+                            :data-bg-color="item?.bg_color" :data-color="item?.color">
+                            {{ item?.name }}
+                        </a-select-option>
                     </a-select>
 
                 </div>
@@ -43,10 +47,12 @@
                     <!-- <TmmInputDropDown v-model="jobs_level_priority_code" placeholder="" className=""
                         :options="resPriority" class="w-full" value="code" label="name"
                         :error="errors.jobs_level_priority_code" /> -->
-                    <a-select allowClear v-model:value="jobs_level_priority_code"
-                        :status="(errors?.jobs_level_priority_code ? 'error' : '')" class="w-full">
+                    <a-select @change="priorityChange" allowClear v-model:value="jobs_level_priority_code"
+                        :status="(errors?.jobs_level_priority_code ? 'error' : '')" class="custom-select w-full"
+                        :style="{ backgroundColor: priorityBgColor, color: priorityTextColor }">
                         <a-select-option v-for="(item, index) in resPriority" :key="index"
-                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code">{{ item?.name }}</a-select-option>
+                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code">{{
+                                item?.name }}</a-select-option>
                     </a-select>
                 </div>
                 <div class="mb-2">
@@ -54,10 +60,12 @@
                     <!-- <TmmInputDropDown v-model="jobs_level_secret_code" placeholder="" className=""
                         :options="resgetSecret" class="w-full" value="code" label="name"
                         :error="errors.jobs_level_secret_code" /> -->
-                        <a-select allowClear v-model:value="jobs_level_secret_code"
-                        :status="(errors?.jobs_level_secret_code ? 'error' : '')" class="w-full">
+                    <a-select @change="secretChange" allowClear v-model:value="jobs_level_secret_code"
+                        :status="(errors?.jobs_level_secret_code ? 'error' : '')" class="custom-select w-full"
+                        :style="{ backgroundColor: secretBgColor, color: secretTextColor }" >
                         <a-select-option v-for="(item, index) in resgetSecret" :key="index"
-                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code">{{ item?.name }}</a-select-option>
+                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code">{{
+                                item?.name }}</a-select-option>
                     </a-select>
                 </div>
             </div>
@@ -480,4 +488,69 @@ const savejob = async (values) => {
         console.error(error);
     }
 };
+
+const urgencyBgColor = ref('');
+const urgencyTextColor = ref('');
+const urgencyChange = (value) => {
+    try {
+        const selectedItem = resgetUrgency.value.find(item => item.code == value);
+        if (selectedItem) {
+            urgencyBgColor.value = selectedItem.bg_color;
+            urgencyTextColor.value = selectedItem.color;
+        } else {
+            urgencyBgColor.value = null;
+            urgencyTextColor.value = null;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+const priorityBgColor = ref('');
+const priorityTextColor = ref('');
+const priorityChange = (value) => {
+    try {
+        const selectedItem = resPriority.value.find(item => item.code == value);
+        if (selectedItem) {
+            priorityBgColor.value = selectedItem.bg_color;
+            priorityTextColor.value = selectedItem.color;
+        } else {
+            priorityBgColor.value = null;
+            priorityTextColor.value = null;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+
+const secretBgColor = ref('');
+const secretTextColor = ref('');
+const secretChange = (value) => {
+    try {
+        const selectedItem = resgetSecret.value.find(item => item.code == value);
+        if (selectedItem) {
+            secretBgColor.value = selectedItem.bg_color;
+            secretTextColor.value = selectedItem.color;
+        } else {
+            secretBgColor.value = null;
+            secretTextColor.value = null;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+};
+
 </script>
+
+<style>
+.custom-select .ant-select-selector {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* .custom-select .ant-select-selection-item {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+} */
+</style>
