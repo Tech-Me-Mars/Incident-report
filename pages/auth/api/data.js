@@ -5,6 +5,12 @@ export function register(payload) {
   return request("post", url, payload, false);
 }
 
+
+export function optRequest(payload) {
+  const url = `/api/v2/otp/request`;
+  return request("post", url, payload, false);
+}
+
 export function getPoliceRank() {
   const url = `/api/v1/public/std/police_rank`;
   return request("get", url, {}, false);

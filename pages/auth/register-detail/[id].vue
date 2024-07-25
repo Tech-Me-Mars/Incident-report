@@ -1,27 +1,31 @@
 <template>
     <HeaderMenu class="flex justify-start items-center gap-5 sticky top-0 z-50">
-        <p class="font-bold text-lg pl-3">ลงทะเบียน</p>
+        <p class="font-bold text-lg">ลงทะเบียน</p>
     </HeaderMenu>
     <section class="p-3">
-        <img src="@/public/image/icon/label-police.png" class="w-full max-w-[40rem] max-h-[5rem] mb-2" ></img>
         <div class="card p-3">
             <Form @submit="onSubmit">
 
                 <div class="mb-5">
 
-                    <!-- <div class="flex justify-center">
+                    <div class="flex justify-center">
                         <TmmAvatarUpload class=" mx-auto" v-model="upload_avatar" />
-                    </div> -->
+                    </div>
                     <!-- <span v-if="upload_avatar">{{ JSON.stringify(upload_avatar[0]) }}</span> -->
                     <div class="mb-2">
-                        <TmmTypographyLabelForm label="เลขบัตรประชาชน" />
+                        <TmmTypographyLabelForm label="รหัสบัตรประชาชน" />
                         <TmmInput v-model="cid" class="" :error="errors.cid" />
                     </div>
                     <div class="mb-2">
                         <TmmTypographyLabelForm label="เบอร์โทร" />
                         <TmmInputPhon v-model="phone" :error="errors.phone" />
                     </div>
-
+                    <div class="mb-2">
+                        <TmmTypographyLabelForm label="ตำแหน่ง" />
+                        <TmmInputDropDown v-model="police_position_id" placeholder="" className=""
+                            :options="resPolicePosition" class="w-full" value="id" label="position_name_th"
+                            :error="errors.police_position_id" />
+                    </div>
 
                 </div>
 
@@ -40,8 +44,9 @@
 
 <script setup>
 definePageMeta({
-    // middleware: ["loginline"],
+    middleware: ["loginline"],
     layout: 'registerLayout'
+    // or middleware: 'auth'
 })
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/data.js'
@@ -56,7 +61,7 @@ const errorAlert = ref(false);
 const dataError = ref({})
 
 onMounted(() => {
-    // loadPolicePosition();
+    loadPolicePosition();
 })
 
 const resPolicePosition = ref();
@@ -84,6 +89,10 @@ const validationSchema = toTypedSchema(
     zod.object({
         cid: zod.string().max(13, requireValue).min(13, requireValue).nonempty(requireValue).default(""),
         phone: zod.string().min(14, requireValue).max(14, requireValue).nonempty().default(""),
+        police_position_id: zod.number({
+            required_error: requireValue,
+            invalid_type_error: requireValue,
+        }),
 
         // upload_avatar: zod.custom((value) => {
         //     if (value != null && (Array.isArray(value) ? value.length > 0 : true)) {
@@ -121,7 +130,8 @@ const { handleReset, handleSubmit, errors } = useForm({
 
 const { value: cid } = useField("cid");
 const { value: phone } = useField("phone");
-// const { value: upload_avatar } = useField("upload_avatar");
+const { value: police_position_id } = useField("police_position_id");
+const { value: upload_avatar } = useField("upload_avatar");
 
 
 // ********** [[ ยศตำแหน่ง]] *********************
@@ -133,21 +143,18 @@ const onSubmit = handleSubmit(async (values) => {
 const saveUsers = async (values) => {
     try {
 
-        // const phone_no_string = phone.value.replace(/\D/g, ""); //แปลงให้เหลือแต่ตัวเลข
-        // // console.log('changeImg' + upload_avatar.value.file)
-        // const formData = new FormData();
-        // formData.append('line_get_id_token', localStorage.getItem("tokenline"));
-        // formData.append('cid', cid.value);
-        // formData.append('phone', phone_no_string);
-
-        // if (upload_avatar.value) {
-        //     formData.append('upload_avatar', upload_avatar?.value[0].originFileObj);
-        // }
-        const payload = {
-                cid:cid.value,
-    phone:phone.value
+        const phone_no_string = phone.value.replace(/\D/g, ""); //แปลงให้เหลือแต่ตัวเลข
+        // console.log('changeImg' + upload_avatar.value.file)
+        const formData = new FormData();
+        formData.append('line_get_id_token', localStorage.getItem("tokenline"));
+        formData.append('cid', cid.value);
+        formData.append('phone', phone_no_string);
+        formData.append('police_position_id', police_position_id.value);
+        if (upload_avatar.value) {
+            formData.append('upload_avatar', upload_avatar?.value[0].originFileObj);
         }
-        const res = await dataApi.optRequest(payload)
+
+        const res = await dataApi.register(formData)
         await localStorage.setItem("token", res.data.data.token);
         errorAlert.value = false;
         alertToast.value = {
@@ -155,9 +162,8 @@ const saveUsers = async (values) => {
             summary: "ทำรายการสำเร็จ",
             detail: res.data.message,
         };
-        // const 
-        navigateTo(`/auth/otp?cid=${cid.value}&phon=${phone.value}&refcode=${res.data.data?.ref_code}&expire=${res.data.data?.expires_at}`)
         handleReset();
+        navigateTo('/')
     } catch (error) {
         errorAlert.value = true;
         dataError.value = error;
