@@ -3,7 +3,7 @@
         <p class="font-bold text-lg pl-3">ลงทะเบียน</p>
     </HeaderMenu>
     <section class="p-3">
-        <img src="@/public/image/icon/label-police.png" class="w-full max-w-[40rem] max-h-[5rem] mb-2" ></img>
+        <img src="@/public/image/icon/label-police.png" class="w-full max-w-[40rem] max-h-[5rem] mb-2"></img>
         <div class="card p-3">
             <Form @submit="onSubmit">
 
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="flex gap-5 justify-center max-w-[20rem] mx-auto">
-                    <TmmButton type="primary" severity="secondary" className="w-full h-[2.5rem]" label="ยกเลิก" />
+                    <!-- <TmmButton type="primary" severity="secondary" className="w-full h-[2.5rem]" label="ยกเลิก" /> -->
                     <TmmButton type="primary" severity="primary" className="w-full h-[2.5rem]" htmlType="submit"
                         label="บันทึก" />
                 </div>
@@ -40,7 +40,7 @@
 
 <script setup>
 definePageMeta({
-    // middleware: ["loginline"],
+    middleware: ["loginline"],
     layout: 'registerLayout'
 })
 //! /////// [Api Variable] /////////
@@ -133,7 +133,7 @@ const onSubmit = handleSubmit(async (values) => {
 const saveUsers = async (values) => {
     try {
 
-        // const phone_no_string = phone.value.replace(/\D/g, ""); //แปลงให้เหลือแต่ตัวเลข
+        const phone_no_string = phone.value.replace(/\D/g, ""); //แปลงให้เหลือแต่ตัวเลข
         // // console.log('changeImg' + upload_avatar.value.file)
         // const formData = new FormData();
         // formData.append('line_get_id_token', localStorage.getItem("tokenline"));
@@ -144,20 +144,26 @@ const saveUsers = async (values) => {
         //     formData.append('upload_avatar', upload_avatar?.value[0].originFileObj);
         // }
         const payload = {
-                cid:cid.value,
-    phone:phone.value
+            cid: cid.value,
+            phone: phone_no_string
         }
         const res = await dataApi.optRequest(payload)
-        await localStorage.setItem("token", res.data.data.token);
         errorAlert.value = false;
         alertToast.value = {
             severity: "success",
             summary: "ทำรายการสำเร็จ",
             detail: res.data.message,
         };
-        // const 
-        navigateTo(`/auth/otp?cid=${cid.value}&phon=${phone.value}&refcode=${res.data.data?.ref_code}&expire=${res.data.data?.expires_at}`)
+
+        sessionStorage.setItem('cid', cid.value);
+        sessionStorage.setItem('phone', res.data.data?.phone_no);
+        sessionStorage.setItem('ref_code', res.data.data?.ref_code);
+        sessionStorage.setItem('expires_at', res.data.data?.expires_at);
+        sessionStorage.setItem('text_hint_otp', res.data.data?.text_hint_otp);
+
         handleReset();
+        navigateTo(`/auth/otp`)
+
     } catch (error) {
         errorAlert.value = true;
         dataError.value = error;

@@ -1,5 +1,3 @@
-import liff from "@line/liff";
-
 export default defineNuxtRouteMiddleware(async (to, from) => {
 
   if (process.client) {

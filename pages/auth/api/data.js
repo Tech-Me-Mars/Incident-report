@@ -11,6 +11,16 @@ export function optRequest(payload) {
   return request("post", url, payload, false);
 }
 
+export function optCheck(payload) {
+  const url = `/api/v2/otp/check`;
+  return request("post", url, payload, false);
+}
+
+export function registerLineOtp(payload) {
+  const url = `/api/v2/register_line_otp`;
+  return request("post", url, payload, false);
+}
+
 export function getPoliceRank() {
   const url = `/api/v1/public/std/police_rank`;
   return request("get", url, {}, false);

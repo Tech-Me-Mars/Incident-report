@@ -28,18 +28,13 @@
                             <InputOtp v-model="otp" :length="4" :maxlength="4" @input="onInput" />
                         </div>
                         <div class="text-red-500 mb-2 text-center">เวลาที่เหลือ {{ formattedTime }}</div>
-                        <div class="text-gray-500 mb-4 text-center">text_hint_otp</div>
+                        <div class="mb-4 text-center" v-html="text_hint_otp"></div>
                         <TmmButton type="primary" :disabled="otp.length < 4" severity="primary"
                             className="w-full h-[2.5rem]" htmlType="submit" size="large" label="ยืนยันรหัส OTP" />
                     </div>
 
                 </div>
 
-                <!-- <div class="flex gap-5 justify-center max-w-[20rem] mx-auto">
-                    <TmmButton type="primary" severity="secondary" className="w-full h-[2.5rem]" label="ยกเลิก" />
-                    <TmmButton type="primary" severity="primary" className="w-full h-[2.5rem]" htmlType="submit"
-                        label="บันทึก" />
-                </div> -->
             </Form>
         </div>
     </section>
@@ -50,7 +45,7 @@
 
 <script setup>
 definePageMeta({
-    // middleware: ["loginline"],
+    middleware: ["loginline"],
     layout: 'registerLayout'
 })
 //! /////// [Api Variable] /////////
@@ -86,15 +81,25 @@ const { handleReset, handleSubmit, errors } = useForm({
 
 
 const { value: cid } = useField("cid");
-cid.value = route.query.cid
+cid.value = sessionStorage.getItem('cid');
+
 const { value: phone } = useField("phone");
-phone.value = route.query.phone
+phone.value = sessionStorage.getItem('phone');
+
 const { value: otp } = useField("otp");
 otp.value = ''
+
 const { value: refcode } = useField("refcode");
-refcode.value = route.query.refcode
+refcode.value = sessionStorage.getItem('ref_code');
+
 const { value: expire } = useField("expire");
-expire.value = route.query.expire
+expire.value = sessionStorage.getItem('expires_at');
+
+const { value: text_hint_otp } = useField("text_hint_otp");
+text_hint_otp.value = sessionStorage.getItem('text_hint_otp');
+
+
+
 
 const remainingTime = ref(0)
 const calculateRemainingTime = () => {
@@ -112,8 +117,8 @@ const calculateRemainingTime = () => {
 const formattedTime = computed(() => {
     try {
         const minutes = Math.floor(remainingTime.value / 60)
-    const seconds = remainingTime.value % 60
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+        const seconds = remainingTime.value % 60
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`
     } catch (error) {
         console.error()
     }
@@ -144,25 +149,34 @@ const saveUsers = async (values) => {
     try {
         const payload = {
             cid: cid.value,
-            phone: phone.value
+            phone: phone.value,
+            otp: otp.value,
+            otp_refcode: refcode.value
         }
-        const res = await dataApi.optRequest(payload)
-        await localStorage.setItem("token", res.data.data.token);
+        const res = await dataApi.optCheck(payload)
         errorAlert.value = false;
         alertToast.value = {
             severity: "success",
             summary: "ทำรายการสำเร็จ",
             detail: res.data.message,
         };
-        handleReset();
-        navigateTo('/')
+
+        sessionStorage.setItem('police_province_name', res.data.data?.data_police_employee?.police_province_name);
+        sessionStorage.setItem('cid', res.data.data?.data_police_employee?.cid);
+        sessionStorage.setItem('phone', res.data.data?.data_police_employee?.phone);
+        sessionStorage.setItem('position_name_th', res.data.data?.data_police_employee?.position_name_th);
+        sessionStorage.setItem('rank_name_th', res.data.data?.data_police_employee?.rank_name_th);
+        sessionStorage.setItem('first_name', res.data.data?.data_police_employee?.first_name);
+        sessionStorage.setItem('last_name', res.data.data?.data_police_employee?.last_name);
+        sessionStorage.setItem('upload_avatar', res.data.data?.data_police_employee?.upload_avatar);
+        sessionStorage.setItem('otp', otp.value);
+        // handleReset();
+        navigateTo('/auth/register-detail')
     } catch (error) {
         errorAlert.value = true;
         dataError.value = error;
         console.error(error)
     }
-
-    // const dataApi
 }
 
 </script>

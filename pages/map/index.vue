@@ -4,15 +4,15 @@
     <Form @submit="onSubmit" class="space-y-1 mb-3">
 
       <div class="grid grid-cols-12 gap-1">
-        <div class="col-span-4">
+        <div class="col-span-12 lg:col-span-4">
           <TmmInputDropDown v-model="type_report_code" placeholder="ประเภทรายงาน" className="" :options="resReportType"
             class="w-full" value="code" label="detail" :error="errors.type_report_code" />
         </div>
-        <div class="col-span-4">
+        <div class=" col-span-6 lg:col-span-4">
           <TmmInputCalendar v-model="incident_date_start" class="w-full" placeholder="ตั้งแต่วันที่"
             :error="errors.incident_date_start" />
         </div>
-        <div class="col-span-4">
+        <div class="col-span-6 lg:col-span-4">
           <TmmInputCalendar v-model="incident_date_end" class="w-full" placeholder="ถึงวันที่"
             :error="errors.incident_date_end" />
         </div>
@@ -31,10 +31,11 @@
 
       </div>
       <div class="flex justify-between">
-        <TmmButton v-if="!showIconLoadAll" @click="loadFindMapAll()" label="แสดงที่หมด"
-          icon="mdi mdi-checkbox-blank-outline" type="primary" severity="warning" />
-        <TmmButton v-else @click="loadFindMapAll()" label="แสดงที่หมด" icon="mdi mdi-checkbox-outline" type="primary"
+        <TmmButton v-if="!showIconLoadAll" @click="loadFindMapAll()" label="แสดงทั้งหมด"
+          icon="mdi mdi-checkbox-blank-outline mr-1" type="primary" severity="warning" />
+        <TmmButton v-else @click="loadFindMapAll()" label="แสดงทั้งหมด" icon="mdi mdi-checkbox-marked mr-1 text-sky-700" type="primary"
           severity="warning" />
+          
         <TmmButton label="ค้นหา" icon="mdi mdi-map" type="primary" htmlType="submit" severity="info" />
       </div>
     </Form>
@@ -48,8 +49,9 @@
       <longdo-map class="h-full w-full" @load="getMap" v-if="showMap == true" />
       <longdo-map class="h-full w-full" v-else />
     </div>
-    <div class="text-end pr-6">
-      <span class="text-xs text-blue-400">จำนวนข้องมูลที่แสดง <span v-if="resMap?.items?.length>0">{{ resMap?.items?.length }}</span><span v-else>0</span>  รายการ</span>
+    <div class="flex justify-between px-2 items-center">
+      <a-checkbox v-model:checked="checkRealTime">RealTime Data</a-checkbox>
+      <span class="text-xs text-blue-400">จำนวนข้อมูลที่แสดง <span>{{ countMarker }} </span> รายการ</span>
     </div>
   </section>
 
@@ -69,6 +71,30 @@ const alertToast = ref({});
 const errorAlert = ref(false);
 const dataError = ref({});
 
+const checkRealTime = ref(false)
+import { $mqtt } from 'vue-paho-mqtt';
+const mqtt_pre = useRuntimeConfig().public.MQTT_PRE;
+const mqttSub = async () => {
+  $mqtt.subscribe(`${mqtt_pre}/news_update`, (message) => {
+    if (showIconLoadAll.value) {
+      loadFindMapAll()
+    }else{
+      search()
+    }
+  });
+}
+const mqttUnSub = async () => {
+  $mqtt.unsubscribe(`${mqtt_pre}/news_update`);
+}
+watch(checkRealTime, (newValue) => {
+  if (newValue) {
+    mqttSub();
+  } else {
+    mqttUnSub();
+  }
+});
+
+const countMarker = ref(0);
 const map = ref(null);
 
 const resRadius = ref()
@@ -152,12 +178,13 @@ const search = async () => {
       resMap.value = await res.data.data;
       showIconLoadAll.value = false
       showMap.value = true
-
+      countMarker.value = res.data.data?.items?.length
       setTimeout(() => {
         initialCluster();
       }, 300);
     } else {
       // หากไม่มีข้อมูล แสดงmapเปล่า ๆ
+      countMarker.value = 0
       showIconLoadAll.value = false
       showMap.value = false
     }
@@ -192,13 +219,23 @@ const loadFindMapAll = async () => {
     const res = await dataApi.findMapAll();
     resMap.value = await res.data.data;
     showMap.value = true;
-
+    countMarker.value = res.data.data?.items?.length
     showIconLoadAll.value = await true;
+
+    type_report_code.value = undefined;
+    incident_date_start.value = undefined;
+    incident_date_end.value = undefined;
+    locationValue.value = undefined
+    radius_km.value = undefined
+    area_lat.value = undefined
+    area_long.value = undefined;
+
     setTimeout(() => {
       initialCluster();
     }, 300);
 
   } catch (error) {
+    countMarker.value = 0
     showIconLoadAll.value = false;
     errorAlert.value = true;
     dataError.value = error;
@@ -209,7 +246,7 @@ const loadFindMapAll = async () => {
 function initialCluster() {
   const link = document.createElement("link");
   link.rel = "stylesheet";
-  link.href = "/assets/css/MarkerCluster.Default.css";
+  link.href = "@/assets/css/MarkerCluster.Default.css";
   document.head.appendChild(link);
 
   const script = document.createElement("script");
@@ -220,13 +257,7 @@ function initialCluster() {
   script.onload = () => {
     const longdo = window.longdo;
     let markercluster = new lmc.MarkerCluster(map.value, {});
-    if (resMap.value?.option) {
-      map.value.location({
-        lon: resMap.value.option.center_long,
-        lat: resMap.value.option.center_lat,
-      });
-      map.value.zoom(resMap.value?.option?.zoom || 13); // Set the zoom level to 13
-    }
+
     resMap.value?.items.forEach(item => {
       const imagesHtml = item.report_image_all.map(imgUrl => `<img src="${imgUrl}" alt="report image" style="width: 100px; height: auto; margin: 5px;">`).join('');
       const detailHtml = `
@@ -256,32 +287,40 @@ function initialCluster() {
 
 
     markercluster.render();
+
+    if (resMap.value?.option) {
+      map.value.location({
+        lon: resMap.value.option.center_long,
+        lat: resMap.value.option.center_lat,
+      });
+      map.value.zoom(resMap.value?.option?.zoom || 13); // Set the zoom level to 13
+    }
   };
 }
 
 function setCustomGeolocationIcon() {
-    const geolocationButton = document.querySelector('ldmap_button ldmap_geolocation');
-    geolocationButton.addEventListener('click', () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const { latitude, longitude } = position.coords;
-            const longdo = window.longdo;
-            const geolocationMarker = new longdo.Marker(
-                { lat: latitude, lon: longitude },
-                {
-                    icon: {
-                        url: 'https://w7.pngwing.com/pngs/457/630/png-transparent-location-logo-location-computer-icons-symbol-location-miscellaneous-angle-heart.png',
-                        offset: { x: 12, y: 45 }, // Adjust offset if needed
-                    },
-                    title: 'Your Location',
-                }
-            );
-            map.value.Overlays.add(geolocationMarker);
-        });
+  const geolocationButton = document.querySelector('ldmap_button ldmap_geolocation');
+  geolocationButton.addEventListener('click', () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      const longdo = window.longdo;
+      const geolocationMarker = new longdo.Marker(
+        { lat: latitude, lon: longitude },
+        {
+          icon: {
+            url: 'https://w7.pngwing.com/pngs/457/630/png-transparent-location-logo-location-computer-icons-symbol-location-miscellaneous-angle-heart.png',
+            offset: { x: 12, y: 45 }, // Adjust offset if needed
+          },
+          title: 'Your Location',
+        }
+      );
+      map.value.Overlays.add(geolocationMarker);
     });
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    setCustomGeolocationIcon();
+  setCustomGeolocationIcon();
 });
 
 onMounted(async () => {
