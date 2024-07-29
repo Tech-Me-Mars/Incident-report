@@ -158,7 +158,7 @@ const { handleReset, handleSubmit, errors } = useForm({
 })
 
 // Retrieve the variables from session storage
-const policeProvinceName = sessionStorage.getItem('police_province_name');
+const policeProvinceName = sessionStorage.getItem('province_station_name');
 const cid = sessionStorage.getItem('cid');
 const phone = sessionStorage.getItem('phone');
 const positionNameTh = sessionStorage.getItem('position_name_th');

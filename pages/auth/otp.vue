@@ -161,7 +161,7 @@ const saveUsers = async (values) => {
             detail: res.data.message,
         };
 
-        sessionStorage.setItem('police_province_name', res.data.data?.data_police_employee?.police_province_name);
+        sessionStorage.setItem('province_station_name', res.data.data?.data_police_employee?.province_station_name);
         sessionStorage.setItem('cid', res.data.data?.data_police_employee?.cid);
         sessionStorage.setItem('phone', res.data.data?.data_police_employee?.phone);
         sessionStorage.setItem('position_name_th', res.data.data?.data_police_employee?.position_name_th);
