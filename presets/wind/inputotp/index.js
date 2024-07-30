@@ -23,7 +23,7 @@ export default {
                 },
 
                 // Size
-                'w-8',
+                'w-10',
 
                 // Colors
                 'text-surface-900 ',

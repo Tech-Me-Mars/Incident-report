@@ -25,7 +25,7 @@
                     <div class="relative">
                         <h2 class="text-xl font-semibold mb-4">กรอกรหัส OPT ที่ได้รับทาง SMS</h2>
                         <div class="flex justify-center">
-                            <InputOtp v-model="otp" :length="4" :maxlength="4" @input="onInput" />
+                            <InputOtp class="" v-model="otp" :length="4" :maxlength="4" @input="onInput" integerOnly />
                         </div>
                         <div class="text-red-500 mb-2 text-center">เวลาที่เหลือ {{ formattedTime }}</div>
                         <div class="mb-4 text-center" v-html="text_hint_otp"></div>
