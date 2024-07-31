@@ -19,11 +19,12 @@ export default {
                 // Spacing
                 'm-0',
                 {
-                    'py-1.5 px-3 sm:text-sm': props.size == null
+                    'py-1.5 px-1 sm:text-sm': props.size == null
                 },
 
                 // Size
-                'w-10',
+                'w-12',
+                
 
                 // Colors
                 'text-surface-900 ',
