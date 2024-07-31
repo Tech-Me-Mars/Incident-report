@@ -12,8 +12,8 @@ export default defineNuxtConfig({
   //     ]
   //   }
   // },
-  
-  ssr:false,
+
+  ssr: false,
   build: {
     transpile: ['v3-infinite-loading']
   },
@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   tiptap: {
     prefix: "Tiptap", //prefix for Tiptap imports, composables not included
   },
-  
+
   quasar: {
     // Configurable Component Defaults
     components: {
@@ -52,7 +52,27 @@ export default defineNuxtConfig({
       }
     }
   },
-  
+  app: {
+    head: {
+      title: 'EOP',
+      titleTemplate: '%s | ',
+      htmlAttrs: {
+        lang: 'en',
+      },
+      meta: [
+        { charset: 'utf-8' },
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no',
+        },
+        { hid: 'description', name: 'description', content: '' },
+        { name: 'format-detection', content: 'telephone=no' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/eop_icon.png' },
+      ],
+    },
+  },
   // socialShare: {
   //   // ตั้งค่าต่าง ๆ ที่คุณต้องการได้ที่นี่
   //   url: 'http://localhost:3000/lab/share',
@@ -89,13 +109,13 @@ export default defineNuxtConfig({
       LIFFURL: process.env.LIFFURL,
       MAP_KEY: process.env.MAP_KEY,
       // prod
-      URL_API: "https://api.eop-thaipolice.com",
-      MQTT_PRE:"eop"
+      // URL_API: "https://api.eop-thaipolice.com",
+      // MQTT_PRE:"eop"
       // uat
-      // URL_API: "https://uat-api.eop-thaipolice.com",
-      // MQTT_PRE:"uateop"
-      
-      
+      URL_API: "https://uat-api.eop-thaipolice.com",
+      MQTT_PRE: "uateop"
+
+
     }
   },
   plugins: [
