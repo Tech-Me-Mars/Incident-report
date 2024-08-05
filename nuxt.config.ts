@@ -89,11 +89,11 @@ export default defineNuxtConfig({
       LIFFURL: process.env.LIFFURL,
       MAP_KEY: process.env.MAP_KEY,
       // prod
-      URL_API: "https://api.eop-thaipolice.com",
-      MQTT_PRE:"eop"
+      // URL_API: "https://api.eop-thaipolice.com",
+      // MQTT_PRE:"eop"
       // uat
-      // URL_API: "https://uat-api.eop-thaipolice.com",
-      // MQTT_PRE:"uateop"
+      URL_API: "https://uat-api.eop-thaipolice.com",
+      MQTT_PRE:"uateop"
       
       
     }

@@ -37,7 +37,7 @@ const menuNavigation = ref([
   { id: 2, label: "Jobs", icon: "description-o", to: "/jobs/add", activeRouteName: "jobs" },
   { id: 3, label: "Report", icon: "records-o", to: "/report/add", activeRouteName: "report" },
   { id: 4, label: "News", icon: "bulb-o", to: "/news", activeRouteName: "news" },
-  { id: 5, label: "แผนที่", icon: "map-marked", to: "/map", activeRouteName: "map" },
+  { id: 5, label: "map", icon: "map-marked", to: "/map", activeRouteName: "map" },
 
 ])
 </script>

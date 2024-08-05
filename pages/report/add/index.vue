@@ -219,7 +219,7 @@
                     <div class="">
                         <TmmTypographyLabelForm label="ประเภทสินทรัพย์" />
                         <TmmInputDropDown v-model="item.value.type_property_code" placeholder="ประเภทสินทรัพย์"
-                            :options="resTypeProperty" class="w-full" value="detail" label="detail"
+                            :options="resTypeProperty" class="w-full" value="code" label="detail"
                             :error="errors[`property_array[${index}].type_property_code`]" />
                     </div>
                     <div class=""
@@ -256,49 +256,61 @@
 
             <!-- ############################### [[ คนร้าย ]] ################################## -->
             <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
+            <div class="my-2">
+                <a-radio-group v-model:value="gangsterHas" option-type="button" :options="gangsterOption" />
+            </div>
             <div class="card p-3 mb-3" v-for="(item, index) in villainFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
                     <CloseCircleTwoTone v-if="villainFields.length > 1" @click="confirmRemoveVilain(item, index)" />
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                    <div class="">
-                        <TmmTypographyLabelForm label="ชื่อ" />
-                        <TmmInput v-model="item.value.gangster_firstname" placeholder="ชื่อ..."
-                            :error="errors[`villain_array[${index}].gangster_firstname`]" />
-                    </div>
-                    <div class="">
-                        <TmmTypographyLabelForm label="นามสกุล" />
-                        <TmmInput v-model="item.value.gangster_lastname" placeholder="นามสกุล..."
-                            :error="errors[`villain_array[${index}].gangster_lastname`]" />
-                    </div>
-                    <div class="">
-                        <TmmTypographyLabelForm label="อายุ" />
-                        <TmmInputNumber v-model="item.value.gangster_age" :max="150" placeholder="อายุ..."
-                            :error="errors[`villain_array[${index}].gangster_age`]" />
-                    </div>
-                    <div class="">
-                        <TmmTypographyLabelForm label="สัญชาติ" />
-                        <TmmInputDropDown v-model="item.value.gangster_nationality" placeholder="สัญชาติ..."
-                            className="" :options="resNational" class="w-full" value="nation_name_th"
-                            label="nation_name_th" :error="errors[`villain_array[${index}].gangster_nationality`]" />
-                    </div>
-                    <div class="">
-                        <TmmTypographyLabelForm label="จำนวนครั้งที่กระทำความผิด" />
-                        <TmmInputNumber :min="0" v-model="item.value.gangster_offense_count"
-                            placeholder="จำนวนครั้งที่กระทำความผิด..."
-                            :error="errors[`villain_array[${index}].gangster_offense_count`]" />
-                    </div>
-                    <div class="">
-                        <TmmTypographyLabelForm label="อาวุธเครื่องมือที่ใช้" />
-                        <TmmInput v-model="item.value.gangster_weapon" placeholder="อาวุธเครื่องมือที่ใช้..."
-                            :error="errors[`villain_array[${index}].gangster_weapon`]" />
-                    </div>
 
+                    <div class="">
+                        <TmmTypographyLabelForm label="ทราบคนร้าย" class="mr-2" />
+                        {{ item.value.gangster_data_has }}
+                        <TmmInputRadio label="ไม่ทราบ" :value="0" v-model="item.value.gangster_data_has" />
+                        <TmmInputRadio label="ทราบ" :value="1" v-model="item.value.gangster_data_has" />
+                    </div>
                 </div>
+
+                <div class="">
+                    <TmmTypographyLabelForm label="ชื่อ" />
+                    <TmmInput v-model="item.value.gangster_firstname" placeholder="ชื่อ..."
+                        :error="errors[`villain_array[${index}].gangster_firstname`]" />
+                </div>
+                <div class="">
+                    <TmmTypographyLabelForm label="นามสกุล" />
+                    <TmmInput v-model="item.value.gangster_lastname" placeholder="นามสกุล..."
+                        :error="errors[`villain_array[${index}].gangster_lastname`]" />
+                </div>
+                <div class="">
+                    <TmmTypographyLabelForm label="อายุ" />
+                    <TmmInputNumber v-model="item.value.gangster_age" :max="150" placeholder="อายุ..."
+                        :error="errors[`villain_array[${index}].gangster_age`]" />
+                </div>
+                <div class="">
+                    <TmmTypographyLabelForm label="สัญชาติ" />
+                    <TmmInputDropDown v-model="item.value.gangster_nationality" placeholder="สัญชาติ..." className=""
+                        :options="resNational" class="w-full" value="nation_name_th" label="nation_name_th"
+                        :error="errors[`villain_array[${index}].gangster_nationality`]" />
+                </div>
+                <div class="">
+                    <TmmTypographyLabelForm label="จำนวนครั้งที่กระทำความผิด" />
+                    <TmmInputNumber :min="0" v-model="item.value.gangster_offense_count"
+                        placeholder="จำนวนครั้งที่กระทำความผิด..."
+                        :error="errors[`villain_array[${index}].gangster_offense_count`]" />
+                </div>
+                <div class="">
+                    <TmmTypographyLabelForm label="อาวุธเครื่องมือที่ใช้" />
+                    <TmmInput v-model="item.value.gangster_weapon" placeholder="อาวุธเครื่องมือที่ใช้..."
+                        :error="errors[`villain_array[${index}].gangster_weapon`]" />
+                </div>
+
             </div>
 
-            <div class="flex justify-center py-2 pb-3 mb-3">
+
+            <div class="flex justify-center py-2 pb-3 mb-3" v-if="showAddGangSter">
                 <TmmButton type="primary" severity="secondary" icon="mdi mdi-plus" label="เพิ่มคนร้าย" @click="pushVillain({
                     gangster_firstname: undefined,
                     gangster_lastname: undefined,
@@ -306,6 +318,7 @@
                     gangster_nationality: undefined,
                     gangster_offense_count: undefined,
                     gangster_weapon: undefined,
+                    gangster_data_has: 1
                 })" className="" />
             </div>
 
@@ -337,7 +350,8 @@
                         <a-auto-complete :status="(errors?.inquiry_employee_fullname ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="inquiry_employee_fullname"
                             :options="resSuggestionEmployeeInquiry" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
-                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange"  @search="inquirySearch" />
+                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange"
+                            @search="inquirySearch" />
                         <a-auto-complete :status="(errors?.inquiry_employee_position ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="inquiry_employee_position" :options="resPositions"
                             placeholder="ตำแหน่ง"
@@ -357,7 +371,8 @@
                         <a-auto-complete :status="(errors?.senior_police_control_employee_fullname ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_fullname"
                             :options="resSuggestionEmployeeSenior" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
-                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="seniorChange" @search="seniorSearch" />
+                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="seniorChange"
+                            @search="seniorSearch" />
                         <a-auto-complete :status="(errors?.senior_police_control_employee_position ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_position"
                             :options="resPositions" placeholder="ตำแหน่ง"
@@ -739,6 +754,7 @@ const validationSchema = toTypedSchema(
                 }),
             })
                 .refine(data => {
+                    console.log(data.type_property_code)
                     if (data.type_property_code == 'อาคาร/บ้านเรือน' || data.type_property_code == 'อื่นๆ') {
                         return data.type_property_qty !== undefined && data.type_property_qty !== null && typeof data.type_property_qty === 'number';
                     }
@@ -759,7 +775,16 @@ const validationSchema = toTypedSchema(
         ),
         villain_array: zod.array(
             zod.object({
-                gangster_firstname: zod.string().nonempty(requireValue).default(""),
+               
+                gangster_data_has: zod.number({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }),
+                gangster_firstname: zod.union([zod.string({
+                    required_error: requireValue,
+                    invalid_type_error: requireValue,
+                }).nonempty(requireValue)]).optional(),
+                 
                 gangster_lastname: zod.string().nonempty(requireValue).default(""),
                 gangster_age: zod.number({
                     required_error: requireValue,
@@ -771,8 +796,18 @@ const validationSchema = toTypedSchema(
                     invalid_type_error: requireValue,
                 }),
                 gangster_weapon: zod.string().nonempty(requireValue).default(""),
-
             })
+            .refine(data => {
+
+                    if (data.gangster_lastname == 'อาคาร') {
+                        return data.gangster_firstname !== undefined && data.gangster_firstname !== null && typeof data.gangster_firstname === 'string';
+                    }
+                    return true;
+                }, {
+                    message: requireValue,
+                    path: ['type_property_qty'],
+                })
+            // gangster_data_has
         ),
         attach_array: zod.array(
             zod.object({
@@ -800,24 +835,8 @@ const validationSchema = toTypedSchema(
                             path: ['group_text_detail'],
                         });
                     }
-
-                    // Check image_detail
-                    // if (!Array.isArray(data.image_detail) || data.image_detail.length === 0) {
-                    //     context.addIssue({
-                    //         code: zod.ZodIssueCode.custom,
-                    //         message: "image_detail ต้องเป็น array และต้องมีค่าอย่างน้อยหนึ่งค่า",
-                    //         path: ['image_detail'],
-                    //     });
-                    // }
                 })
         ),
-        // image_detail_expenses: zod.custom((value) => {
-        //     if (isEdit.value === true) {
-        //         return value;
-        //     }
-        //     return Array.isArray(value) && value.length > 0 ? value : null;
-        // }),
-
     })
 );
 
@@ -851,6 +870,7 @@ const { handleReset, handleSubmit, errors } = useForm({
                 gangster_nationality: undefined,
                 gangster_offense_count: undefined,
                 gangster_weapon: undefined,
+                gangster_data_has: 1
             },
         ],
         attach_array: [
@@ -1228,8 +1248,8 @@ const loadEmployeeSuggestion = async () => {
     try {
         const res = await dataApi.getEmployeeSuggestion()
         resSuggestionEmployee.value = res.data.data;
-        resSuggestionEmployeeInquiry.value= res.data.data;
-        resSuggestionEmployeeSenior.value= res.data.data;
+        resSuggestionEmployeeInquiry.value = res.data.data;
+        resSuggestionEmployeeSenior.value = res.data.data;
     } catch (error) {
         console.error(error);
     }
@@ -1259,7 +1279,7 @@ const inquirySearch = (val) => {
             resSuggestionEmployeeInquiry.value = resSuggestionEmployee.value.filter(employee =>
                 employee.fullname.toLowerCase().includes(val.toLowerCase())
             );
-            
+
         } else {
             resSuggestionEmployeeInquiry.value = resSuggestionEmployee.value
         }
@@ -1298,6 +1318,41 @@ const seniorSearch = (val) => {
         console.error(error);
     }
 }
+
+const gangsterHas = ref('มีคนร้าย')
+const gangsterOption = [
+    {
+        label: 'มีคนร้าย',
+        value: 'มีคนร้าย',
+    },
+    {
+        label: 'ไม่มีคนร้าย',
+        value: 'ไม่มีคนร้าย',
+    },
+];
+
+
+const showAddGangSter = ref(true)
+watch(gangsterHas, (newValue, oldValue) => {
+    if (newValue == "มีคนร้าย") {
+        pushVillain({
+            gangster_firstname: undefined,
+            gangster_lastname: undefined,
+            gangster_age: undefined,
+            gangster_nationality: undefined,
+            gangster_offense_count: undefined,
+            gangster_weapon: undefined,
+            gangster_data_has: 1
+        })
+        showAddGangSter.value = true;
+    } else if (newValue == 'ไม่มีคนร้าย') {
+        villainFields.value.forEach(element => {
+            removeVillain()
+        });
+        removeVillain()
+        showAddGangSter.value = false;
+    }
+})
 
 const resNational = ref()
 const loadNational = async () => {
@@ -1371,6 +1426,8 @@ const loadTypeProperty = async () => {
     try {
         const res = await dataApi.getTypeProperty()
         resTypeProperty.value = res.data.data;
+        // const obj = { detail: "ไม่มี" };
+        // resTypeProperty.value.unshift(obj);
     } catch (error) {
         console.error(error);
     }
