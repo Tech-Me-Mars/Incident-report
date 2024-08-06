@@ -1,7 +1,8 @@
 <template>
   <HeaderMainProfile />
   <section class="p-3">
-    <Form @submit="onSubmit" class="space-y-1 mb-3">
+
+    <div  class="space-y-1 mb-3">
 
       <div class="grid grid-cols-12 gap-1">
         <div class="col-span-12 lg:col-span-4">
@@ -31,14 +32,20 @@
 
       </div>
       <div class="flex justify-between">
-        <TmmButton v-if="!showIconLoadAll" @click="loadFindMapAll()" label="แสดงทั้งหมด"
+       <div class="flex gap-2">
+        <label for="" class="text-sm">แสดงทั้งหมด</label>
+        <a-switch v-model:checked="showIconLoadAll" />
+       </div>
+        
+
+        <!-- <TmmButton v-if="!showIconLoadAll" @click="loadFindMapAll()" label="แสดงทั้งหมด"
           icon="mdi mdi-checkbox-blank-outline mr-1" type="primary" severity="warning" />
         <TmmButton v-else @click="loadFindMapAll()" label="แสดงทั้งหมด" icon="mdi mdi-checkbox-marked mr-1 text-sky-700" type="primary"
-          severity="warning" />
+          severity="warning" /> -->
           
-        <TmmButton label="ค้นหา" icon="mdi mdi-map" type="primary" htmlType="submit" severity="info" />
+        <TmmButton label="ค้นหา" icon="mdi mdi-map" type="primary" htmlType="button" @click="onSubmitForm" severity="info" />
       </div>
-    </Form>
+    </div>
     <!-- <client-only>
             <LongdoMap v-if="showMap" class="h-[30rem] w-full" @load="initializeMap">
             </LongdoMap>
@@ -143,9 +150,9 @@ const locationSearch = async (val) => {
 const requireValue = "กรุณาระบุข้อมูล";
 const validationSchema = toTypedSchema(
   zod.object({
-    incident_date_end: zod.string().nonempty(requireValue).default(""),
-    incident_date_start: zod.string().nonempty(requireValue).default(""),
-    type_report_code: zod.string().nonempty(requireValue),
+    // incident_date_end: zod.string().nonempty(requireValue).default(""),
+    // incident_date_start: zod.string().nonempty(requireValue).default(""),
+    // type_report_code: zod.string().nonempty(requireValue),
     // incident_date: zod.string().nonempty(requireValue).default(""),
     // incident_time: zod.string().nonempty(requireValue).default(""),
     // type_report_code: zod.string().nonempty(requireValue).default(""),
@@ -153,12 +160,19 @@ const validationSchema = toTypedSchema(
 )
 
 const { handleReset, handleSubmit, errors } = useForm({
-  validationSchema
+
 })
 
-const onSubmit = handleSubmit((values) => {
-  search(values);
-});
+const onSubmitForm = async() => {
+
+  if (showIconLoadAll.value) {
+
+    await loadFindMapAll()
+  }else{
+    return search();
+  }
+  
+};
 
 const search = async () => {
   try {
@@ -214,6 +228,7 @@ const resMap = ref([]);
 const showIconLoadAll = ref(false);
 
 const loadFindMapAll = async () => {
+  console.log('loadALl')
   try {
     showMap.value = false;
     const res = await dataApi.findMapAll();

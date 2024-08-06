@@ -21,6 +21,10 @@ export function getNation() {
   const url = `/api/v2/std/country_nationality`;
   return request("get", url, {}, true);
 }
+export function getWepon() {
+  const url = `/api/v2/std/weapon`;
+  return request("get", url, {}, true);
+}
 
 
 

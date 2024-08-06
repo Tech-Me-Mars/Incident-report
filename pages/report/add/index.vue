@@ -179,7 +179,10 @@
                             :error="errors[`sufferer_array[${index}].suffer_nationality`]" />
                     </div>
                     <div class="">
-                        <TmmTypographyLabelForm label="หมายเลขหนังสือเดินทาง" />
+                        <!-- <TmmTypographyLabelForm label="หมายเลขหนังสือเดินทาง " /> -->
+                        <span class="text-sm text-gray-500">หมายเลขหนังสือเดินทาง <span
+                                class="text-red-600">(กรณีไม่ทราบ ให้ใช้
+                                "-")</span> </span>
                         <TmmInput v-model="item.value.suffer_passport_number" placeholder="หมายเลขหนังสือเดินทาง..."
                             :error="errors[`sufferer_array[${index}].suffer_passport_number`]" />
                     </div>
@@ -208,6 +211,7 @@
             <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
             <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
             <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
+        
             <TmmLabelSubtitle class="text-gray-500" label="ทรัพย์สินที่เสียหาย" />
             <div class="card p-3 mb-3" v-for="(item, index) in propertyFields" :key="item.key">
                 <div class="flex justify-between">
@@ -222,20 +226,18 @@
                             :options="resTypeProperty" class="w-full" value="code" label="detail"
                             :error="errors[`property_array[${index}].type_property_code`]" />
                     </div>
-                    <div class=""
-                        v-if="item.value.type_property_code == 'รถยนต์' || item.value.type_property_code == 'รถจักรยานยนต์'">
+                    <div v-if="isBrandInputVisible(item?.value.type_property_code)">
                         <TmmTypographyLabelForm label="ยี่ห้อ" />
                         <TmmInput v-model="item.value.type_property_brand" placeholder="ยี่ห้อ..."
                             :error="errors[`property_array[${index}].type_property_brand`]" />
                     </div>
-                    <div class=""
-                        v-if="item.value.type_property_code == 'อาคาร/บ้านเรือน' || item.value.type_property_code == 'อื่นๆ'">
+
+                    <div v-if="isQtyInputVisible(item.value.type_property_code)">
                         <TmmTypographyLabelForm label="จำนวน" />
                         <TmmInputNumber v-model="item.value.type_property_qty" placeholder="จำนวน..."
                             :error="errors[`property_array[${index}].type_property_qty`]" />
-                        <!-- error:{{ errors[`property_array[${index}].type_property_qty`] }} -->
                     </div>
-                    <div class="">
+                    <div v-if="isPriceInputVisible(item.value.type_property_code)">
                         <TmmTypographyLabelForm label="มูลค่าโดยประมาณ" />
                         <TmmInputNumber v-model="item.value.type_property_price" placeholder="มูลค่าโดยประมาณ..."
                             :error="errors[`property_array[${index}].type_property_price`]" />
@@ -255,14 +257,15 @@
             </div>
 
             <!-- ############################### [[ คนร้าย ]] ################################## -->
-            <div class="flex justify-between items-center">
-             <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
-              <div class="">
-                <a-radio-group v-model:value="gangster_has" option-type="button" :options="gangsterOption" />
+
+            <div class="flex justify-between items-center mb-4">
+                <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
+                <div class="">
+                    <a-radio-group v-model:value="gangster_has" option-type="button" :options="gangsterOption" />
+                </div>
             </div>
-            </div>
-           
-      
+
+
             <div class="card p-3 mb-3" v-for="(item, index) in villainFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
@@ -318,8 +321,12 @@
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="อาวุธเครื่องมือที่ใช้" />
-                    <TmmInput v-model="item.value.gangster_weapon" placeholder="อาวุธเครื่องมือที่ใช้..."
-                        :error="errors[`villain_array[${index}].gangster_weapon`]" />
+                    <!-- <TmmInput v-model="item.value.gangster_weapon" placeholder="อาวุธเครื่องมือที่ใช้..."
+                        :error="errors[`villain_array[${index}].gangster_weapon`]" /> -->
+                    <a-auto-complete :status="(errors[`villain_array[${index}].gangster_weapon`] ? 'error' : '')"
+                        class="!w-full !mb-2" v-model:value="item.value.gangster_weapon" :options="resWepon"
+                        placeholder="อาวุธเครื่องมือที่ใช้..." @search="weponSearch"
+                        :field-names="{ label: 'detail', value: 'detail' }" />
                 </div>
 
             </div>
@@ -755,37 +762,54 @@ const validationSchema = toTypedSchema(
             zod.object({
                 type_property_code: zod.string().nonempty(requireValue).default(""),
                 // type_property_brand: zod.string().nonempty(requireValue).default(""),
-                type_property_brand: zod.union([zod.string({
+                type_property_brand: zod.string().nonempty(requireValue).optional(),
+                type_property_qty: zod.number({
                     required_error: requireValue,
                     invalid_type_error: requireValue,
-                }).nonempty(requireValue), zod.undefined()]).optional(),
-                type_property_qty: zod.union([zod.number({
-                    required_error: requireValue,
-                    invalid_type_error: requireValue,
-                }), zod.undefined()]).optional(),
+                }).optional(),
                 type_property_price: zod.number({
                     required_error: requireValue,
                     invalid_type_error: requireValue,
-                }),
+                }).optional(),
             })
                 .refine(data => {
-                    console.log(data.type_property_code)
-                    if (data.type_property_code == 'อาคาร/บ้านเรือน' || data.type_property_code == 'อื่นๆ') {
-                        return data.type_property_qty !== undefined && data.type_property_qty !== null && typeof data.type_property_qty === 'number';
+                    const propertyType = resTypeProperty?.value?.find(item => item.code === data.type_property_code);
+                    if (!propertyType) {
+                        return true; // Skip validation if the type is not found
+                    }
+                    if (propertyType.brand_input) {
+                        return typeof data.type_property_brand === 'string' && data.type_property_brand.trim() !== '';
                     }
                     return true;
                 }, {
                     message: requireValue,
-                    path: ['type_property_qty'],
+                    path: ['type_property_brand'], // Adjust based on the specific error path you want
                 })
                 .refine(data => {
-                    if (data.type_property_code == 'รถยนต์' || data.type_property_code == 'รถจักรยานต์ยนต์') {
-                        return data.type_property_brand !== undefined && data.type_property_brand !== null && typeof data.type_property_brand === 'string';
+                    const propertyType = resTypeProperty?.value?.find(item => item.code === data.type_property_code);
+                    if (!propertyType) {
+                        return true; // Skip validation if the type is not found
+                    }
+                    if (propertyType.qty_input) {
+                        return typeof data.type_property_qty === 'number' && !isNaN(data.type_property_qty);
                     }
                     return true;
                 }, {
                     message: requireValue,
-                    path: ['type_property_brand'],
+                    path: ['type_property_qty'], // Adjust based on the specific error path you want
+                })
+                .refine(data => {
+                    const propertyType = resTypeProperty?.value?.find(item => item.code === data.type_property_code);
+                    if (!propertyType) {
+                        return true; // Skip validation if the type is not found
+                    }
+                     if (propertyType.price_input) {
+                        return typeof data.type_property_price === 'number' && !isNaN(data.type_property_price);
+                    }
+                    return true;
+                }, {
+                    message: requireValue,
+                    path: ['type_property_price'], // Adjust based on the specific error path you want
                 })
         ),
         villain_array: zod.array(
@@ -1110,10 +1134,12 @@ const saveReport = async () => {
         formData.append('incident_process_text', incident_process_text.value);
         formData.append('police_head_station_employee_id', police_head_station_employee_id.value);
 
+
+        formData.append('gangster_has', gangster_has.value);
         // เปิดแชร์
         // formData.append('is_share_public', is_share_public.value ? 1 : 0);
 
-        suffererFields.value.forEach((e, i) => {
+        suffererFields?.value?.forEach((e, i) => {
             formData.append('suffer_firstname[]', e.value.suffer_firstname ? e.value.suffer_firstname : null);
             formData.append('suffer_lastname[]', e.value.suffer_lastname ? e.value.suffer_lastname : null);
             formData.append('suffer_age[]', e.value.suffer_age ? e.value.suffer_age : null);
@@ -1121,13 +1147,14 @@ const saveReport = async () => {
             formData.append('suffer_passport_number[]', e.value.suffer_passport_number ? e.value.suffer_passport_number : null);
             formData.append('suffer_type_damage_code[]', e.value.suffer_type_damage_code ? e.value.suffer_type_damage_code : null);
         });
-        propertyFields.value.forEach((e, i) => {
+        propertyFields?.value?.forEach((e, i) => {
             formData.append('type_property_code[]', e.value.type_property_code ? e.value.type_property_code : "");
             formData.append('type_property_brand[]', e.value.type_property_brand ? e.value.type_property_brand : "");
             formData.append('type_property_qty[]', e.value.type_property_qty ? e.value.type_property_qty : "");
             formData.append('type_property_price[]', e.value.type_property_price ? e.value.type_property_price : "");
         });
-        villainFields.value.forEach((e, i) => {
+
+        villainFields?.value?.forEach((e, i) => {
             formData.append('gangster_firstname[]', e.value.gangster_firstname ? e.value.gangster_firstname : null);
             formData.append('gangster_lastname[]', e.value.gangster_lastname ? e.value.gangster_lastname : null);
             formData.append('gangster_age[]', e.value.gangster_age ? e.value.gangster_age : 0);
@@ -1136,7 +1163,7 @@ const saveReport = async () => {
             formData.append('gangster_weapon[]', e.value.gangster_weapon ? e.value.gangster_weapon : null);
         });
 
-        attachFields.value.forEach((e, i) => {
+        attachFields?.value?.forEach((e, i) => {
             formData.append(`group_text_detail[${i}]`, e.value.group_text_detail ? e.value.group_text_detail : "");
             formData.append(`type_group_image_id[${i}]`, e.value.type_group_image_id ? e.value.type_group_image_id : "");
             // formData.append('image_detail[][]', e.value.image_detail ? e.value.image_detail : "");
@@ -1203,6 +1230,28 @@ const beforeUpload = file => {
     });
 };
 
+const isBrandInputVisible = (typePropertyCode) => {
+    if (typePropertyCode) {
+        const property = resTypeProperty.value.find(item => item.code === typePropertyCode);
+        return property ? property.brand_input : false;
+    }
+
+};
+
+const isQtyInputVisible = (typePropertyCode) => {
+    if (typePropertyCode) {
+        const property = resTypeProperty.value.find(item => item.code === typePropertyCode);
+        return property ? property.qty_input : false;
+    }
+};
+const isPriceInputVisible = (typePropertyCode) => {
+    if (typePropertyCode) {
+        const property = resTypeProperty.value.find(item => item.code === typePropertyCode);
+        return property ? property.price_input : false;
+    }
+
+};
+
 onMounted(() => {
     connectLineNotifycheck();
     checkIsError();
@@ -1214,6 +1263,7 @@ onMounted(() => {
     loadInquiryEmp();
     loadSeniorPolice();
     loadPoliceHeadStation();
+    loadWepon();
     loadTypeGroupImage();
     loadNational()
     loadEmployeeSuggestion()
@@ -1318,6 +1368,23 @@ const inquiryChange = async () => {
                 inquiry_employee_position.value = undefined;
                 inquiry_employee_phone.value = undefined;
             }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+
+const weponSearch = (val) => {
+    try {
+        if (val.length > 1) {
+            resWepon.value = resWepon.value.filter(item =>
+                item?.detail.toLowerCase().includes(val.toLowerCase())
+            );
+
+        } else {
+            resWepon.value = resWeponSuggestion.value
         }
     } catch (error) {
         console.error(error);
@@ -1540,6 +1607,19 @@ const loadInquiryEmp = async () => {
             ...e,
             fullname: `${e.rank_name_th_abb} ${e.first_name} ${e.last_name}`,
         }));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resWepon = ref()
+const resWeponSuggestion = ref();
+const loadWepon = async () => {
+    try {
+        const res = await dataApi.getWepon()
+        resWepon.value = res.data.data;
+        resWeponSuggestion.value = res.data.data;
+
     } catch (error) {
         console.error(error);
     }
