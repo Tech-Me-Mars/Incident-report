@@ -255,10 +255,14 @@
             </div>
 
             <!-- ############################### [[ คนร้าย ]] ################################## -->
-            <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
-            <div class="my-2">
-                <a-radio-group v-model:value="gangsterHas" option-type="button" :options="gangsterOption" />
+            <div class="flex justify-between items-center">
+             <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
+              <div class="">
+                <a-radio-group v-model:value="gangster_has" option-type="button" :options="gangsterOption" />
             </div>
+            </div>
+           
+      
             <div class="card p-3 mb-3" v-for="(item, index) in villainFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
@@ -268,9 +272,20 @@
 
                     <div class="">
                         <TmmTypographyLabelForm label="ทราบคนร้าย" class="mr-2" />
-                        {{ item.value.gangster_data_has }}
-                        <TmmInputRadio label="ไม่ทราบ" :value="0" v-model="item.value.gangster_data_has" />
-                        <TmmInputRadio label="ทราบ" :value="1" v-model="item.value.gangster_data_has" />
+                        <!-- <TmmInputRadio label="ไม่ทราบ" :value="0" v-model="item.value.gangster_data_has" />
+                        <TmmInputRadio label="ทราบ" :value="1" v-model="item.value.gangster_data_has" /> -->
+                        <div>
+                            <a-radio-group v-model:value="item.value.gangster_data_has" name="radioGroup">
+                                <a-radio :value="1"
+                                    :class="{ 'radio-green': item.value.gangster_data_has === 1, 'radio-default': item.value.gangster_data_has !== 1 }">
+                                    ทราบ
+                                </a-radio>
+                                <a-radio :value="0"
+                                    :class="{ 'radio-yellow': item.value.gangster_data_has === 0, 'radio-default': item.value.gangster_data_has !== 0 }">
+                                    ไม่ทราบ
+                                </a-radio>
+                            </a-radio-group>
+                        </div>
                     </div>
                 </div>
 
@@ -775,37 +790,69 @@ const validationSchema = toTypedSchema(
         ),
         villain_array: zod.array(
             zod.object({
-               
+
                 gangster_data_has: zod.number({
                     required_error: requireValue,
                     invalid_type_error: requireValue,
                 }),
-                gangster_firstname: zod.union([zod.string({
-                    required_error: requireValue,
-                    invalid_type_error: requireValue,
-                }).nonempty(requireValue)]).optional(),
-                 
-                gangster_lastname: zod.string().nonempty(requireValue).default(""),
+                gangster_firstname: zod.string().nonempty(requireValue).optional(),
+
+                gangster_lastname: zod.string().nonempty(requireValue).optional(),
                 gangster_age: zod.number({
                     required_error: requireValue,
                     invalid_type_error: requireValue,
-                }),
+                }).optional(),
                 gangster_nationality: zod.string().nonempty(requireValue).default(""),
                 gangster_offense_count: zod.number({
                     required_error: requireValue,
                     invalid_type_error: requireValue,
-                }),
+                }).optional(),
                 gangster_weapon: zod.string().nonempty(requireValue).default(""),
             })
-            .refine(data => {
-
-                    if (data.gangster_lastname == 'อาคาร') {
-                        return data.gangster_firstname !== undefined && data.gangster_firstname !== null && typeof data.gangster_firstname === 'string';
+                .superRefine((data, context) => {
+                    if (data.gangster_data_has == 1) {
+                        if (!data.gangster_firstname) {
+                            context.addIssue({
+                                code: zod.ZodIssueCode.custom,
+                                message: requireValue,
+                                path: ['gangster_firstname'],
+                            });
+                        }
                     }
-                    return true;
-                }, {
-                    message: requireValue,
-                    path: ['type_property_qty'],
+                })
+                .superRefine((data, context) => {
+                    if (data.gangster_data_has == 1) {
+                        if (!data.gangster_lastname) {
+                            context.addIssue({
+                                code: zod.ZodIssueCode.custom,
+                                message: requireValue,
+                                path: ['gangster_lastname'],
+                            });
+                        }
+                    }
+                })
+                .superRefine((data, context) => {
+                    if (data.gangster_data_has == 1) {
+                        if (!data.gangster_age) {
+                            context.addIssue({
+                                code: zod.ZodIssueCode.custom,
+                                message: requireValue,
+                                path: ['gangster_age'],
+                            });
+                        }
+                    }
+                })
+
+                .superRefine((data, context) => {
+                    if (data.gangster_data_has == 1) {
+                        if (!data.gangster_offense_count) {
+                            context.addIssue({
+                                code: zod.ZodIssueCode.custom,
+                                message: requireValue,
+                                path: ['gangster_offense_count'],
+                            });
+                        }
+                    }
                 })
             // gangster_data_has
         ),
@@ -895,6 +942,10 @@ const { value: incident_area_lat } = useField("incident_area_lat");
 const { value: incident_area_long } = useField("incident_area_long");
 
 const { value: incident_structure_text } = useField("incident_structure_text");
+// has vilian
+const { value: gangster_has } = useField("gangster_has", null, {
+    initialValue: 1,
+});
 
 // ยานพาหนะ
 const { value: type_vehicle_code } = useField("type_vehicle_code");
@@ -1319,22 +1370,22 @@ const seniorSearch = (val) => {
     }
 }
 
-const gangsterHas = ref('มีคนร้าย')
+
 const gangsterOption = [
     {
         label: 'มีคนร้าย',
-        value: 'มีคนร้าย',
+        value: 1,
     },
     {
         label: 'ไม่มีคนร้าย',
-        value: 'ไม่มีคนร้าย',
+        value: 0,
     },
 ];
 
 
 const showAddGangSter = ref(true)
-watch(gangsterHas, (newValue, oldValue) => {
-    if (newValue == "มีคนร้าย") {
+watch(gangster_has, (newValue, oldValue) => {
+    if (newValue == 1) {
         pushVillain({
             gangster_firstname: undefined,
             gangster_lastname: undefined,
@@ -1345,7 +1396,7 @@ watch(gangsterHas, (newValue, oldValue) => {
             gangster_data_has: 1
         })
         showAddGangSter.value = true;
-    } else if (newValue == 'ไม่มีคนร้าย') {
+    } else if (newValue == 0) {
         villainFields.value.forEach(element => {
             removeVillain()
         });
@@ -1522,4 +1573,21 @@ const loadInquiryEmp = async () => {
 
 </script>
 
-<style></style>
+<style>
+.radio-green .ant-radio-inner {
+    background-color: green !important;
+    border-color: green !important;
+}
+
+.radio-yellow .ant-radio-inner {
+    background-color: rgb(255, 174, 0) !important;
+    border-color: rgb(255, 174, 0) !important;
+}
+
+.radio-default .ant-radio-inner {
+    background-color: #d9d9d9;
+    /* default color */
+    border-color: #d9d9d9;
+    /* default color */
+}
+</style>

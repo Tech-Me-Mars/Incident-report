@@ -10,12 +10,11 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.6",
-     "pinia": "^2.0.30",
     "@formkit/auto-animate": "^0.8.1",
     "@line/liff": "^2.23.2",
     "@mdi/font": "^7.4.47",
     "@nuxtjs/proxy": "^2.1.0",
+    "@pinia/nuxt": "^0.4.6",
     "@secrets/vue-mention": "^1.0.1",
     "@stefanobartoletti/nuxt-social-share": "^0.7.0",
     "@syncfusion/ej2-vue-dropdowns": "^25.2.6",
@@ -25,7 +24,10 @@
     "@tiptap/suggestion": "^2.4.0",
     "@tiptap/vue-3": "^2.4.0",
     "@vant/touch-emulator": "^1.4.0",
-    "@vee-validate/zod": "^4.12.6",
+    "@vee-validate/yup": "^4.13.2",
+    "@vee-validate/zod": "^4.9.6",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.10",
@@ -42,6 +44,7 @@
     "pdf-vue3": "^1.0.8",
     "pdfjs": "^2.5.3",
     "pdfjs-dist": "^4.3.136",
+    "pinia": "^2.0.30",
     "primeicons": "^6.0.1",
     "pspdfkit": "^2024.3.0",
     "sweetalert2": "^11.11.1",
@@ -59,7 +62,9 @@
     "vue-scroll-loader": "^2.2.0",
     "vue-tribute": "^2.0.0",
     "vue3-perfect-scrollbar": "^2.0.0",
-    "zod": "^3.23.8"
+    "vuelidate": "^0.7.7",
+    "yup": "^1.4.0",
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@ant-design-vue/nuxt": "^1.4.1",
