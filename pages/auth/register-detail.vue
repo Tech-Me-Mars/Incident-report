@@ -78,6 +78,7 @@ definePageMeta({
     layout: 'registerLayout'
     // or middleware: 'auth'
 })
+useHead({ title: 'ลงทะเบียน' });
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/data.js'
 //! /////// [validation import] /////////

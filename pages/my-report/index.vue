@@ -46,6 +46,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'รายงานของฉัน' });
 import { formatDateTime, formatDate, customDateFormat, formatCurrency, formatNumber, roundToTwoDecimalPlaces } from '@/helpers/utility';
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/data.js'

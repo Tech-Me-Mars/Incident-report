@@ -2,11 +2,11 @@
   <HeaderMainProfile />
   <section class="p-3">
 
-    <div  class="space-y-1 mb-3">
+    <div class="space-y-1 mb-3">
 
       <div class="grid grid-cols-12 gap-1">
         <div class="col-span-12 lg:col-span-4">
-          <TmmInputDropDown v-model="type_report_code" placeholder="ประเภทรายงาน" className="" :options="resReportType"
+          <TmmInputDropDown v-model="type_report_code" @change="typeReporChange" placeholder="ประเภทรายงาน" className="" :options="resReportType"
             class="w-full" value="code" label="detail" :error="errors.type_report_code" />
         </div>
         <div class=" col-span-6 lg:col-span-4">
@@ -20,10 +20,17 @@
       </div>
       <div class="grid grid-cols-12 gap-1">
         <div class="col-span-7">
+
           <a-select v-model:value="locationValue" show-search placeholder="ค้นหาพื้นที่"
             :default-active-first-option="false" :show-arrow="false" :filter-option="false" :not-found-content="null"
             :options="resLocation" class="w-full" :field-names="{ label: 'name', value: 'name' }"
             @search="locationSearch" :status="errors.incident_area_lat ? 'error' : ''"></a-select>
+
+          <!-- <a-select v-model:value="locationValue" show-search placeholder="ตำแหน่งแหน่งสถานที่เกิดเหตุ"
+                            :default-active-first-option="false" :show-arrow="false" :filter-option="false"
+                            :not-found-content="null" :options="resLocation" class="w-full"
+                            :field-names="{ label: 'name', value: 'name' }" @search="locationSearch"
+                            @change="LocationChange"></a-select> -->
         </div>
         <div class="col-span-5">
           <TmmInputDropDown v-model="radius_km" placeholder="รัศมี" className="" :options="resRadius" value="value"
@@ -32,18 +39,19 @@
 
       </div>
       <div class="flex justify-between">
-       <div class="flex gap-2">
-        <label for="" class="text-sm">แสดงทั้งหมด</label>
-        <a-switch v-model:checked="showIconLoadAll" />
-       </div>
-        
+        <div class="flex gap-2">
+          <label for="" class="text-sm">แสดงทั้งหมด</label>
+          <a-switch v-model:checked="showIconLoadAll" @change="switchChange" />
+        </div>
+
 
         <!-- <TmmButton v-if="!showIconLoadAll" @click="loadFindMapAll()" label="แสดงทั้งหมด"
           icon="mdi mdi-checkbox-blank-outline mr-1" type="primary" severity="warning" />
         <TmmButton v-else @click="loadFindMapAll()" label="แสดงทั้งหมด" icon="mdi mdi-checkbox-marked mr-1 text-sky-700" type="primary"
           severity="warning" /> -->
-          
-        <TmmButton label="ค้นหา" icon="mdi mdi-map" type="primary" htmlType="button" @click="onSubmitForm" severity="info" />
+
+        <TmmButton label="ค้นหา" icon="mdi mdi-map" type="primary" htmlType="button" @click="onSubmitForm"
+          severity="info" />
       </div>
     </div>
     <!-- <client-only>
@@ -65,6 +73,10 @@
   <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
 </template>
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'Map' });
 import { ref, onMounted, onUnmounted } from 'vue';
 import * as dataApi from './api/dataApi.js'
 
@@ -85,7 +97,7 @@ const mqttSub = async () => {
   $mqtt.subscribe(`${mqtt_pre}/news_update`, (message) => {
     if (showIconLoadAll.value) {
       loadFindMapAll()
-    }else{
+    } else {
       search()
     }
   });
@@ -93,6 +105,9 @@ const mqttSub = async () => {
 const mqttUnSub = async () => {
   $mqtt.unsubscribe(`${mqtt_pre}/news_update`);
 }
+
+
+
 watch(checkRealTime, (newValue) => {
   if (newValue) {
     mqttSub();
@@ -111,8 +126,9 @@ const loadRadius = async () => {
     resRadius.value = res.data.data?.map((e, i) => ({
       ...e,
       value: e,
-      label: e
+      label: String(e)
     }));
+    console.log(resRadius.value)
   } catch (error) {
     console.error(error);
   }
@@ -163,15 +179,15 @@ const { handleReset, handleSubmit, errors } = useForm({
 
 })
 
-const onSubmitForm = async() => {
+const onSubmitForm = async () => {
 
   if (showIconLoadAll.value) {
 
     await loadFindMapAll()
-  }else{
+  } else {
     return search();
   }
-  
+
 };
 
 const search = async () => {
@@ -190,7 +206,7 @@ const search = async () => {
     if (res.data.data?.items?.length > 0) {
       console.log(res.data.data?.items?.length)
       resMap.value = await res.data.data;
-      showIconLoadAll.value = false
+
       showMap.value = true
       countMarker.value = res.data.data?.items?.length
       setTimeout(() => {
@@ -199,7 +215,6 @@ const search = async () => {
     } else {
       // หากไม่มีข้อมูล แสดงmapเปล่า ๆ
       countMarker.value = 0
-      showIconLoadAll.value = false
       showMap.value = false
     }
 
@@ -235,7 +250,7 @@ const loadFindMapAll = async () => {
     resMap.value = await res.data.data;
     showMap.value = true;
     countMarker.value = res.data.data?.items?.length
-    showIconLoadAll.value = await true;
+
 
     type_report_code.value = undefined;
     incident_date_start.value = undefined;
@@ -251,7 +266,7 @@ const loadFindMapAll = async () => {
 
   } catch (error) {
     countMarker.value = 0
-    showIconLoadAll.value = false;
+
     errorAlert.value = true;
     dataError.value = error;
     console.error(error);
@@ -345,6 +360,40 @@ onMounted(async () => {
 
 
 });
+
+watch(
+  [locationValue, type_report_code, incident_date_start, incident_date_end, radius_km],
+  () => {
+    // When any of the properties change, set showIconLoadAll to false
+    if (locationValue.value || type_report_code.value || incident_date_start.value || incident_date_end.value || radius_km.value) {
+      showIconLoadAll.value = false;
+    }
+    
+  }
+);
+
+const switchChange = (e) => {
+  console.log(e)
+  if (e == true) {
+    locationValue.value = null;
+    type_report_code.value = null;
+    incident_date_start.value = null;
+    incident_date_end.value = null;
+    radius_km.value = null;
+    loadFindMapAll()
+  }
+
+}
+// watch(showIconLoadAll, (newValue) => {
+//   if (newValue === true) {
+//     // Set other properties to undefined when showIconLoadAll becomes true
+//     locationValue.value = undefined;
+//     type_report_code.value = undefined;
+//     incident_date_start.value = undefined;
+//     incident_date_end.value = undefined;
+//     radius_km.value = undefined;
+//   }
+// });
 
 onUnmounted(() => {
   map.value = null;

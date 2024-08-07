@@ -98,6 +98,10 @@
     </section>
 </template>
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'เพิ่มคนร่วมภารกิจ' });
 //! /////// [validation] /////////
 const open = ref(false);
 const showModal = () => {

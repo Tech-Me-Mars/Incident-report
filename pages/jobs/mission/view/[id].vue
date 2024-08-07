@@ -121,6 +121,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'ดูข้อมูล' });
 import { useRoute } from 'vue-router';
 import * as dataApi from './api/data.js'
 const route = useRoute();

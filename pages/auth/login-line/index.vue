@@ -9,6 +9,7 @@ definePageMeta({
     layout: false,
     // or middleware: 'auth'
 });
+useHead({ title: 'เข้าสู่ระบบ' });
 import { ref } from 'vue'
 import * as dataApi from '../api/data.js'
 

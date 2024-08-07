@@ -79,6 +79,10 @@
     </section>
 </template>
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'แก้ไขโครงสร้าง' });
 //! /////// [validation] /////////
 const open = ref(false);
 const showModal = () => {

@@ -176,6 +176,11 @@
     </section>
 </template>
 <script setup>
+definePageMeta({
+  middleware: ["auth"],
+  // or middleware: 'auth'
+});
+useHead({ title: 'สร้าง job' });
 //! /////// [validation] /////////
 const open = ref(false);
 const showModal = () => {

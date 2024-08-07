@@ -56,6 +56,10 @@
   </section>
 </template>
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'โปรไฟล์' });
 import * as dataApi from './api/data.js'
 
 const resPointSummary = ref();

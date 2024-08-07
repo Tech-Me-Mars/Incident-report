@@ -186,6 +186,7 @@ definePageMeta({
   middleware: ["auth"],
   // or middleware: 'auth'
 });
+useHead({ title: 'Home' });
 import {
   formatDateTime,
   formatDate,

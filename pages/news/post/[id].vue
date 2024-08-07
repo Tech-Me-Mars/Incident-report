@@ -93,6 +93,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'รายละเอียด' });
 // [MODAL VARIABLE AND FUCTION]
 const open = ref(false);
 const showDrawer = () => {

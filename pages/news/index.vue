@@ -74,6 +74,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'ข่าวเกิดเหตุ' });
 import DeferredContent from 'primevue/deferredcontent';
 // import { format } from "date-fns";
 import { format, parseISO } from 'date-fns';

@@ -193,8 +193,9 @@
 <script setup>
 definePageMeta({
     layout: "chat",
-    // or middleware: 'auth'
+   middleware: 'auth'
 });
+useHead({ title: 'แชท' });
 import DeferredContent from 'primevue/deferredcontent';
 import { format, parseISO } from "date-fns";
 import { th } from "date-fns/locale";

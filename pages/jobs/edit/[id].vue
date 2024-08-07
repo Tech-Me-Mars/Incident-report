@@ -111,6 +111,10 @@
     </section>
 </template>
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'แก้ไขโปเซส' });
 //! /////// [validation] /////////
 const open = ref(false);
 const showModal = () => {

@@ -98,6 +98,10 @@
     </section>
 </template>
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'แก้ไขคนร่วมงาน' });
 //! /////// [validation] /////////
 const open = ref(false);
 const showModal = () => {

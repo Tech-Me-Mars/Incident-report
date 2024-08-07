@@ -457,6 +457,10 @@
 
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'ดูรายงาน' });
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/data.js'
 //! /////// [validation import] /////////

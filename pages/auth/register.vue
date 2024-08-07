@@ -43,6 +43,7 @@ definePageMeta({
     middleware: ["loginline"],
     layout: 'registerLayout'
 })
+useHead({ title: 'ยืนยันตัวตน' });
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/data.js'
 //! /////// [validation import] /////////

@@ -511,6 +511,10 @@
 
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'สร้างรายงาน' });
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/data.js'
 //! /////// [validation import] /////////

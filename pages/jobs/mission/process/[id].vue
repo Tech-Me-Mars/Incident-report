@@ -283,6 +283,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'โปรเซส' });
 import { useRoute } from 'vue-router';
 import * as dataApi from './api/data.js'
 const route = useRoute()

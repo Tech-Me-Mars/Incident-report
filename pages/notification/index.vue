@@ -37,6 +37,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'แจ้งเตือน' });
 import { formatDateTime, formatDate, customDateFormat, formatCurrency, formatNumber, roundToTwoDecimalPlaces } from '@/helpers/utility';
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/dataApi.js'

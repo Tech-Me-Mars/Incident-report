@@ -23,6 +23,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'ส่งออก pdf' });
 import VuePdfEmbed from 'vue-pdf-embed';
 // สไตล์ที่จำเป็น
 import 'vue-pdf-embed/dist/style/index.css';

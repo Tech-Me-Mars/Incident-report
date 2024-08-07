@@ -55,7 +55,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'EOP',
-      titleTemplate: '%s | ',
+      titleTemplate: '%s | EOP',
       htmlAttrs: {
         lang: 'en',
       },

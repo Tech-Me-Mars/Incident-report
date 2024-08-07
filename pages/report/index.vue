@@ -16,7 +16,10 @@
 </section>
 </template>
 <script setup>
-
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'รายงาน' });
 onMounted(()=>{
     navigateTo('/report/add')
 })

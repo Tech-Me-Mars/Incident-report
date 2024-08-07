@@ -269,6 +269,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'อนุมัติ' });
 import VuePdfEmbed from 'vue-pdf-embed'
 import 'vue-pdf-embed/dist/style/index.css'
 import 'vue-pdf-embed/dist/style/annotationLayer.css'

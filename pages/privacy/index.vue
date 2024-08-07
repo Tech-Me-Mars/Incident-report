@@ -15,6 +15,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'นโยบาย' });
 import * as dataApi from './api/data.js'
 
 onMounted(() => {

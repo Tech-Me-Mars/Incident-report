@@ -76,6 +76,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+   middleware: 'auth'
+});
+useHead({ title: 'แก้ไขโปรไฟล์' });
 //! /////// [Api Variable] /////////
 import * as dataApi from './api/data.js'
 //! /////// [validation import] /////////
