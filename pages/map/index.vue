@@ -240,7 +240,7 @@ function getMap(mapInstance) {
 
 const showMap = ref(false);
 const resMap = ref([]);
-const showIconLoadAll = ref(false);
+const showIconLoadAll = ref(true);
 
 const loadFindMapAll = async () => {
   console.log('loadALl')
