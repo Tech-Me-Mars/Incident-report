@@ -211,7 +211,7 @@
             <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
             <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
             <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
-        
+
             <TmmLabelSubtitle class="text-gray-500" label="ทรัพย์สินที่เสียหาย" />
             <div class="card p-3 mb-3" v-for="(item, index) in propertyFields" :key="item.key">
                 <div class="flex justify-between">
@@ -512,7 +512,7 @@
 
 <script setup>
 definePageMeta({
-   middleware: 'auth'
+    middleware: 'auth'
 });
 useHead({ title: 'สร้างรายงาน' });
 //! /////// [Api Variable] /////////
@@ -807,7 +807,7 @@ const validationSchema = toTypedSchema(
                     if (!propertyType) {
                         return true; // Skip validation if the type is not found
                     }
-                     if (propertyType.price_input) {
+                    if (propertyType.price_input) {
                         return typeof data.type_property_price === 'number' && !isNaN(data.type_property_price);
                     }
                     return true;
@@ -873,7 +873,7 @@ const validationSchema = toTypedSchema(
 
                 .superRefine((data, context) => {
                     if (data.gangster_data_has == 1) {
-                        if (!data.gangster_offense_count) {
+                        if (data.gangster_offense_count === undefined || data.gangster_offense_count === null) {
                             context.addIssue({
                                 code: zod.ZodIssueCode.custom,
                                 message: requireValue,
