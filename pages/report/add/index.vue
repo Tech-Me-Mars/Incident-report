@@ -52,52 +52,61 @@
 
         <!-- <PageReportAddForm /> -->
         <Form @submit="onSubmit">
+            <div class="flex gap-5 justify-center max-w-[20rem] mx-auto pb-5">
+                <TmmButton type="primary" severity="secondary" :loading="disabledButton" className="w-full rounded-xl"
+                    label="ยกเลิก" @click="router.push('/')" />
+                <TmmButton type="primary" severity="primary" :loading="disabledButton" className="w-full rounded-xl"
+                    htmlType="submit" label="บันทึก" />
+            </div>
             <div class="card p-3 mb-3">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div class="">
                         <TmmTypographyLabelForm label="พื้นที่" />
-                        <TmmInputDropDown @change="areaChange()" v-model="police_province_id" placeholder=""
-                            className="" :options="resPoliceProvince" class="w-full" value="id"
+                        <TmmInputDropDown id="police_province_id" @change="areaChange()" v-model="police_province_id"
+                            placeholder="" className="" :options="resPoliceProvince" class="w-full" value="id"
                             label="police_province_name" :error="errors.police_province_id" />
                     </div>
                     <div>
                         <TmmTypographyLabelForm label="วันที่เกิดเหตุ" />
-                        <TmmInputCalendar v-model="incident_date" class="w-full" placeholder="วันที่เกิดเหตุ..."
-                            :error="errors.incident_date" />
+                        <TmmInputCalendar id="incident_date" v-model="incident_date" class="w-full"
+                            placeholder="วันที่เกิดเหตุ..." :error="errors.incident_date" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="เวลาเกิดเหตุ" />
-                        <TmmInputTimePicker v-model=incident_time class="w-full" :error="errors.incident_time" />
+                        <TmmInputTimePicker id="incident_time" v-model=incident_time class="w-full"
+                            :error="errors.incident_time" />
                     </div>
 
                     <div class="">
                         <TmmTypographyLabelForm label="ประเภทรายงานเหตุ" />
-                        <TmmInputDropDown v-model="type_report_code" placeholder="ประเภทรายงานเหตุ..." className=""
-                            :options="resTypeReport" class="w-full" value="code" label="detail"
-                            :error="errors.type_report_code" />
+                        <TmmInputDropDown id="type_report_code" v-model="type_report_code"
+                            placeholder="ประเภทรายงานเหตุ..." className="" :options="resTypeReport" class="w-full"
+                            value="code" label="detail" :error="errors.type_report_code" />
                         <!-- <a-auto-complete class="!w-full" v-model:value="type_report_code" :options="resTypeReport"
                             placeholder="ประเภทรายงานเหตุ" /> -->
                     </div>
 
                     <div class="">
                         <TmmTypographyLabelForm label="เหตุที่เกิดหรือข้อหา" />
-                        <TmmInputTextarea placeholder="คำอธิบาย..." :auto-size="{ minRows: 3, maxRows: 99 }"
-                            v-model="incident_cause_text" :error="errors.incident_cause_text" />
+                        <TmmInputTextarea id="incident_cause_text" placeholder="คำอธิบาย..."
+                            :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_cause_text"
+                            :error="errors.incident_cause_text" />
                     </div>
 
                     <div class="">
                         <TmmTypographyLabelForm label="บริเวณที่เกิดเหตุ" />
-                        <TmmInputTextarea placeholder="คำอธิบาย..." :auto-size="{ minRows: 3, maxRows: 99 }"
-                            v-model="incident_area_text" :error="errors.incident_area_text" />
+                        <TmmInputTextarea id="incident_area_text" placeholder="คำอธิบาย..."
+                            :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_area_text"
+                            :error="errors.incident_area_text" />
                     </div>
 
                     <div class="space-y-1 lg:col-span-2">
                         <TmmTypographyLabelForm label="ระบุตำแหน่งสถานที่เกิดเหตุ" />
                         <!-- incident_area_lat -->
-                        <a-select v-model:value="locationValue" show-search placeholder="ตำแหน่งแหน่งสถานที่เกิดเหตุ"
-                            :default-active-first-option="false" :show-arrow="false" :filter-option="false"
-                            :not-found-content="null" :options="resLocation" class="w-full"
-                            :field-names="{ label: 'name', value: 'name' }" @search="locationSearch"
+                        <a-select id="locationValue" v-model:value="locationValue" show-search
+                            placeholder="ตำแหน่งแหน่งสถานที่เกิดเหตุ" :default-active-first-option="false"
+                            :show-arrow="false" :filter-option="false" :not-found-content="null" :options="resLocation"
+                            class="w-full" :field-names="{ label: 'name', value: 'name' }" @search="locationSearch"
                             @change="LocationChange"></a-select>
 
                         <!-- :status="errors.incident_area_lat ? 'error' : ''" -->
@@ -121,15 +130,15 @@
 
                             <div class="w-1/2">
                                 <!-- <TmmTypographyLabelForm label="ละติจูด" /> -->
-                                <a-input v-model:value="incident_area_lat" placeholder="ละติจูด" readonly
-                                    :status="errors.incident_area_lat ? 'error' : ''">
+                                <a-input id="incident_area_lat" v-model:value="incident_area_lat" placeholder="ละติจูด"
+                                    readonly :status="errors.incident_area_lat ? 'error' : ''">
                                     <template #prefix><span class="text-xs">lat</span></template>
                                 </a-input>
                             </div>
                             <div class="w-1/2">
                                 <!-- <TmmTypographyLabelForm label="ลองจิจูด" /> -->
-                                <a-input v-model:value="incident_area_long" placeholder="ลองจิจูด" readonly
-                                    :status="errors.incident_area_long ? 'error' : ''">
+                                <a-input id="incident_area_long" v-model:value="incident_area_long"
+                                    placeholder="ลองจิจูด" readonly :status="errors.incident_area_long ? 'error' : ''">
                                     <template #prefix><span class="text-xs">lon</span></template>
                                 </a-input>
                             </div>
@@ -140,8 +149,9 @@
 
                     <div class="lg:col-span-2">
                         <TmmTypographyLabelForm label="ลักษณะที่เกิดเหตุ" />
-                        <TmmInputTextarea placeholder="คำอธิบาย..." :auto-size="{ minRows: 3, maxRows: 99 }"
-                            v-model="incident_structure_text" :error="errors.incident_structure_text" />
+                        <TmmInputTextarea id="incident_structure_text" placeholder="คำอธิบาย..."
+                            :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_structure_text"
+                            :error="errors.incident_structure_text" />
                     </div>
                 </div>
             </div>
@@ -151,7 +161,7 @@
             <!--  ########################  [[ ข้อมูลผู้เสียหาย ]] ########################-->
             <!--  ########################  [[ ข้อมูลผู้เสียหาย ]] ########################-->
             <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลผู้เสียหาย" />
-            <div class="card p-3 mb-3" v-for="(item, index) in suffererFields" :key="item.key">
+            <div id="sufferer_array" class="card p-3 mb-3" v-for="(item, index) in suffererFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
                     <CloseCircleTwoTone v-if="suffererFields.length > 1" @click="confirmRemoveSuffer(item, index)" />
@@ -159,22 +169,22 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div class="">
                         <TmmTypographyLabelForm label="ชื่อ" />
-                        <TmmInput v-model="item.value.suffer_firstname" placeholder="ชื่อ..."
+                        <TmmInput :id="`villain_array[${index}].suffer_firstname`" v-model="item.value.suffer_firstname" placeholder="ชื่อ..."
                             :error="errors[`sufferer_array[${index}].suffer_firstname`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="นามสกุล" />
-                        <TmmInput v-model="item.value.suffer_lastname" placeholder="นามสกุล..."
+                        <TmmInput :id="`villain_array[${index}].suffer_lastname`" v-model="item.value.suffer_lastname" placeholder="นามสกุล..."
                             :error="errors[`sufferer_array[${index}].suffer_lastname`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="อายุ" />
-                        <TmmInputNumber v-model="item.value.suffer_age" :max="150" placeholder="อายุ..."
+                        <TmmInputNumber :id="`villain_array[${index}].suffer_age`" v-model="item.value.suffer_age" :max="150" placeholder="อายุ..."
                             :error="errors[`sufferer_array[${index}].suffer_age`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="สัญชาติ" />
-                        <TmmInputDropDown v-model="item.value.suffer_nationality" placeholder="สัญชาติ..." className=""
+                        <TmmInputDropDown :id="`villain_array[${index}].suffer_nationality`" v-model="item.value.suffer_nationality" placeholder="สัญชาติ..." className=""
                             :options="resNational" class="w-full" value="nation_name_th" label="nation_name_th"
                             :error="errors[`sufferer_array[${index}].suffer_nationality`]" />
                     </div>
@@ -183,13 +193,13 @@
                         <span class="text-sm text-gray-500">หมายเลขหนังสือเดินทาง <span
                                 class="text-red-600">(กรณีไม่ทราบ ให้ใช้
                                 "-")</span> </span>
-                        <TmmInput v-model="item.value.suffer_passport_number" placeholder="หมายเลขหนังสือเดินทาง..."
+                        <TmmInput :id="`villain_array[${index}].suffer_passport_number`" v-model="item.value.suffer_passport_number" placeholder="หมายเลขหนังสือเดินทาง..."
                             :error="errors[`sufferer_array[${index}].suffer_passport_number`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="ความเสียหาย" />
 
-                        <TmmInputDropDown v-model="item.value.suffer_type_damage_code" placeholder="ความเสียหาย..."
+                        <TmmInputDropDown :id="`villain_array[${index}].suffer_type_damage_code`" v-model="item.value.suffer_type_damage_code" placeholder="ความเสียหาย..."
                             className="" :options="resTypeDamage" class="w-full" value="code" label="detail"
                             :error="errors[`sufferer_array[${index}].suffer_type_damage_code`]" />
                     </div>
@@ -213,7 +223,7 @@
             <!--  ########################  [[ ทรัพย์สินที่เสียหา ]] ########################-->
 
             <TmmLabelSubtitle class="text-gray-500" label="ทรัพย์สินที่เสียหาย" />
-            <div class="card p-3 mb-3" v-for="(item, index) in propertyFields" :key="item.key">
+            <div id="property_array" class="card p-3 mb-3" v-for="(item, index) in propertyFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
                     <CloseCircleTwoTone v-if="propertyFields.length > 1" @click="confirmRemoveProperty(item, index)" />
@@ -222,24 +232,24 @@
 
                     <div class="">
                         <TmmTypographyLabelForm label="ประเภทสินทรัพย์" />
-                        <TmmInputDropDown v-model="item.value.type_property_code" placeholder="ประเภทสินทรัพย์"
+                        <TmmInputDropDown :id="`property_array[${index}].type_property_code`" v-model="item.value.type_property_code" placeholder="ประเภทสินทรัพย์"
                             :options="resTypeProperty" class="w-full" value="code" label="detail"
                             :error="errors[`property_array[${index}].type_property_code`]" />
                     </div>
                     <div v-if="isBrandInputVisible(item?.value.type_property_code)">
                         <TmmTypographyLabelForm label="ยี่ห้อ" />
-                        <TmmInput v-model="item.value.type_property_brand" placeholder="ยี่ห้อ..."
+                        <TmmInput :id="`property_array[${index}].type_property_brand`" v-model="item.value.type_property_brand" placeholder="ยี่ห้อ..."
                             :error="errors[`property_array[${index}].type_property_brand`]" />
                     </div>
 
                     <div v-if="isQtyInputVisible(item.value.type_property_code)">
                         <TmmTypographyLabelForm label="จำนวน" />
-                        <TmmInputNumber v-model="item.value.type_property_qty" placeholder="จำนวน..."
+                        <TmmInputNumber :id="`property_array[${index}].type_property_qty`" v-model="item.value.type_property_qty" placeholder="จำนวน..."
                             :error="errors[`property_array[${index}].type_property_qty`]" />
                     </div>
                     <div v-if="isPriceInputVisible(item.value.type_property_code)">
                         <TmmTypographyLabelForm label="มูลค่าโดยประมาณ" />
-                        <TmmInputNumber v-model="item.value.type_property_price" placeholder="มูลค่าโดยประมาณ..."
+                        <TmmInputNumber :id="`property_array[${index}].type_property_price`" v-model="item.value.type_property_price" placeholder="มูลค่าโดยประมาณ..."
                             :error="errors[`property_array[${index}].type_property_price`]" />
                     </div>
 
@@ -261,12 +271,13 @@
             <div class="flex justify-between items-center mb-4">
                 <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
                 <div class="">
-                    <a-radio-group v-model:value="gangster_has" option-type="button" :options="gangsterOption" />
+                    <a-radio-group id="gangster_has" v-model:value="gangster_has" option-type="button"
+                        :options="gangsterOption" />
                 </div>
             </div>
 
 
-            <div class="card p-3 mb-3" v-for="(item, index) in villainFields" :key="item.key">
+            <div id="villain_array" class="card p-3 mb-3" v-for="(item, index) in villainFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
                     <CloseCircleTwoTone v-if="villainFields.length > 1" @click="confirmRemoveVilain(item, index)" />
@@ -294,28 +305,28 @@
 
                 <div class="">
                     <TmmTypographyLabelForm label="ชื่อ" />
-                    <TmmInput v-model="item.value.gangster_firstname" placeholder="ชื่อ..."
+                    <TmmInput :id="`villain_array[${index}].gangster_firstname`" v-model="item.value.gangster_firstname" placeholder="ชื่อ..."
                         :error="errors[`villain_array[${index}].gangster_firstname`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="นามสกุล" />
-                    <TmmInput v-model="item.value.gangster_lastname" placeholder="นามสกุล..."
+                    <TmmInput :id="`villain_array[${index}].gangster_lastname`" v-model="item.value.gangster_lastname" placeholder="นามสกุล..."
                         :error="errors[`villain_array[${index}].gangster_lastname`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="อายุ" />
-                    <TmmInputNumber v-model="item.value.gangster_age" :max="150" placeholder="อายุ..."
+                    <TmmInputNumber :id="`villain_array[${index}].gangster_age`" v-model="item.value.gangster_age" :max="150" placeholder="อายุ..."
                         :error="errors[`villain_array[${index}].gangster_age`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="สัญชาติ" />
-                    <TmmInputDropDown v-model="item.value.gangster_nationality" placeholder="สัญชาติ..." className=""
+                    <TmmInputDropDown :id="`villain_array[${index}].gangster_nationality`" v-model="item.value.gangster_nationality" placeholder="สัญชาติ..." className=""
                         :options="resNational" class="w-full" value="nation_name_th" label="nation_name_th"
                         :error="errors[`villain_array[${index}].gangster_nationality`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="จำนวนครั้งที่กระทำความผิด" />
-                    <TmmInputNumber :min="0" v-model="item.value.gangster_offense_count"
+                    <TmmInputNumber :id="`villain_array[${index}].gangster_offense_count`" :min="0" v-model="item.value.gangster_offense_count"
                         placeholder="จำนวนครั้งที่กระทำความผิด..."
                         :error="errors[`villain_array[${index}].gangster_offense_count`]" />
                 </div>
@@ -323,7 +334,7 @@
                     <TmmTypographyLabelForm label="อาวุธเครื่องมือที่ใช้" />
                     <!-- <TmmInput v-model="item.value.gangster_weapon" placeholder="อาวุธเครื่องมือที่ใช้..."
                         :error="errors[`villain_array[${index}].gangster_weapon`]" /> -->
-                    <a-auto-complete :status="(errors[`villain_array[${index}].gangster_weapon`] ? 'error' : '')"
+                    <a-auto-complete :id="`villain_array[${index}].gangster_weapon`" :status="(errors[`villain_array[${index}].gangster_weapon`] ? 'error' : '')"
                         class="!w-full !mb-2" v-model:value="item.value.gangster_weapon" :options="resWepon"
                         placeholder="อาวุธเครื่องมือที่ใช้..." @search="weponSearch"
                         :field-names="{ label: 'detail', value: 'detail' }" />
@@ -348,19 +359,20 @@
                 <div class="">
                     <div class="">
                         <TmmTypographyLabelForm label="ยานพานะที่ใช้ทำผิด" />
-                        <TmmInputDropDown v-model="type_vehicle_code" placeholder="ยานพานะที่ใช้ทำผิด..." className=""
-                            :options="resVehicle" class="w-full" value="code" label="detail"
-                            :error="errors.type_vehicle_code" />
+                        <TmmInputDropDown id="type_vehicle_code" v-model="type_vehicle_code"
+                            placeholder="ยานพานะที่ใช้ทำผิด..." className="" :options="resVehicle" class="w-full"
+                            value="code" label="detail" :error="errors.type_vehicle_code" />
                     </div>
                     <div>
                         <TmmTypographyLabelForm label="ทะเบียนรถที่ใช้กระทำความผิด" />
-                        <TmmInput v-model="type_vehicle_license_plate" class="w-full" placeholder="ทะเบียนรถ..."
-                            :error="errors.type_vehicle_license_plate" />
+                        <TmmInput id="type_vehicle_license_plate" v-model="type_vehicle_license_plate" class="w-full"
+                            placeholder="ทะเบียนรถ..." :error="errors.type_vehicle_license_plate" />
                     </div>
                     <div class="col-span-2">
                         <TmmTypographyLabelForm label="รายละเอียด/พฤติการณ์แห่งคดี" />
-                        <TmmInputTextarea :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_detail"
-                            placeholder="รายละเอียด/พฤติการณ์แห่งคดี..." :error="errors.incident_detail" />
+                        <TmmInputTextarea id="incident_detail" :auto-size="{ minRows: 3, maxRows: 99 }"
+                            v-model="incident_detail" placeholder="รายละเอียด/พฤติการณ์แห่งคดี..."
+                            :error="errors.incident_detail" />
                     </div>
                 </div>
             </div>
@@ -369,18 +381,19 @@
 
                     <div class="flex flex-col ">
                         <TmmTypographyLabelForm label="พนักงานสอบสวนผู้รับผิดชอบ" />
-                        <a-auto-complete :status="(errors?.inquiry_employee_fullname ? 'error' : '')"
-                            class="!w-full !mb-2" v-model:value="inquiry_employee_fullname"
-                            :options="resSuggestionEmployeeInquiry" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
+                        <a-auto-complete id="inquiry_employee_fullname"
+                            :status="(errors?.inquiry_employee_fullname ? 'error' : '')" class="!w-full !mb-2"
+                            v-model:value="inquiry_employee_fullname" :options="resSuggestionEmployeeInquiry"
+                            placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
                             :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange"
                             @search="inquirySearch" />
-                        <a-auto-complete :status="(errors?.inquiry_employee_position ? 'error' : '')"
-                            class="!w-full !mb-2" v-model:value="inquiry_employee_position" :options="resPositions"
-                            placeholder="ตำแหน่ง"
+                        <a-auto-complete id="inquiry_employee_position"
+                            :status="(errors?.inquiry_employee_position ? 'error' : '')" class="!w-full !mb-2"
+                            v-model:value="inquiry_employee_position" :options="resPositions" placeholder="ตำแหน่ง"
                             :field-names="{ label: 'position_name_th', value: 'position_name_th' }" />
 
-                        <TmmInput v-model="inquiry_employee_phone" class="w-full !mb-2" placeholder="เบอร์โทร..."
-                            :error="errors.inquiry_employee_phone" />
+                        <TmmInput id="inquiry_employee_phone" v-model="inquiry_employee_phone" class="w-full !mb-2"
+                            placeholder="เบอร์โทร..." :error="errors.inquiry_employee_phone" />
                     </div>
 
                 </div>
@@ -390,18 +403,21 @@
                 <div class="">
                     <div class="">
                         <TmmTypographyLabelForm label="นายตำรวจเวรชั้นผู้ใหญ่ควบคุม" />
-                        <a-auto-complete :status="(errors?.senior_police_control_employee_fullname ? 'error' : '')"
+                        <a-auto-complete id="senior_police_control_employee_fullname"
+                            :status="(errors?.senior_police_control_employee_fullname ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_fullname"
                             :options="resSuggestionEmployeeSenior" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
                             :field-names="{ label: 'fullname', value: 'fullname' }" @change="seniorChange"
                             @search="seniorSearch" />
-                        <a-auto-complete :status="(errors?.senior_police_control_employee_position ? 'error' : '')"
+                        <a-auto-complete id="senior_police_control_employee_position"
+                            :status="(errors?.senior_police_control_employee_position ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_position"
                             :options="resPositions" placeholder="ตำแหน่ง"
                             :field-names="{ label: 'position_name_th', value: 'position_name_th' }" />
 
 
-                        <TmmInput v-model="senior_police_control_employee_phone" class="w-full !mb-2"
+                        <TmmInput id="senior_police_control_employee_phone"
+                            v-model="senior_police_control_employee_phone" class="w-full !mb-2"
                             placeholder="เบอร์โทร..." :error="errors.senior_police_control_employee_phone" />
                     </div>
                 </div>
@@ -411,8 +427,9 @@
                     <div class="">
                         <TmmTypographyLabelForm v-if="areaLabel" :label="`การดำเนินการของ ${areaLabel}`" />
                         <TmmTypographyLabelForm v-else="areaLabel" :label="`การดำเนินการของ`" />
-                        <TmmInputTextarea :auto-size="{ minRows: 3, maxRows: 99 }" v-model="incident_process_text"
-                            placeholder="คำอธิบาย...." :error="errors.incident_process_text" />
+                        <TmmInputTextarea id="incident_process_text" :auto-size="{ minRows: 3, maxRows: 99 }"
+                            v-model="incident_process_text" placeholder="คำอธิบาย...."
+                            :error="errors.incident_process_text" />
                     </div>
                 </div>
             </div>
@@ -421,9 +438,9 @@
                 <div class="">
                     <div class="">
                         <TmmTypographyLabelForm :label="`เสนอรายงาน`" />
-                        <TmmInputDropDown v-model="police_head_station_employee_id" placeholder="เลือก ชื่อ-นามสกุล"
-                            className="" :options="resHeadeStation" class="w-full" value="employee_id" label="fullname"
-                            :error="errors.police_head_station_employee_id" />
+                        <TmmInputDropDown id="police_head_station_employee_id" v-model="police_head_station_employee_id"
+                            placeholder="เลือก ชื่อ-นามสกุล" className="" :options="resHeadeStation" class="w-full"
+                            value="employee_id" label="fullname" :error="errors.police_head_station_employee_id" />
                     </div>
                 </div>
             </div>
@@ -445,7 +462,7 @@
                 </div>
             </div> -->
             <TmmTypographyLabelForm label="แนบรูปภาพและรายละเอียด" />
-            <div class="card p-3 mb-3" v-for="(item, index) in attachFields" :key="item.key">
+            <div id="attach_array" class="card p-3 mb-3" v-for="(item, index) in attachFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
                     <CloseCircleTwoTone v-if="attachFields.length > 1" @click="confirmRemoveAttach(item, index)" />
@@ -453,20 +470,20 @@
                 <div class="grid grid-cols-1 gap-2">
                     <div class="">
                         <TmmTypographyLabelForm label="รายละเอียด..." /> {{ }}
-                        <TmmInput v-model="item.value.group_text_detail" placeholder="รายละเอียด..."
+                        <TmmInput :id="`attach_array[${index}].group_text_detail`" v-model="item.value.group_text_detail" placeholder="รายละเอียด..."
                             :error="errors[`attach_array[${index}].group_text_detail`]" />
                     </div>
 
                     <div class="flex flex-col">
                         <TmmTypographyLabelForm label="ประเภทรูปภาพ" />
-                        <TmmInputDropDown v-model="item.value.type_group_image_id" placeholder="ประเภทรูปภาพ..."
+                        <TmmInputDropDown :id="`attach_array[${index}].type_group_image_id`" v-model="item.value.type_group_image_id" placeholder="ประเภทรูปภาพ..."
                             className="" :options="resTypeGroupImage" class="w-full !mb-2" value="id"
                             label="type_group_image_name"
                             :error="errors[`attach_array[${index}].type_group_image_id`]" />
                     </div>
                     <div class="flex flex-col">
-                        <TmmTypographyLabelForm label="แนบรูปภาพ (แนบได้สูงสุด 3 รูป)" />
-                        <a-upload :maxCount="3" v-model:file-list="item.value.image_detail" accept="image/*"
+                        <TmmTypographyLabelForm :id="`attach_array[${index}].image_detail`" label="แนบรูปภาพ (แนบได้สูงสุด 3 รูป)" />
+                        <a-upload  :maxCount="3" v-model:file-list="item.value.image_detail" accept="image/*"
                             @preview="handlePreview" :before-upload="beforeUpload" list-type="picture" multiple
                             name="file">
                             <a-button>
@@ -1097,9 +1114,26 @@ const confirmRemoveProperty = async (item, index) => {
 
 
 
-const onSubmit = handleSubmit((values) => {
-    saveReport(values);
-});
+// const onSubmit = handleSubmit((values) => {
+//     saveReport(values);
+// });
+const onSubmit = handleSubmit(
+    async (values) => {
+        saveReport(values);
+    },
+    async ({ errors }) => {
+        console.log('errors', errors)
+        const firstError = Object.keys(errors)[0];
+        console.log(firstError);
+        const el = document.querySelector(`[id="${firstError}"]`);
+        if (el) {
+            el.scrollIntoView({
+                behavior: 'smooth',
+            });
+            el.focus();
+        }
+    }
+);
 
 const disabledButton = ref(false)
 const saveReport = async () => {
@@ -1165,6 +1199,8 @@ const saveReport = async () => {
             formData.append('gangster_nationality[]', e.value.gangster_nationality ? e.value.gangster_nationality : null);
             formData.append('gangster_offense_count[]', e.value.gangster_offense_count ? e.value.gangster_offense_count : 0);
             formData.append('gangster_weapon[]', e.value.gangster_weapon ? e.value.gangster_weapon : null);
+            formData.append('gangster_data_has[]', e.value.gangster_data_has ? e.value.gangster_data_has : 0);
+
         });
 
         attachFields?.value?.forEach((e, i) => {
