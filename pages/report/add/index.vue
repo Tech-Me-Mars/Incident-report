@@ -52,12 +52,7 @@
 
         <!-- <PageReportAddForm /> -->
         <Form @submit="onSubmit">
-            <div class="flex gap-5 justify-center max-w-[20rem] mx-auto pb-5">
-                <TmmButton type="primary" severity="secondary" :loading="disabledButton" className="w-full rounded-xl"
-                    label="ยกเลิก" @click="router.push('/')" />
-                <TmmButton type="primary" severity="primary" :loading="disabledButton" className="w-full rounded-xl"
-                    htmlType="submit" label="บันทึก" />
-            </div>
+           
             <div class="card p-3 mb-3">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div class="">
@@ -334,10 +329,12 @@
                     <TmmTypographyLabelForm label="อาวุธเครื่องมือที่ใช้" />
                     <!-- <TmmInput v-model="item.value.gangster_weapon" placeholder="อาวุธเครื่องมือที่ใช้..."
                         :error="errors[`villain_array[${index}].gangster_weapon`]" /> -->
-                    <a-auto-complete :id="`villain_array[${index}].gangster_weapon`" :status="(errors[`villain_array[${index}].gangster_weapon`] ? 'error' : '')"
+                    <!-- <a-auto-complete :id="`villain_array[${index}].gangster_weapon`" :status="(errors[`villain_array[${index}].gangster_weapon`] ? 'error' : '')"
                         class="!w-full !mb-2" v-model:value="item.value.gangster_weapon" :options="resWepon"
                         placeholder="อาวุธเครื่องมือที่ใช้..." @search="weponSearch"
-                        :field-names="{ label: 'detail', value: 'detail' }" />
+                        :field-names="{ label: 'detail', value: 'detail' }" /> -->
+                        <TmmInputSuggestion className="!w-full" :id="`villain_array[${index}].gangster_weapon`" v-model="item.value.gangster_weapon"
+                        :options="resWepon" label="detail" value="detail" />
                 </div>
 
             </div>
