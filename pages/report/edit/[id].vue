@@ -254,11 +254,36 @@
             </div> -->
 
             <!-- ############################### [[ คนร้าย ]] ################################## -->
-            <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
+            <div class="flex justify-between items-center mb-4">
+                <TmmLabelSubtitle class="text-gray-500" label="ข้อมูลคนร้าย" />
+                <div class="">
+                    <a-radio-group class="readonly" readonly id="gangster_has" v-model:value="gangster_has"
+                        option-type="button" :options="gangsterOption" />
+                </div>
+            </div>
             <div class="card p-3 mb-3" v-for="(item, index) in villainFields" :key="item.key">
                 <div class="flex justify-between">
                     <TmmTag color="#1677ff" class="rounded-xl mb-2">ลำดับที่ {{ index + 1 }}</TmmTag>
                     <!-- <CloseCircleTwoTone v-if="villainFields.length > 1" @click="confirmRemoveVilain(item, index)" /> -->
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                    <div class="">
+                        <TmmTypographyLabelForm label="ทราบคนร้าย" class="mr-2" />
+                        <div>
+
+                            <a-radio-group class="readonly" readonly v-model:value="item.value.gangster_data_has"
+                                name="radioGroup">
+                                <a-radio :value="true"
+                                    :class="{ 'radio-green': item.value.gangster_data_has === true, 'radio-default': item.value.gangster_data_has !== true }">
+                                    ทราบ
+                                </a-radio>
+                                <a-radio :value="false"
+                                    :class="{ 'radio-yellow': item.value.gangster_data_has === false, 'radio-default': item.value.gangster_data_has !== false }">
+                                    ไม่ทราบ
+                                </a-radio>
+                            </a-radio-group>
+                        </div>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div class="">
@@ -284,8 +309,8 @@
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="จำนวนครั้งที่กระทำความผิด" />
-                        <TmmInputNumber :min="0" v-model="item.value.gangster_offense_count" className="readonly"
-                            placeholder="จำนวนครั้งที่กระทำความผิด..."
+                        <TmmInputNumber :id="`villain_array[${index}].gangster_offense_count`" :min="0"
+                            v-model="item.value.gangster_offense_count" placeholder="จำนวนครั้งที่กระทำความผิด..."
                             :error="errors[`villain_array[${index}].gangster_offense_count`]" />
                     </div>
                     <div class="">
@@ -458,7 +483,7 @@
 
 <script setup>
 definePageMeta({
-   middleware: 'auth'
+    middleware: 'auth'
 });
 useHead({ title: 'ดูรายงาน' });
 //! /////// [Api Variable] /////////
@@ -736,7 +761,10 @@ const { value: incident_area_lat } = useField("incident_area_lat");
 const { value: incident_area_long } = useField("incident_area_long");
 
 const { value: incident_structure_text } = useField("incident_structure_text");
-
+// has vilian
+const { value: gangster_has } = useField("gangster_has", null, {
+    initialValue: 1,
+});
 // ยานพาหนะ
 const { value: type_vehicle_code } = useField("type_vehicle_code");
 const { value: type_vehicle_license_plate } = useField("type_vehicle_license_plate");
@@ -1004,14 +1032,7 @@ const loadReport = async () => {
         incident_process_text.value = res?.data?.data?.incident_process_text;
 
         res.data.data?.report_suffer.forEach((e, i) => {
-            // if (suffererFields.value[i]) {
-            //     suffererFields.value[i].value.suffer_firstname = e.firstname || undefined;
-            //     suffererFields.value[i].value.suffer_lastname = e.lastname || undefined;
-            //     suffererFields.value[i].value.suffer_age = e.age ? parseInt(e.age) : undefined;
-            //     suffererFields.value[i].value.suffer_nationality = e.nationality || undefined;
-            //     suffererFields.value[i].value.suffer_passport_number = e.passport_number || undefined;
-            //     suffererFields.value[i].value.suffer_type_damage_code = e.type_damage_code || undefined;
-            // }
+
             pushSufferer({
                 suffer_firstname: e.firstname || undefined,
                 suffer_lastname: e.lastname || undefined,
@@ -1038,6 +1059,11 @@ const loadReport = async () => {
             })
         });
 
+        if (res.data.data?.report_gangster?.length > 0) {
+            gangster_has.value = 1
+        } else {
+            gangster_has.value = 0
+        }
         // Process gangster data
         res.data.data?.report_gangster.forEach((e, i) => {
             pushVillain({
@@ -1046,7 +1072,8 @@ const loadReport = async () => {
                 gangster_age: e.age ? parseInt(e.age) : undefined,
                 gangster_nationality: e.nationality || undefined,
                 gangster_offense_count: e.offense_count ? parseInt(e.offense_count) : undefined,
-                gangster_weapon: e.weapon || undefined
+                gangster_weapon: e.weapon || undefined,
+                gangster_data_has: e.gangster_data_has || undefined
             })
         });
 
@@ -1198,6 +1225,16 @@ const inquiryChange = async () => {
         console.error(error);
     }
 }
+const gangsterOption = [
+    {
+        label: 'มีคนร้าย',
+        value: 1,
+    },
+    {
+        label: 'ไม่มีคนร้าย',
+        value: 0,
+    },
+];
 
 const seniorChange = async () => {
     try {

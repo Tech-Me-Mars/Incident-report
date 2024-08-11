@@ -1,72 +1,64 @@
+<script setup>
+import { useForm } from 'vee-validate';
+import * as yup from 'yup';
+
+const { errors, handleSubmit, defineField } = useForm({
+  validationSchema: yup.object({
+    
+    password: yup.string().min(6).required(),
+    first_name: yup.string().min(6).required(),
+    email: yup.string().email().required(),
+    last_name: yup.string().min(6).required(),
+   
+  }),
+});
+
+const onSubmit = handleSubmit(
+  values => {
+    // alert(JSON.stringify(values, null, 2));
+  },
+  ({ errors }) => {
+    const firstError = Object.keys(errors)[0];
+    console.log(firstError)
+    const el = document.querySelector(`[name="${firstError}"]`);
+    el?.scrollIntoView({
+      behavior: 'smooth',
+    });
+    el.focus();
+  },
+);
+
+
+const [password, passwordAttrs] = defineField('password');
+const [first_name, nameAttrs] = defineField('first_name');
+const [last_name, lastnameAttrs] = defineField('last_name');
+const [email, emailAttrs] = defineField('email');
+</script>
+
 <template>
-    <form @submit.prevent="handleSubmit(onSubmit)">
-      <div v-for="(person, index) in persons" :key="index">
-        <label for="name">Name:</label>
-        <input v-model="person.name" name="name" />
-  
-        <div v-if="person.validate && !person.name">
-          Name is required
-        </div>
-  
-        <label for="tel">Telephone:</label>
-        <input v-model="person.tel" name="tel" />
-  
-        <label for="age">Age:</label>
-        <input v-model="person.age" name="age" />
-  
-        <label for="validate">Validate:</label>
-        <input type="checkbox" v-model="person.validate" name="validate" />
-  
-        <button type="button" @click="removePerson(index)">Remove</button>
-      </div>
-  
-      <button type="submit">Submit</button>
-    </form>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  import { z } from 'zod';
-  
-  // Schema สำหรับแต่ละบุคคล
-  const personSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    tel: z.string().min(1, 'Telephone number is required'),
-    age: z.number().min(0, 'Age must be a positive number'),
-    validate: z.boolean()
-  });
-  
-  // Schema สำหรับฟอร์ม
-  const schemaWithValidation = z.object({
-    persons: z.array(personSchema).refine(data => data.every(person => person.validate || person.name.trim() !== ''), {
-      message: 'Name is required when validate is true',
-    }),
-  });
-  
-  // ข้อมูลเริ่มต้น
-  const persons = ref([
-    { age: 43, name: "kay", tel: "0631282446", validate: true },
-    { age: 33, name: "kay", tel: "0631282446", validate: false },
-    { age: 51, name: "kay", tel: "0631282446", validate: false },
-    // เพิ่มรายการอื่น ๆ ตามต้องการ
-  ]);
-  
-  // ฟังก์ชันสำหรับการส่งฟอร์ม
-  const handleSubmit = (onSubmit) => {
-    const result = schemaWithValidation.safeParse({ persons: persons.value });
-    if (result.success) {
-      onSubmit(result.data);
-    } else {
-      console.error(result.error.errors);
-    }
-  };
-  
-  const onSubmit = (values) => {
-    console.log('Form submitted:', values);
-  };
-  
-  const removePerson = (index) => {
-    persons.value.splice(index, 1);
-  };
-  </script>
-  
+  <form @submit="onSubmit">
+
+
+    <input v-model="first_name" v-bind="nameAttrs" name="first_name" type="text" />
+    <span>{{ errors.first_name }}</span>
+
+    <input v-model="last_name" v-bind="lastnameAttrs" name="last_name" type="text" />
+    <span>{{ errors.last_name }}</span>
+
+    <input v-model="password" v-bind="passwordAttrs" name="password" type="password" />
+    <span>{{ errors.password }}</span>
+
+    <input v-model="email" v-bind="emailAttrs" name="email" type="email" />
+    <span>{{ errors.email }}</span>
+
+    <button>Submit</button>
+  </form>
+</template>
+
+<style>
+input,
+button {
+  margin-top: 300px;
+  display: block;
+}
+</style>

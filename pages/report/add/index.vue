@@ -115,7 +115,7 @@
                         </client-only> -->
                         <div class="relative flex flex-col items-center h-[30rem]">
                             <longdo-map class="h-full w-full" @load="getMap" />
-                            <button class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white"
+                            <button type="button" class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white"
                                 @click="confirmLocation">
                                 <i class="mdi mdi-map-marker-radius text-red-600"></i>ยืนยันตำแหน่ง
                             </button>
@@ -333,8 +333,8 @@
                         class="!w-full !mb-2" v-model:value="item.value.gangster_weapon" :options="resWepon"
                         placeholder="อาวุธเครื่องมือที่ใช้..." @search="weponSearch"
                         :field-names="{ label: 'detail', value: 'detail' }" /> -->
-                        <TmmInputSuggestion className="!w-full" :id="`villain_array[${index}].gangster_weapon`" v-model="item.value.gangster_weapon"
-                        :options="resWepon" label="detail" value="detail" />
+                        <TmmInputSuggestion v-if="resWepon" className="!w-full" :id="`villain_array[${index}].gangster_weapon`" v-model="item.value.gangster_weapon"
+                        :options="resWepon" label="detail" value="detail" :error="errors[`villain_array[${index}].gangster_weapon`]" />
                 </div>
 
             </div>
@@ -832,7 +832,7 @@ const validationSchema = toTypedSchema(
         ),
         villain_array: zod.array(
             zod.object({
-
+                gangster_weapon: zod.string().nonempty(requireValue).default(""),
                 gangster_data_has: zod.number({
                     required_error: requireValue,
                     invalid_type_error: requireValue,
@@ -849,7 +849,7 @@ const validationSchema = toTypedSchema(
                     required_error: requireValue,
                     invalid_type_error: requireValue,
                 }).optional(),
-                gangster_weapon: zod.string().nonempty(requireValue).default(""),
+                
             })
                 .superRefine((data, context) => {
                     if (data.gangster_data_has == 1) {
