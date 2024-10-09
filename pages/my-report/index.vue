@@ -7,47 +7,54 @@
             </NuxtLink>
         </div>
         <div class="bg-gray-900 p-3 text-center fontbold text-white mb-2">MY REPORTS</div>
-        <div class="card p-5 mb-2" v-for="(item, index) in resMyReports" :key="index">
-            <NuxtLink :to="`/report/edit/${item?.id}`">
-                <div class="flex w-full items-center gap-3 mb-2">
-                    <!-- <FileTextTwoTone style="font-size: 20px;" /> -->
-                    <div class="flex flex-col justify-center items-center">
-                        <HeartFilled class="!text-pink-600" />
-                        <span v-if="item?.news_like_sum && item?.news_like_sum != 0" class="text-xs">({{
-                            item?.news_like_sum}})</span>
+        <div v-if="resMyReports.length > 0">
+            <div class="card p-5 mb-2" v-for="(item, index) in resMyReports" :key="index">
+                <NuxtLink :to="`/report/edit/${item?.id}`">
+                    <div class="flex w-full items-center gap-3 mb-2">
+                        <!-- <FileTextTwoTone style="font-size: 20px;" /> -->
+                        <div class="flex flex-col justify-center items-center">
+                            <HeartFilled class="!text-pink-600" />
+                            <span v-if="item?.news_like_sum && item?.news_like_sum != 0" class="text-xs">({{
+                                item?.news_like_sum }})</span>
+                        </div>
+
+                        <div class="flex flex-col">
+
+                            <TmmLabelSubtitle class="" :label="item?.title" />
+
+                            <!-- </NuxtLink> -->
+                            <span class="text-sm ">ความเสียหาย :
+                                <span>{{ formatCurrency(item?.property_price) }}</span></span>
+                            <TmmLabelSmall :label="(item?.time_ago)" />
+                        </div>
                     </div>
-
-                    <div class="flex flex-col">
-
-                        <TmmLabelSubtitle class="" :label="item?.title" />
-
-                        <!-- </NuxtLink> -->
-                        <span class="text-sm ">ความเสียหาย :
-                            <span>{{ formatCurrency(item?.property_price) }}</span></span>
-                        <TmmLabelSmall :label="(item?.time_ago)" />
-                    </div>
-                </div>
-                <!-- <div>
+                    <!-- <div>
       <div class="flex justify-between">
         <small>อัตราความสำเร็จ</small>
         <small class="text-blue-500 font-semibold">68%</small>
       </div>
       <TmmFeedbackProgress value=25 />
     </div> -->
-            </NuxtLink>
+                </NuxtLink>
+            </div>
+            <div class="flex justify-center mb-5">
+                <a-pagination v-model:current="currentPageMyReports" @change="pagiChangeMyReports"
+                    :total="totalRowMyReports" class="border-gray-300 p-1 border rounded-xl bg-white"
+                    v-model:page-size="rowPerPageMyReports" />
+            </div>
         </div>
-        <div class="flex justify-center mb-5">
-            <a-pagination v-model:current="currentPageMyReports" @change="pagiChangeMyReports"
-                :total="totalRowMyReports" class="border-gray-300 p-1 border rounded-xl bg-white"
-                v-model:page-size="rowPerPageMyReports" />
+        <div v-else>
+            <a-list :data-source="[]" />
         </div>
+
+
     </section>
 
 </template>
 
 <script setup>
 definePageMeta({
-   middleware: 'auth'
+    middleware: 'auth'
 });
 useHead({ title: 'รายงานของฉัน' });
 import { formatDateTime, formatDate, customDateFormat, formatCurrency, formatNumber, roundToTwoDecimalPlaces } from '@/helpers/utility';
@@ -127,22 +134,22 @@ const currentPageMyReports = ref(1)
 const rowPerPageMyReports = ref(5)
 const totalRowMyReports = ref(0)
 const pagiChangeMyReports = async () => {
-  loadMyReports();
+    loadMyReports();
 }
-const resMyReports = ref()
+const resMyReports = ref([])
 const loadMyReports = async () => {
-  try {
-    const res = await dataApi.getMyreport(currentPageMyReports.value, rowPerPageMyReports.value)
-    resMyReports.value = res.data.data;
-    totalRowMyReports.value = res.data?.total
-  } catch (error) {
-    console.error(error);
-  }
+    try {
+        const res = await dataApi.getMyreport(currentPageMyReports.value, rowPerPageMyReports.value)
+        resMyReports.value = res.data.data;
+        totalRowMyReports.value = res.data?.total
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 onMounted(() => {
     // loadMyJobs();
-      loadMyReports();
+    loadMyReports();
 })
 const calculateRemainingTime = (endTime) => {
     console.log(endTime)

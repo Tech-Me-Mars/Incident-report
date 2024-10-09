@@ -1,5 +1,5 @@
 <template>
-    
+
     <div class="bg-white py-5 px-3 min-h-[5rem]">
         <!-- <slot /> -->
         <div class="flex flex-wrap justify-between items-center">
@@ -11,6 +11,7 @@
                 </div>
             </NuxtLink>
             <div class="flex gap-5 items-center">
+
                 <a-badge :count="resNotifyCount || 0" color="red">
                     <NuxtLink to="/notification">
                         <i type="" class="mdi mdi mdi-bell text-lg text-blue-500" style="font-size: 25px;">
@@ -25,7 +26,7 @@
             </div>
         </div>
     </div>
-    </template>
+</template>
 
 <script setup>
 import { formatDateTime, formatDate, customDateFormat, formatCurrency, formatNumber, roundToTwoDecimalPlaces } from '@/helpers/utility';
@@ -56,9 +57,10 @@ const loadProfile = async () => {
 const resNotifyCount = ref()
 const loadNotifyCount = async () => {
     try {
-        const res = await dataApi.getNotifyCount();
-        console.log('resNotifyCount', res.data.data);
-        resNotifyCount.value = await res.data.data?.count_data;
+        setTimeout(async () => {
+            const res = await dataApi.getNotifyCount();
+            resNotifyCount.value = await res.data.data?.count_data;
+        }, 1500);
     } catch (error) {
         console.error(error);
     }
@@ -76,6 +78,7 @@ onMounted(() => {
 });
 const mqtt_pre = useRuntimeConfig().public.MQTT_PRE;
 const mqttSub = async () => {
+    console.log('เข้า subscib', resProfile.value.police_employee_id)
     $mqtt.subscribe(`${mqtt_pre}/notification/${resProfile.value.police_employee_id}`, (message) => {
         // เมื่อมีการรับข้อมูลจาก mqtt
         loadNotifyCount()

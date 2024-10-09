@@ -24,7 +24,7 @@
                 </NuxtLink>
             </div>
         </div>
-        
+
     </div>
 </template>
 
@@ -56,9 +56,10 @@ const loadProfile = async () => {
 const resNotifyCount = ref()
 const loadNotifyCount = async () => {
     try {
-        const res = await dataApi.getNotifyCount();
-        console.log('resNotifyCount', res.data.data);
-        resNotifyCount.value = await res.data.data?.count_data;
+        setTimeout(async () => {
+            const res = await dataApi.getNotifyCount();
+            resNotifyCount.value = await res.data.data?.count_data;
+        }, 1500);
     } catch (error) {
         console.error(error);
     }

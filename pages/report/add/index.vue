@@ -52,7 +52,7 @@
 
         <!-- <PageReportAddForm /> -->
         <Form @submit="onSubmit">
-           
+
             <div class="card p-3 mb-3">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div class="">
@@ -115,7 +115,8 @@
                         </client-only> -->
                         <div class="relative flex flex-col items-center h-[30rem]">
                             <longdo-map class="h-full w-full" @load="getMap" />
-                            <button type="button" class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white"
+                            <button type="button"
+                                class="absolute bottom-4 right-4 p-2 px-7 border border-black !text-xs bg-white"
                                 @click="confirmLocation">
                                 <i class="mdi mdi-map-marker-radius text-red-600"></i>ยืนยันตำแหน่ง
                             </button>
@@ -164,22 +165,23 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div class="">
                         <TmmTypographyLabelForm label="ชื่อ" />
-                        <TmmInput :id="`villain_array[${index}].suffer_firstname`" v-model="item.value.suffer_firstname" placeholder="ชื่อ..."
-                            :error="errors[`sufferer_array[${index}].suffer_firstname`]" />
+                        <TmmInput :id="`villain_array[${index}].suffer_firstname`" v-model="item.value.suffer_firstname"
+                            placeholder="ชื่อ..." :error="errors[`sufferer_array[${index}].suffer_firstname`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="นามสกุล" />
-                        <TmmInput :id="`villain_array[${index}].suffer_lastname`" v-model="item.value.suffer_lastname" placeholder="นามสกุล..."
-                            :error="errors[`sufferer_array[${index}].suffer_lastname`]" />
+                        <TmmInput :id="`villain_array[${index}].suffer_lastname`" v-model="item.value.suffer_lastname"
+                            placeholder="นามสกุล..." :error="errors[`sufferer_array[${index}].suffer_lastname`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="อายุ" />
-                        <TmmInputNumber :id="`villain_array[${index}].suffer_age`" v-model="item.value.suffer_age" :max="150" placeholder="อายุ..."
-                            :error="errors[`sufferer_array[${index}].suffer_age`]" />
+                        <TmmInputNumber :id="`villain_array[${index}].suffer_age`" v-model="item.value.suffer_age"
+                            :max="150" placeholder="อายุ..." :error="errors[`sufferer_array[${index}].suffer_age`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="สัญชาติ" />
-                        <TmmInputDropDown :id="`villain_array[${index}].suffer_nationality`" v-model="item.value.suffer_nationality" placeholder="สัญชาติ..." className=""
+                        <TmmInputDropDown :id="`villain_array[${index}].suffer_nationality`"
+                            v-model="item.value.suffer_nationality" placeholder="สัญชาติ..." className=""
                             :options="resNational" class="w-full" value="nation_name_th" label="nation_name_th"
                             :error="errors[`sufferer_array[${index}].suffer_nationality`]" />
                     </div>
@@ -188,14 +190,16 @@
                         <span class="text-sm text-gray-500">หมายเลขหนังสือเดินทาง <span
                                 class="text-red-600">(กรณีไม่ทราบ ให้ใช้
                                 "-")</span> </span>
-                        <TmmInput :id="`villain_array[${index}].suffer_passport_number`" v-model="item.value.suffer_passport_number" placeholder="หมายเลขหนังสือเดินทาง..."
+                        <TmmInput :id="`villain_array[${index}].suffer_passport_number`"
+                            v-model="item.value.suffer_passport_number" placeholder="หมายเลขหนังสือเดินทาง..."
                             :error="errors[`sufferer_array[${index}].suffer_passport_number`]" />
                     </div>
                     <div class="">
                         <TmmTypographyLabelForm label="ความเสียหาย" />
 
-                        <TmmInputDropDown :id="`villain_array[${index}].suffer_type_damage_code`" v-model="item.value.suffer_type_damage_code" placeholder="ความเสียหาย..."
-                            className="" :options="resTypeDamage" class="w-full" value="code" label="detail"
+                        <TmmInputDropDown :id="`villain_array[${index}].suffer_type_damage_code`"
+                            v-model="item.value.suffer_type_damage_code" placeholder="ความเสียหาย..." className=""
+                            :options="resTypeDamage" class="w-full" value="code" label="detail"
                             :error="errors[`sufferer_array[${index}].suffer_type_damage_code`]" />
                     </div>
 
@@ -227,24 +231,28 @@
 
                     <div class="">
                         <TmmTypographyLabelForm label="ประเภทสินทรัพย์" />
-                        <TmmInputDropDown :id="`property_array[${index}].type_property_code`" v-model="item.value.type_property_code" placeholder="ประเภทสินทรัพย์"
+                        <TmmInputDropDown :id="`property_array[${index}].type_property_code`"
+                            v-model="item.value.type_property_code" placeholder="ประเภทสินทรัพย์"
                             :options="resTypeProperty" class="w-full" value="code" label="detail"
                             :error="errors[`property_array[${index}].type_property_code`]" />
                     </div>
                     <div v-if="isBrandInputVisible(item?.value.type_property_code)">
                         <TmmTypographyLabelForm label="ยี่ห้อ" />
-                        <TmmInput :id="`property_array[${index}].type_property_brand`" v-model="item.value.type_property_brand" placeholder="ยี่ห้อ..."
+                        <TmmInput :id="`property_array[${index}].type_property_brand`"
+                            v-model="item.value.type_property_brand" placeholder="ยี่ห้อ..."
                             :error="errors[`property_array[${index}].type_property_brand`]" />
                     </div>
 
                     <div v-if="isQtyInputVisible(item.value.type_property_code)">
                         <TmmTypographyLabelForm label="จำนวน" />
-                        <TmmInputNumber :id="`property_array[${index}].type_property_qty`" v-model="item.value.type_property_qty" placeholder="จำนวน..."
+                        <TmmInputNumber :id="`property_array[${index}].type_property_qty`"
+                            v-model="item.value.type_property_qty" placeholder="จำนวน..."
                             :error="errors[`property_array[${index}].type_property_qty`]" />
                     </div>
                     <div v-if="isPriceInputVisible(item.value.type_property_code)">
                         <TmmTypographyLabelForm label="มูลค่าโดยประมาณ" />
-                        <TmmInputNumber :id="`property_array[${index}].type_property_price`" v-model="item.value.type_property_price" placeholder="มูลค่าโดยประมาณ..."
+                        <TmmInputNumber :id="`property_array[${index}].type_property_price`"
+                            v-model="item.value.type_property_price" placeholder="มูลค่าโดยประมาณ..."
                             :error="errors[`property_array[${index}].type_property_price`]" />
                     </div>
 
@@ -300,29 +308,30 @@
 
                 <div class="">
                     <TmmTypographyLabelForm label="ชื่อ" />
-                    <TmmInput :id="`villain_array[${index}].gangster_firstname`" v-model="item.value.gangster_firstname" placeholder="ชื่อ..."
-                        :error="errors[`villain_array[${index}].gangster_firstname`]" />
+                    <TmmInput :id="`villain_array[${index}].gangster_firstname`" v-model="item.value.gangster_firstname"
+                        placeholder="ชื่อ..." :error="errors[`villain_array[${index}].gangster_firstname`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="นามสกุล" />
-                    <TmmInput :id="`villain_array[${index}].gangster_lastname`" v-model="item.value.gangster_lastname" placeholder="นามสกุล..."
-                        :error="errors[`villain_array[${index}].gangster_lastname`]" />
+                    <TmmInput :id="`villain_array[${index}].gangster_lastname`" v-model="item.value.gangster_lastname"
+                        placeholder="นามสกุล..." :error="errors[`villain_array[${index}].gangster_lastname`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="อายุ" />
-                    <TmmInputNumber :id="`villain_array[${index}].gangster_age`" v-model="item.value.gangster_age" :max="150" placeholder="อายุ..."
-                        :error="errors[`villain_array[${index}].gangster_age`]" />
+                    <TmmInputNumber :id="`villain_array[${index}].gangster_age`" v-model="item.value.gangster_age"
+                        :max="150" placeholder="อายุ..." :error="errors[`villain_array[${index}].gangster_age`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="สัญชาติ" />
-                    <TmmInputDropDown :id="`villain_array[${index}].gangster_nationality`" v-model="item.value.gangster_nationality" placeholder="สัญชาติ..." className=""
+                    <TmmInputDropDown :id="`villain_array[${index}].gangster_nationality`"
+                        v-model="item.value.gangster_nationality" placeholder="สัญชาติ..." className=""
                         :options="resNational" class="w-full" value="nation_name_th" label="nation_name_th"
                         :error="errors[`villain_array[${index}].gangster_nationality`]" />
                 </div>
                 <div class="">
                     <TmmTypographyLabelForm label="จำนวนครั้งที่กระทำความผิด" />
-                    <TmmInputNumber :id="`villain_array[${index}].gangster_offense_count`" :min="0" v-model="item.value.gangster_offense_count"
-                        placeholder="จำนวนครั้งที่กระทำความผิด..."
+                    <TmmInputNumber :id="`villain_array[${index}].gangster_offense_count`" :min="0"
+                        v-model="item.value.gangster_offense_count" placeholder="จำนวนครั้งที่กระทำความผิด..."
                         :error="errors[`villain_array[${index}].gangster_offense_count`]" />
                 </div>
                 <div class="">
@@ -333,8 +342,10 @@
                         class="!w-full !mb-2" v-model:value="item.value.gangster_weapon" :options="resWepon"
                         placeholder="อาวุธเครื่องมือที่ใช้..." @search="weponSearch"
                         :field-names="{ label: 'detail', value: 'detail' }" /> -->
-                        <TmmInputSuggestion v-if="resWepon" className="!w-full" :id="`villain_array[${index}].gangster_weapon`" v-model="item.value.gangster_weapon"
-                        :options="resWepon" label="detail" value="detail" :error="errors[`villain_array[${index}].gangster_weapon`]" />
+                    <TmmInputSuggestion v-if="resWepon" className="!w-full"
+                        :id="`villain_array[${index}].gangster_weapon`" v-model="item.value.gangster_weapon"
+                        :options="resWepon" label="detail" value="detail"
+                        :error="errors[`villain_array[${index}].gangster_weapon`]" />
                 </div>
 
             </div>
@@ -378,12 +389,20 @@
 
                     <div class="flex flex-col ">
                         <TmmTypographyLabelForm label="พนักงานสอบสวนผู้รับผิดชอบ" />
-                        <a-auto-complete id="inquiry_employee_fullname"
+                        <!-- <a-auto-complete id="inquiry_employee_fullname"
                             :status="(errors?.inquiry_employee_fullname ? 'error' : '')" class="!w-full !mb-2"
                             v-model:value="inquiry_employee_fullname" :options="resSuggestionEmployeeInquiry"
                             placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
                             :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange"
-                            @search="inquirySearch" />
+                            @search="inquirySearch" @select="inquirySelect"   /> -->
+
+                        <a-auto-complete id="inquiry_employee_fullname"
+                            :status="errors?.inquiry_employee_fullname ? 'error' : ''" class="!w-full !mb-2"
+                            v-model:value="inquiry_employee_fullname" :options="resSuggestionEmployeeInquiry"
+                            placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
+                            :field-names="{ label: 'fullname', value: 'fullname' }" @change="inquiryChange"
+                            @search="inquirySearch" @select="inquirySelect" @keydown="inquiryKeyDown" />
+
                         <a-auto-complete id="inquiry_employee_position"
                             :status="(errors?.inquiry_employee_position ? 'error' : '')" class="!w-full !mb-2"
                             v-model:value="inquiry_employee_position" :options="resPositions" placeholder="ตำแหน่ง"
@@ -399,13 +418,15 @@
             <div class="card p-3 mb-3">
                 <div class="">
                     <div class="">
+
                         <TmmTypographyLabelForm label="นายตำรวจเวรชั้นผู้ใหญ่ควบคุม" />
                         <a-auto-complete id="senior_police_control_employee_fullname"
                             :status="(errors?.senior_police_control_employee_fullname ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_fullname"
                             :options="resSuggestionEmployeeSenior" placeholder="รหัสพนักงานสอบสวนผู้รับผิดชอบ"
                             :field-names="{ label: 'fullname', value: 'fullname' }" @change="seniorChange"
-                            @search="seniorSearch" />
+                            @search="seniorSearch" @select="seniorSelect" @keydown="seniorKeyDown" />
+
                         <a-auto-complete id="senior_police_control_employee_position"
                             :status="(errors?.senior_police_control_employee_position ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_position"
@@ -467,20 +488,22 @@
                 <div class="grid grid-cols-1 gap-2">
                     <div class="">
                         <TmmTypographyLabelForm label="รายละเอียด..." /> {{ }}
-                        <TmmInput :id="`attach_array[${index}].group_text_detail`" v-model="item.value.group_text_detail" placeholder="รายละเอียด..."
+                        <TmmInput :id="`attach_array[${index}].group_text_detail`"
+                            v-model="item.value.group_text_detail" placeholder="รายละเอียด..."
                             :error="errors[`attach_array[${index}].group_text_detail`]" />
                     </div>
 
                     <div class="flex flex-col">
                         <TmmTypographyLabelForm label="ประเภทรูปภาพ" />
-                        <TmmInputDropDown :id="`attach_array[${index}].type_group_image_id`" v-model="item.value.type_group_image_id" placeholder="ประเภทรูปภาพ..."
-                            className="" :options="resTypeGroupImage" class="w-full !mb-2" value="id"
-                            label="type_group_image_name"
+                        <TmmInputDropDown :id="`attach_array[${index}].type_group_image_id`"
+                            v-model="item.value.type_group_image_id" placeholder="ประเภทรูปภาพ..." className=""
+                            :options="resTypeGroupImage" class="w-full !mb-2" value="id" label="type_group_image_name"
                             :error="errors[`attach_array[${index}].type_group_image_id`]" />
                     </div>
                     <div class="flex flex-col">
-                        <TmmTypographyLabelForm :id="`attach_array[${index}].image_detail`" label="แนบรูปภาพ (แนบได้สูงสุด 3 รูป)" />
-                        <a-upload  :maxCount="3" v-model:file-list="item.value.image_detail" accept="image/*"
+                        <TmmTypographyLabelForm :id="`attach_array[${index}].image_detail`"
+                            label="แนบรูปภาพ (แนบได้สูงสุด 3 รูป)" />
+                        <a-upload :maxCount="3" v-model:file-list="item.value.image_detail" accept="image/*"
                             @preview="handlePreview" :before-upload="beforeUpload" list-type="picture" multiple
                             name="file">
                             <a-button>
@@ -849,7 +872,7 @@ const validationSchema = toTypedSchema(
                     required_error: requireValue,
                     invalid_type_error: requireValue,
                 }).optional(),
-                
+
             })
                 .superRefine((data, context) => {
                     if (data.gangster_data_has == 1) {
@@ -1380,8 +1403,8 @@ const loadHeadeStation = async () => {
 
 
 const resSuggestionEmployee = ref();
-const resSuggestionEmployeeInquiry = ref();
-const resSuggestionEmployeeSenior = ref();
+const resSuggestionEmployeeInquiry = ref([]);
+const resSuggestionEmployeeSenior = ref([]);
 const loadEmployeeSuggestion = async () => {
     try {
         const res = await dataApi.getEmployeeSuggestion()
@@ -1392,24 +1415,7 @@ const loadEmployeeSuggestion = async () => {
         console.error(error);
     }
 }
-const inquiryChange = async () => {
-    try {
-        for (const item of resSuggestionEmployee.value) {
-            if (inquiry_employee_fullname.value === item.fullname) {
-                inquiry_employee_position.value = item.position;
-                inquiry_employee_phone.value = item.phone;
 
-                break;  // Stop the loop once a match is found
-            } else {
-
-                inquiry_employee_position.value = undefined;
-                inquiry_employee_phone.value = undefined;
-            }
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 
 
@@ -1428,40 +1434,86 @@ const weponSearch = (val) => {
     }
 }
 
+//  *********************** INQUIRY พนักสืบสวน ***********************
 const inquirySearch = (val) => {
     try {
+        stateTextInquiryEmployee.value = val // Store input value in stateTextInquiryEmployee
         if (val.length > 1) {
             resSuggestionEmployeeInquiry.value = resSuggestionEmployee.value.filter(employee =>
                 employee.fullname.toLowerCase().includes(val.toLowerCase())
-            );
-
+            )
         } else {
             resSuggestionEmployeeInquiry.value = resSuggestionEmployee.value
         }
     } catch (error) {
-        console.error(error);
+        console.error(error)
     }
 }
-
-const seniorChange = async () => {
-    try {
-        for (const item of resSuggestionEmployee.value) {
-            if (senior_police_control_employee_fullname.value === item.fullname) {
-                senior_police_control_employee_position.value = item.position;
-                senior_police_control_employee_phone.value = item.phone;
-                break;  // Stop the loop once a match is found
-            } else {
-                senior_police_control_employee_position.value = undefined;
-                senior_police_control_employee_phone.value = undefined;
-            }
+const inquiryKeyDown = (event) => {
+    if (event.key === 'Enter') {
+        if (resSuggestionEmployeeInquiry.value.length < 1) {
+            // Set the input value to stateTextInquiryEmployee if no suggestions available
+            inquiry_employee_fullname.value = stateTextInquiryEmployee.value
+            event.preventDefault()
         }
+    }
+}
+const stateTextInquiryEmployee = ref('')
+const inquiryChange = async (e) => {
+    try {
+        inquiry_employee_position.value = undefined;
+        inquiry_employee_phone.value = undefined;
+
     } catch (error) {
         console.error(error);
     }
 }
+const inquirySelect = (e) => {
+    if (resSuggestionEmployeeInquiry.value.length < 1) {
+        inquiry_employee_fullname.value = stateTextInquiryEmployee.value
+        return
+    } else {
+        for (const item of resSuggestionEmployee.value) {
+            if (inquiry_employee_fullname.value === item.fullname) {
+                inquiry_employee_position.value = item.position
+                inquiry_employee_phone.value = item.phone
+                break // Stop the loop once a match is found
+            } else {
+                inquiry_employee_position.value = undefined
+                inquiry_employee_phone.value = undefined
+            }
+        }
+    }
+}
+//  *********************** SENIOR  ***********************
+const stateTextSeniorEmployee = ref("")
+const seniorChange = async () => {
+    try {
+        senior_police_control_employee_position.value = undefined;
+        senior_police_control_employee_phone.value = undefined;
+
+    } catch (error) {
+        console.error(error);
+    }
+    // try {
+    //     for (const item of resSuggestionEmployee.value) {
+    //         if (senior_police_control_employee_fullname.value === item.fullname) {
+    //             senior_police_control_employee_position.value = item.position;
+    //             senior_police_control_employee_phone.value = item.phone;
+    //             break;  // Stop the loop once a match is found
+    //         } else {
+    //             senior_police_control_employee_position.value = undefined;
+    //             senior_police_control_employee_phone.value = undefined;
+    //         }
+    //     }
+    // } catch (error) {
+    //     console.error(error);
+    // }
+}
 
 const seniorSearch = (val) => {
     try {
+        stateTextSeniorEmployee.value = val // Store input value in stateTextInquiryEmployee
         if (val.length > 1) {
             resSuggestionEmployeeSenior.value = resSuggestionEmployee.value.filter(employee =>
                 employee.fullname.toLowerCase().includes(val.toLowerCase())
@@ -1471,6 +1523,36 @@ const seniorSearch = (val) => {
         }
     } catch (error) {
         console.error(error);
+    }
+}
+
+const seniorSelect = (e) => {
+    if (resSuggestionEmployeeSenior.value.length < 1) {
+        senior_police_control_employee_fullname.value = stateTextSeniorEmployee.value
+        return
+    } else {
+        for (const item of resSuggestionEmployee.value) {
+            if (senior_police_control_employee_fullname.value === item.fullname) {
+                senior_police_control_employee_position.value = item.position
+                senior_police_control_employee_phone.value = item.phone
+                break // Stop the loop once a match is found
+            } else {
+                senior_police_control_employee_position.value = undefined
+                senior_police_control_employee_phone.value = undefined
+            }
+        }
+    }
+    
+
+}
+
+const seniorKeyDown = (event) => {
+    if (event.key === 'Enter') {
+        if (resSuggestionEmployee.value.length < 1) {
+            // Set the input value to stateTextInquiryEmployee if no suggestions available
+            senior_police_control_employee_fullname.value = stateTextSeniorEmployee.value
+            event.preventDefault()
+        }
     }
 }
 

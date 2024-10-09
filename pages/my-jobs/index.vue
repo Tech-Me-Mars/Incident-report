@@ -8,61 +8,70 @@
             </NuxtLink>
         </div>
         <div class="bg-blue-600 p-3 text-center fontbold text-white mb-2">MY JOBS</div>
-        <div class="card p-2 mb-2" v-for="(item, index) in resMyJobs" :key="index">
-            <div class="flex w-full items-center gap-1 mb-2">
-                <!-- <img src="/image/urgency/most_urgency.png" style="width:60px" /> -->
-                <a-popover placement="rightTop" :title="item?.jobs_level_of_urgency?.name">
-                    <i :class="item?.jobs_level_of_urgency?.icon_class"
-                        :style="{ fontSize: '20px', color: item?.jobs_level_of_urgency?.color, backgroundColor: item?.jobs_level_of_urgency?.bg_color }"></i>
-                </a-popover>
-                <a-popover placement="rightTop" :title="item?.jobs_level_priority?.name">
-                    <i :class="item?.jobs_level_priority?.icon_class"
-                        :style="{ fontSize: '20px', color: item?.jobs_level_priority?.color, backgroundColor: item?.jobs_level_priority?.bg_color }"></i>
-                </a-popover>
-                <div class="w-full flex flex-col justify-center">
-                    <div class="flex w-full items-start gap-1">
-                        <div class="w-full">
-                            <div class="flex justify-between flex-wrap items-center">
-                                <NuxtLink :to="`/jobs/mission/${item?.id}`">
-                                    <TmmLabelSubtitle class=" max-w-[14rem] overflow-hidden" :label="item?.name" />
-                                </NuxtLink>
-                            </div>
-                            <div class="flex justify-between">
+        <div v-if="resMyJobs?.length > 0">
+            <div class="card p-2 mb-2" v-for="(item, index) in resMyJobs" :key="index">
+                <div class="flex w-full items-center gap-1 mb-2">
+                    <!-- <img src="/image/urgency/most_urgency.png" style="width:60px" /> -->
+                    <a-popover placement="rightTop" :title="item?.jobs_level_of_urgency?.name">
+                        <i :class="item?.jobs_level_of_urgency?.icon_class"
+                            :style="{ fontSize: '20px', color: item?.jobs_level_of_urgency?.color, backgroundColor: item?.jobs_level_of_urgency?.bg_color }"></i>
+                    </a-popover>
+                    <a-popover placement="rightTop" :title="item?.jobs_level_priority?.name">
+                        <i :class="item?.jobs_level_priority?.icon_class"
+                            :style="{ fontSize: '20px', color: item?.jobs_level_priority?.color, backgroundColor: item?.jobs_level_priority?.bg_color }"></i>
+                    </a-popover>
+                    <div class="w-full flex flex-col justify-center">
+                        <div class="flex w-full items-start gap-1">
+                            <div class="w-full">
+                                <div class="flex justify-between flex-wrap items-center">
+                                    <NuxtLink :to="`/jobs/mission/${item?.id}`">
+                                        <TmmLabelSubtitle class=" max-w-[14rem] overflow-hidden" :label="item?.name" />
+                                    </NuxtLink>
+                                </div>
+                                <!-- <div class="flex justify-between">
+                                dd {{item?.datetime_end}}
                                 <TmmLabelSmall :label="calculateRemainingTime(item?.datetime_end)" />
+                            </div> -->
+                            </div>
+                            <div>
+                                <a-badge @click="navigateToChat(item)"
+                                    :count="item.no_read_messages_count != 0 ? item.no_read_messages_count : null">
+                                    <WechatOutlined style="font-size:25px;color: #0D8BD8 " />
+                                </a-badge>
                             </div>
                         </div>
                         <div>
-                            <a-badge @click="navigateToChat(item)"
-                                :count="item.no_read_messages_count != 0 ? item.no_read_messages_count : null">
-                                <WechatOutlined style="font-size:25px;color: #0D8BD8 " />
-                            </a-badge>
+                            <div class="flex justify-between">
+                                <small>อัตราความสำเร็จ</small>
+                                <small v-if="item.completion_percentage" class="text-blue-500 font-semibold">{{
+                                    item?.completion_percentage
+                                    }}%</small>
+                            </div>
+                            <TmmFeedbackProgress :value="item?.completion_percentage || '0'" />
                         </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between">
-                            <small>อัตราความสำเร็จ</small>
-                            <small v-if="item.completion_percentage" class="text-blue-500 font-semibold">{{
-                                item?.completion_percentage
-                            }}%</small>
-                        </div>
-                        <TmmFeedbackProgress :value="item?.completion_percentage || '0'" />
                     </div>
                 </div>
             </div>
-        </div>
-        <van-action-sheet v-model:show="show" :actions="actions" @select="onSelect" />
+
+            <van-action-sheet v-model:show="show" :actions="actions" @select="onSelect" />
 
 
-        <div class="flex justify-center mb-5">
-            <a-pagination v-model:current="currentPageMyWork" @change="pagiChangeMyJobs" :total="totalRowMywork"
-                class="border-gray-300 p-1 border rounded-xl bg-white" v-model:page-size="rowPerPageMyWork" />
+            <div class="flex justify-center mb-5">
+                <a-pagination v-model:current="currentPageMyWork" @change="pagiChangeMyJobs" :total="totalRowMywork"
+                    class="border-gray-300 p-1 border rounded-xl bg-white" v-model:page-size="rowPerPageMyWork" />
+            </div>
         </div>
+
+        <div v-else>
+            <a-list :data-source="[]" />
+        </div>
+
     </section>
 </template>
 
 <script setup>
 definePageMeta({
-   middleware: 'auth'
+    middleware: 'auth'
 });
 useHead({ title: 'งานของฉัน' });
 import { formatDateTime, formatDate, customDateFormat, formatCurrency, formatNumber, roundToTwoDecimalPlaces } from '@/helpers/utility';
@@ -93,13 +102,13 @@ const totalRowMywork = ref(0)
 const pagiChangeMyJobs = async () => {
     loadMyJobs();
 }
-const resMyJobs = ref()
+const resMyJobs = ref([])
 const loadMyJobs = async () => {
     try {
         const res = await dataApi.getMyJobs(currentPageMyWork.value, rowPerPageMyWork.value)
-        resMyJobs.value = res.data.data;
+        resMyJobs.value = await res.data.data;
         totalRowMywork.value = res.data.total
-        mqttSub();
+        await mqttSub();
     } catch (error) {
         console.error(error);
     }
@@ -114,7 +123,7 @@ const mqttSub = async () => {
                 $mqtt.subscribe(`${mqtt_pre}/jobs/chat/${e.id}/ping_messages`, (message) => {
                     // const parsedMessage = JSON.parse(message);
                     // console.log("parsedMessage", parsedMessage);
-                    getNoReadMessageJobMission()
+                    getNoReadMessageJobMission(e.id)
                 });
             });
         }
@@ -126,13 +135,16 @@ const mqttSub = async () => {
 
 const getNoReadMessageJobMission = async (jobid) => {
     try {
-        const res = await dataApi.getCheckNoRead(jobid);
-        if (resMyJobs.value) {
-            const jobMission = resMyJobs.value.find(job => job.id == jobid);
-            if (jobMission) {
-                jobMission.no_read_messages_count = res.data.data.no_read_messages_count;
+        setTimeout(async () => {
+            const res = await dataApi.getCheckNoRead(jobid);
+            if (resMyJobs.value) {
+                const jobMission = resMyJobs.value.find(job => job.id == jobid);
+                if (jobMission) {
+                    jobMission.no_read_messages_count = res.data.data.no_read_messages_count;
+                    console.log('count of no read', res.data.data.no_read_messages_count)
+                }
             }
-        }
+        }, 1500);
     } catch (error) {
         console.error("Error updating no_read_messages_count:", error);
     }

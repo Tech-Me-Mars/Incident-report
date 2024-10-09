@@ -23,30 +23,51 @@
                 <div class="mb-2">
                     <TmmTypographyLabelForm label="ผู้อนุมัติแผนงาน" />
                     <TmmInputDropDown v-model="approve_plan_employee_id" placeholder="" className=""
-                        :options="resPoliceHeadStation" class="w-full" value="id" label="fullname"
+                        :options="resPlanJobEmp" class="w-full" value="id" label="fullname"
                         :error="errors.approve_plan_employee_id" />
                 </div>
-                <div class="mb-2">
+                <!-- <div class="mb-2">
                     <TmmTypographyLabelForm label="ลำดับความเร่งด่วน" />
                     <TmmInputDropDown v-model="jobs_level_of_urgency_code" placeholder="" className=""
                         :options="resgetUrgency" class="w-full" value="code" label="name"
                         :error="errors.jobs_level_of_urgency_code" />
+                </div> -->
+                <div class="mb-2">
+                    <TmmTypographyLabelForm label="ลำดับความเร่งด่วน" />
+                    <a-select @change="urgencyChange" allowClear v-model:value="jobs_level_of_urgency_code"
+                        class="custom-select w-full"
+                        :style="{ backgroundColor: urgencyBgColor, color: urgencyTextColor }">
+                        <a-select-option v-for="(item, index) in resgetUrgency" :key="index"
+                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code"
+                            :data-bg-color="item?.bg_color" :data-color="item?.color">
+                            {{ item?.name }}
+                        </a-select-option>
+                    </a-select>
+
                 </div>
                 <div class="mb-2">
                     <TmmTypographyLabelForm label="ลำดับความสำคัญ" />
-                    <TmmInputDropDown v-model="jobs_level_priority_code" placeholder="" className=""
-                        :options="resPriority" class="w-full" value="code" label="name"
-                        :error="errors.jobs_level_priority_code" />
+                        <a-select @change="priorityChange" allowClear v-model:value="jobs_level_priority_code"
+                         class="custom-select w-full"
+                        :style="{ backgroundColor: priorityBgColor, color: priorityTextColor }">
+                        <a-select-option v-for="(item, index) in resPriority" :key="index"
+                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code">{{
+                                item?.name }}</a-select-option>
+                    </a-select>
                 </div>
                 <div class="mb-2">
                     <TmmTypographyLabelForm label="ชั้นความลับ" />
-                    <TmmInputDropDown v-model="jobs_level_secret_code" placeholder="" className=""
-                        :options="resgetSecret" class="w-full" value="code" label="name"
-                        :error="errors.jobs_level_secret_code" />
+                        <a-select @change="secretChange" allowClear v-model:value="jobs_level_secret_code"
+                         class="custom-select w-full"
+                        :style="{ backgroundColor: secretBgColor, color: secretTextColor }" >
+                        <a-select-option v-for="(item, index) in resgetSecret" :key="index"
+                            :style="{ backgroundColor: item?.bg_color, color: item?.color }" :value="item?.code">{{
+                                item?.name }}</a-select-option>
+                    </a-select>
                 </div>
             </div>
 
-        
+
             <div class="flex gap-5 justify-center max-w-[20rem] mx-auto">
                 <TmmButton type="primary" severity="secondary" className="w-full" label="ยกเลิก"
                     @click="router.push(`/jobs/mission/${route.params.id}`)" />
@@ -80,7 +101,7 @@
 </template>
 <script setup>
 definePageMeta({
-   middleware: 'auth'
+    middleware: 'auth'
 });
 useHead({ title: 'แก้ไขโครงสร้าง' });
 //! /////// [validation] /////////
@@ -99,30 +120,20 @@ const alertToast = ref({});
 const errorAlert = ref(false);
 const dataError = ref({});
 
-onMounted(() => {
-    getJobproccessMainById();
-    loadDataToForm();
+onMounted(async() => {
+
+    
     loadPoliceHeadStation();
     loadPlanJobEmp();
     loadInquiryEmp();
-    loadUrgency();
-    loadPriority();
-    loadSecret();
+    await loadUrgency();
+    await loadPriority();
+    await loadSecret();
     loadTypeFileUpload();
+
+    loadDataToForm();
 });
 
-const resJobProcess =ref();
-const getJobproccessMainById =async () =>{
-    try {
-        const res = await dataApi.getJobproccessMainById(route.params.id);
-        resJobProcess.value = res.data.data;
-        if (resJobProcess.value?.jobs?.can_edit_main_job != true) {
-            navigateTo(`/jobs/mission/${route.params.id}`)
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
 // const { value: name } = useField("name");
 // const { value: plan_job_employee_id } = useField("plan_job_employee_id");
 // const { value: status } = useField("status", null, {
@@ -138,16 +149,19 @@ const getJobproccessMainById =async () =>{
 //     "jobs_level_priority_code"
 // );
 // const { value: jobs_level_secret_code } = useField("jobs_level_secret_code");
-const loadDataToForm = async() =>{
+const loadDataToForm = async () => {
     try {
         const res = await dataApi.getJobById(route.params.id);
         console.log(res.data.data)
         name.value = res.data.data.name
         plan_job_employee_id.value = res.data.data.plan_job_employee_id
         approve_plan_employee_id.value = res.data.data.approve_plan_employee_id
-        jobs_level_of_urgency_code.value = res.data.data.jobs_level_of_urgency_code
-        jobs_level_priority_code.value = res.data.data.jobs_level_priority_code
-        jobs_level_secret_code.value = res.data.data.jobs_level_secret_code
+        jobs_level_of_urgency_code.value =await res.data.data.jobs_level_of_urgency_code
+        await urgencyChange(res.data.data.jobs_level_of_urgency_code)
+        jobs_level_priority_code.value =await res.data.data.jobs_level_priority_code
+        await priorityChange(res.data.data.jobs_level_priority_code)
+        jobs_level_secret_code.value =await res.data.data.jobs_level_secret_code
+        await secretChange(res.data.data.jobs_level_secret_code)
         // name.value = res.
     } catch (error) {
         console.error(error);
@@ -336,11 +350,11 @@ const savejob = async (values) => {
             jobs_level_secret_code: jobs_level_secret_code.value
                 ? jobs_level_secret_code.value
                 : "",
-                status:1
+            status: 1
 
         };
         console.log(payload);
-        const res = await dataApi.updateJob(payload,route.params.id);
+        const res = await dataApi.updateJob(payload, route.params.id);
         errorAlert.value = false;
         alertToast.value = {
             severity: "success",
@@ -355,4 +369,70 @@ const savejob = async (values) => {
         console.error(error);
     }
 };
+
+const urgencyBgColor = ref('');
+const urgencyTextColor = ref('');
+const urgencyChange = (value) => {
+    try {
+        console.log('dd')
+        const selectedItem = resgetUrgency.value.find(item => item.code == value);
+        if (selectedItem) {
+            urgencyBgColor.value = selectedItem.bg_color;
+            urgencyTextColor.value = selectedItem.color;
+        } else {
+            urgencyBgColor.value = null;
+            urgencyTextColor.value = null;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+const priorityBgColor = ref('');
+const priorityTextColor = ref('');
+const priorityChange = (value) => {
+    try {
+        console.log('dd')
+        const selectedItem = resPriority.value.find(item => item.code == value);
+        if (selectedItem) {
+            priorityBgColor.value = selectedItem.bg_color;
+            priorityTextColor.value = selectedItem.color;
+        } else {
+            priorityBgColor.value = null;
+            priorityTextColor.value = null;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+const secretBgColor = ref('');
+const secretTextColor = ref('');
+const secretChange = (value) => {
+    try {
+        console.log('gg')
+        const selectedItem = resgetSecret.value.find(item => item.code == value);
+        if (selectedItem) {
+            secretBgColor.value = selectedItem.bg_color;
+            secretTextColor.value = selectedItem.color;
+        } else {
+            secretBgColor.value = null;
+            secretTextColor.value = null;
+        }
+    } catch (error) {
+        console.error(error)
+    }
+};
 </script>
+
+<style>
+.custom-select .ant-select-selector {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* .custom-select .ant-select-selection-item {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+} */
+</style>
