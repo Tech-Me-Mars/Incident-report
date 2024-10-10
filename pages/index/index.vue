@@ -28,14 +28,14 @@
 
     <div class="flex items-center justify-start px-5 w-full py-1 card !bg-blue-600 gap-3 mb-3">
       <TmmFeedbackProgresscircle :size="60"
-        :percent="resDashboardJobs?.jobs_summary[0]?.jobs_process_count_complate || 0" />
+        :percent="resDashboardJobs?.jobs_summary?.completion_percentage || 0" />
       <div class="text-white">
         <p class="text-sm">คดีความของท่านวันนี้</p>
         <span class="text-xs text-stone-200">สำเร็จไปแล้ว
           {{
-            resDashboardJobs?.jobs_summary[0]?.jobs_process_count_complate
+            resDashboardJobs?.jobs_summary?.jobs_process_count
           }}
-          จาก {{ resDashboardJobs?.jobs_summary[0]?.jobs_process_count }}</span>
+          จาก {{ resDashboardJobs?.jobs_summary?.jobs_process_count_complate }}</span>
       </div>
     </div>
 
