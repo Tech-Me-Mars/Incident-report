@@ -338,7 +338,10 @@ const savejob = async (values) => {
             detail: res.data.message,
         };
         handleReset();
-        navigateTo("/profile");
+        // navigateTo("/profile");
+        redirectToJobPage()
+
+        
     } catch (error) {
         errorAlert.value = true;
         dataError.value = error;
