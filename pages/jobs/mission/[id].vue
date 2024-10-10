@@ -132,7 +132,7 @@
             <div class="flex flex-warp">
               <span class="font-medium text-xs">
                 ระยะเวลาดำเนินงาน:
-                <span class="ml-auto font-light text-xs">{{ item?.date_start }} ถึง {{ item?.date_end }}</span>
+                <span class="ml-auto font-light text-xs">{{ formattedDateBuddha(item?.date_start) }} ถึง {{ formattedDateBuddha(item?.date_end) }}</span>
               </span>
             </div>
             <!-- <div class="flex justify-between">
@@ -249,8 +249,21 @@ import * as dataApi from "./api/data.js";
 //! /////// [validation import] /////////
 import { useField, useForm, Form, useFieldArray } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { format } from "date-fns";
+import { format, parseISO } from 'date-fns';
+import { th } from 'date-fns/locale';
 import * as zod from "zod";
+
+function formattedDateBuddha(dateString) {
+    if (!dateString) {
+      return ''
+    }
+    const date = parseISO(dateString);
+    const buddhistYear = date.getFullYear() + 543;
+    const formattedDate = format(date, `d MMMM yyyy`, { locale: th });
+
+    // แทนที่ปี ค.ศ. ด้วยปี พ.ศ.
+    return formattedDate.replace(date.getFullYear().toString(), buddhistYear.toString());
+}
 
 const router = useRouter();
 const isloadingAxi = useState("isloadingAxi");

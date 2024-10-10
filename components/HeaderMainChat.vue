@@ -1,6 +1,6 @@
 <template>
 
-    <div class="bg-white py-5 px-3 min-h-[5rem] fixed top-0 left-0 w-full z-10">
+    <div class="bg-white py-2 px-3   w-full z-10">
         <!-- <slot /> -->
         <div class="flex flex-wrap justify-between items-center">
             <NuxtLink to="/profile">

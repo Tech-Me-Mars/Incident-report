@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="relative">
-                        <h2 class="text-xl font-semibold mb-4">กรอกรหัส OPT ที่ได้รับทาง SMS</h2>
+                        <h2 class="text-xl font-semibold mb-4">กรอกรหัส OPT ที่ได้รับทาง EMAIL</h2>
                         <div class="flex justify-center">
                             <InputOtp class="" v-model="otp" :length="4" :maxlength="4" @input="onInput"  />
                         </div>

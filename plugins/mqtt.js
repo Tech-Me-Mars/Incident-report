@@ -21,8 +21,8 @@ export default defineNuxtPlugin({
           password: "eop@web",
           useSSL: true,
           enableMainTopic: false,
-          watchdogTimeout: 1000,  // 1 second
-          reconnectTimeout: 1000, // 1 second
+          // watchdogTimeout: 1000,  // 1 second
+          // reconnectTimeout: 500, // 1 second
         },
       }),
     );

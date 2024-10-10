@@ -39,10 +39,10 @@
       </div>
     </div>
 
-    <div>
+    <!-- <div>
       <TmmInputDropDown @change="fillterChange()" v-model="selectFillter" placeholder="ตัวกรอง" className=""
         :options="resFillter" class="w-full" value="value" label="name" :search="false" />
-    </div>
+    </div> -->
     <!--########## job mission########## -->
     <div class="flex justify-between items-center mb-1">
       <TmmLabelTitle label="เป้าหมายประจำวัน" />
@@ -278,6 +278,7 @@ const toggleActive = (item) => {
 };
 
 onMounted(async () => {
+
   await populateDaysOfMonth()
 
 });

@@ -405,8 +405,11 @@
 
                         <a-auto-complete id="inquiry_employee_position"
                             :status="(errors?.inquiry_employee_position ? 'error' : '')" class="!w-full !mb-2"
-                            v-model:value="inquiry_employee_position" :options="resPositions" placeholder="ตำแหน่ง"
-                            :field-names="{ label: 'position_name_th', value: 'position_name_th' }" />
+                            v-model:value="inquiry_employee_position" :options="resPositionsInquiry"
+                            placeholder="ตำแหน่ง"
+                            :field-names="{ label: 'position_name_th', value: 'position_name_th' }"
+                             @search="inquiryPositionSearch"
+                            @select="inquiryPositionSelect" @keydown="inquiryPositionKeyDown" />
 
                         <TmmInput id="inquiry_employee_phone" v-model="inquiry_employee_phone" class="w-full !mb-2"
                             placeholder="เบอร์โทร..." :error="errors.inquiry_employee_phone" />
@@ -430,8 +433,10 @@
                         <a-auto-complete id="senior_police_control_employee_position"
                             :status="(errors?.senior_police_control_employee_position ? 'error' : '')"
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_position"
-                            :options="resPositions" placeholder="ตำแหน่ง"
-                            :field-names="{ label: 'position_name_th', value: 'position_name_th' }" />
+                            :options="resPositionsSenior" placeholder="ตำแหน่ง"
+                            :field-names="{ label: 'position_name_th', value: 'position_name_th' }"
+                            @search="seniorPositionSearch"
+                            @select="seniorPositionSelect" @keydown="seniorPositionKeyDown" />
 
 
                         <TmmInput id="senior_police_control_employee_phone"
@@ -1378,7 +1383,9 @@ const connectLineNotify = async () => {
     }
 }
 
-const resPositions = ref()
+const resPositionsInquiry = ref([])
+const resPositionsSenior = ref([])
+const resPositions = ref([])
 const loadPositions = async () => {
     try {
         const res = await dataApi.getPositions()
@@ -1485,6 +1492,39 @@ const inquirySelect = (e) => {
         }
     }
 }
+//  *********************** INQUIRY POSITINO พนักสืบสวน ***********************\
+
+const stateTextInquiryPosition = ref('')
+const inquiryPositionSearch = (val) => {
+    try {
+        stateTextInquiryPosition.value = val // Store input value in stateTextInquiryEmployee
+        if (val.length > 1) {
+            resPositionsInquiry.value = resPositions.value.filter(item =>
+                item.position_name_th.toLowerCase().includes(val.toLowerCase())
+            )
+        } else {
+            resPositionsInquiry.value = resPositions.value
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+const inquiryPositionKeyDown = (event) => {
+    if (event.key === 'Enter') {
+        if (resPositionsInquiry.value.length < 1) {
+            // Set the input value to stateTextInquiryEmployee if no suggestions available
+            inquiry_employee_position.value = stateTextInquiryPosition.value
+            event.preventDefault()
+        }
+    }
+}
+const inquiryPositionSelect = (e) => {
+    if (resPositionsInquiry.value.length < 1) {
+        inquiry_employee_position.value = stateTextInquiryPosition.value
+        return
+    } 
+}
+
 //  *********************** SENIOR  ***********************
 const stateTextSeniorEmployee = ref("")
 const seniorChange = async () => {
@@ -1542,7 +1582,7 @@ const seniorSelect = (e) => {
             }
         }
     }
-    
+
 
 }
 
@@ -1554,6 +1594,38 @@ const seniorKeyDown = (event) => {
             event.preventDefault()
         }
     }
+}
+//  *********************** SENIOR POSITINO ตำรวจชั้นผู้ใหญ่ตำแหน่ง ***********************\
+
+const stateTextSeniorPosition = ref('')
+const seniorPositionSearch = (val) => {
+    try {
+        stateTextSeniorPosition.value = val 
+        if (val.length > 1) {
+            resPositionsSenior.value = resPositions.value.filter(item =>
+                item.position_name_th.toLowerCase().includes(val.toLowerCase())
+            )
+        } else {
+            resPositionsSenior.value = resPositions.value
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+const seniorPositionKeyDown = (event) => {
+    if (event.key === 'Enter') {
+        if (resPositionsSenior.value.length < 1) {
+            // Set the input value to stateTextInquiryEmployee if no suggestions available
+            senior_police_control_employee_position.value = stateTextSeniorPosition.value
+            event.preventDefault()
+        }
+    }
+}
+const seniorPositionSelect = (e) => {
+    if (resPositionsSenior.value.length < 1) {
+        senior_police_control_employee_position.value = stateTextSeniorPosition.value
+        return
+    } 
 }
 
 

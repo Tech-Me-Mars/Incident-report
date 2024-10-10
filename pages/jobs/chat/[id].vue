@@ -1,119 +1,174 @@
 <template>
-    <HeaderMainChat />
-    <div class="bg-blue-500 px-4 py-3 text-white flex justify-between items-center fixed top-20 left-0 w-full z-10">
-        <HomeOutlined @click="navigateTo('/')" style="font-size: 20px" />
-        <span>{{ resJob?.jobs?.name }}</span>
+    <div class="flex flex-col h-screen max-w-4xl mx-auto">
+        <div class="!h-[10%]">
+            <HeaderMainChat />
+        </div>
+        <div class="!h-[10%]">
+            <div class="bg-blue-500 px-4 py-3 text-white flex justify-between items-center  w-full z-10">
+                <HomeOutlined @click="navigateTo('/')" style="font-size: 20px" />
+                <span>{{ resJob?.jobs?.name }}</span>
 
-        <button id="login" class="hover:bg-blue-400 rounded-md p-1" @click="(()=>{showParticipants = true,notiNewMessage = false})">
-            <van-badge :content="resParticipantc?.length || null">
-                <UserOutlined style="font-size: 20px" />
-            </van-badge>
-        </button>
+                <button id="login" class="hover:bg-blue-400 rounded-md p-1"
+                    @click="(() => { showParticipants = true, notiNewMessage = false })">
+                    <van-badge :content="resParticipantc?.length || null">
+                        <UserOutlined style="font-size: 20px" />
+                    </van-badge>
+                </button>
 
-    </div>
-    <div class="flex-1  justify-between flex flex-col h-full pt-[8.5rem]">
-
-
-        <van-popup v-model:show="showParticipants" position="bottom" closeable :style="{ height: '70%' }">
-            <div class="py-10">
-                <strong class="pl-4 text-center">ผู้เกี่ยวข้อง</strong>
-                <a-list item-layout="horizontal" :data-source="resParticipantc">
-                    <template #renderItem="{ item }">
-                        <a-list-item>
-                            <a-list-item-meta description="">
-                                <template #title>
-                                    <span>{{ item?.fullname }}</span>
-                                </template>
-                                <template #avatar>
-                                    <a-avatar :src="item.upload_avatar || '/image/defaultpic.webp'" />
-                                </template>
-                            </a-list-item-meta>
-                        </a-list-item>
-                    </template>
-                </a-list>
-            </div>
-        </van-popup>
-
-        <!-- กล่องแชท -->
-        <InfiniteLoading :firstload="false" :top="true" @infinite="loadMessageAppend">
-            <template #spinner>
-                <span></span>
-            </template>
-            <template #complete>
-                <div class="flex justify-center">
-                    <span class="tex-center text-xs text-gray-600">ไม่มีข้อความอีกแล้ว!</span>
-                </div>
-            </template>
-        </InfiniteLoading>
-        <div id="messages"
-            class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-            <div class="chat-message" v-for="(item, index) in resMessage" :key="index">
-                <span class="text-center flex justify-center"
-                    v-if="index === 0 || formattedDateOnly(item.created_at) !== formattedDateOnly(resMessage[index - 1].created_at)">
-                    <van-tag round plain type="success" class="!p-1 !px-5">
-                        {{ formattedDateOnly(item.created_at) }}
-                    </van-tag>
-                </span>
-                <a-divider v-if="lastRead === index && item?.sender_employee_id !== resProfile?.police_employee_id">
-                    ยังไม่ได้อ่าน
-                </a-divider>
-
-                <div v-if="notiNewMessage" class="notification p-2" @click="scrollToBottom">
-    มีข้อความใหม่
-  </div>
-                <!--กล่องส่ง(ขวา) -->
-                <!-- @mousedown="startPressEdit(item)" -->
-                <div :id="`message-${index}`" class="flex flex-col items-end gap-1" @click="startPressEdit(item)"
-                    @mouseup="cancelPressEdit" @mouseleave="cancelPressEdit" v-if="
-                        item?.sender_employee_id == resProfile?.police_employee_id
-                    ">
-                    <span class="text-xs text-gray-600">{{ item?.rank_name_th_abb }} {{ item?.first_name }}
-                        {{ item?.last_name
-                        }}</span>
-                    <div class="flex items-end justify-end">
-                        <div class="flex flex-col space-y-2 max-w-xs mx-2 items-end">
-                            <div>
-                                <span
-                                    class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white text-sm"
-                                    v-html="highlightMentions(item.message)"></span>
-                            </div>
-                        </div>
-                        <TmmAvatar :src="item?.upload_avatar"
-                            :label="`${item?.rank_name_th_abb} ${item?.first_name} ${item?.last_name}`" />
-                    </div>
-                    <span class="font antialiased text-gray-600" style="font-size: 12px;">{{
-                        formattedTimeOnly(item?.created_at) }}</span>
-                </div>
-
-                <!-- กล่องรับ (ซ้าย) -->
-                <div :id="`message-${index}`" class="flex flex-col items-start gap-1" v-else>
-                 
-                    <DeferredContent v-if="index === resMessage.length - 1" @load="notiNewMessage = false">
-                    </DeferredContent>
-                    <span class="text-xs text-gray-600">{{ item?.rank_name_th_abb }} {{ item?.first_name }} {{
-                        item?.last_name
-                        }}
-                    </span>
-                    <div class="flex items-end">
-                        <div class="flex flex-col space-y-2 max-w-xs mx-2 order-2 items-start">
-                            <div>
-                                <span
-                                    class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600 text-sm"
-                                    v-html="highlightMentions(item.message)"></span>
-                            </div>
-                        </div>
-                        <TmmAvatar :src="item?.upload_avatar"
-                            :label="`${item?.rank_name_th_abb} ${item?.first_name} ${item?.last_name}`" />
-                    </div>
-                    <span class="font antialiased text-gray-600" style="font-size: 12px;">{{
-                        formattedTimeOnly(item?.created_at) }}</span>
-                </div>
             </div>
         </div>
-       
+        <div class="!h-[70%] overflow-y-auto"  id="chat" ref="chatContainer">
+            <div class="flex-1  justify-between flex flex-col h-full">
 
-        <!-- จบกล่องแชท -->
-        <div class="fixed  bottom-0 left-0 w-full bg-white shadow-lg">
+
+                <van-popup v-model:show="showParticipants" position="bottom" closeable :style="{ height: '70%' }">
+                    <div class="py-10">
+                        <strong class="pl-4 text-center">ผู้เกี่ยวข้อง</strong>
+                        <a-list item-layout="horizontal" :data-source="resParticipantc">
+                            <template #renderItem="{ item }">
+                                <a-list-item>
+                                    <a-list-item-meta description="">
+                                        <template #title>
+                                            <span>{{ item?.fullname }}</span>
+                                        </template>
+                                        <template #avatar>
+                                            <a-avatar :src="item.upload_avatar || '/image/defaultpic.webp'" />
+                                        </template>
+                                    </a-list-item-meta>
+                                </a-list-item>
+                            </template>
+                        </a-list>
+                    </div>
+                </van-popup>
+
+                <!-- กล่องแชท -->
+                <InfiniteLoading :firstload="false" :top="true" @infinite="loadMessageAppend">
+                    <template #spinner>
+                        <span></span>
+                    </template>
+                    <template #complete>
+                        <div class="flex justify-center">
+                            <span class="tex-center text-xs text-gray-600">ไม่มีข้อความอีกแล้ว!</span>
+                        </div>
+                    </template>
+                </InfiniteLoading>
+                <div id="messages"
+                    class="flex flex-col space-y-4 p-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+                    <div class="chat-message" v-for="(item, index) in resMessage" :key="index">
+                        <span class="text-center flex justify-center"
+                            v-if="index === 0 || formattedDateOnly(item.created_at) !== formattedDateOnly(resMessage[index - 1].created_at)">
+                            <van-tag round plain type="success" class="!p-1 !px-5">
+                                {{ formattedDateOnly(item.created_at) }}
+                            </van-tag>
+                        </span>
+                        <a-divider
+                            v-if="lastRead === index && item?.sender_employee_id !== resProfile?.police_employee_id">
+                            ยังไม่ได้อ่าน
+                        </a-divider>
+
+                        <div v-if="notiNewMessage" class="notification p-2" @click="scrollToBottomById">
+                            มีข้อความใหม่
+                        </div>
+                        <!--กล่องส่ง(ขวา) -->
+                        <!-- @mousedown="startPressEdit(item)" -->
+                        <div :id="`message-${index}`" class="flex flex-col items-end gap-1"
+                            @click="startPressEdit(item)" @mouseup="cancelPressEdit" @mouseleave="cancelPressEdit" v-if="
+                                item?.sender_employee_id == resProfile?.police_employee_id
+                            ">
+                            <span class="text-xs text-gray-600 text-wrap ">{{ item?.rank_name_th_abb }} {{
+                                item?.first_name }}
+                                {{ item?.last_name
+                                }}</span>
+                            <div class="flex items-end justify-end">
+                                <div class="flex flex-col space-y-2 max-w-xs mx-2 items-end">
+                                    <div>
+                                        <span
+                                            class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white text-sm !break-all break-words whitespace-normal"
+                                            v-html="highlightMentions(item.message)"></span>
+                                    </div>
+                                </div>
+                                <TmmAvatar :src="item?.upload_avatar"
+                                    :label="`${item?.rank_name_th_abb} ${item?.first_name} ${item?.last_name}`" />
+                            </div>
+                            <span class="font antialiased text-gray-600" style="font-size: 12px;">{{
+                                formattedTimeOnly(item?.created_at) }}</span>
+                        </div>
+
+                        <!-- กล่องรับ (ซ้าย) -->
+                        <div :id="`message-${index}`" class="flex flex-col items-start gap-1" v-else>
+
+                            <DeferredContent v-if="index === resMessage.length - 1" @load="notiNewMessage = false">
+                            </DeferredContent>
+                            <span class="text-xs text-gray-600">{{ item?.rank_name_th_abb }} {{ item?.first_name }} {{
+                                item?.last_name
+                                }}
+                            </span>
+                            <div class="flex items-end">
+                                <div class="flex flex-col space-y-2 max-w-xs mx-2 order-2 items-start">
+                                    <div>
+                                        <span
+                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600 text-sm !break-all break-words whitespace-normal"
+                                            v-html="highlightMentions(item.message)"></span>
+                                    </div>
+                                </div>
+                                <TmmAvatar :src="item?.upload_avatar"
+                                    :label="`${item?.rank_name_th_abb} ${item?.first_name} ${item?.last_name}`" />
+                            </div>
+                            <span class="font antialiased text-gray-600" style="font-size: 12px;">{{
+                                formattedTimeOnly(item?.created_at) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- จบกล่องแชท -->
+
+
+                <van-action-sheet v-model:show="showEditMessage" :actions="actions" @select="onSelectEdit"
+                    cancel-text="Cancel" close-on-click-action @cancel="onCancel" />
+
+                <van-action-sheet v-model:show="editMode" title="แก้ไขข้อความ">
+                    <div class="p-3 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 pt-[15rem]">
+                        <div id="users-mention" v-if="filteredMentions?.length > 0">
+                            <div v-if="showDropdown && editMode" class="ant-mentions-dropdown">
+                                <ul>
+                                    <li v-for="(mention, index) in filteredMentions" :key="index"
+                                        @click="selectMention(mention)">
+                                        <TmmAvatar :src="mention.upload_avatar" /> {{ mention.fullname }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <input ref="mentionInputEdit" type="text" @input="checkTagName" v-model="messageEdit"
+                                placeholder="Type your message..."
+                                class="flex-1 border rounded-full px-4 py-2 focus:outline-none" />
+                            <!-- <a-mentions id="mentionEdit" class="!border !rounded-full !px-4 !py-2 !focus:outline-none" autofocus
+                v-model:value="messageEdit" :options="resParticipantcMentions"></a-mentions> -->
+                            <button
+                                class="bg-blue-500 text-white rounded-full p-2 ml-2 hover:bg-blue-600 focus:outline-none"
+                                @click="sendMessageEdit()">
+                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path
+                                            d="M11.5003 12H5.41872M5.24634 12.7972L4.24158 15.7986C3.69128 17.4424 3.41613 18.2643 3.61359 18.7704C3.78506 19.21 4.15335 19.5432 4.6078 19.6701C5.13111 19.8161 5.92151 19.4604 7.50231 18.7491L17.6367 14.1886C19.1797 13.4942 19.9512 13.1471 20.1896 12.6648C20.3968 12.2458 20.3968 11.7541 20.1896 11.3351C19.9512 10.8529 19.1797 10.5057 17.6367 9.81135L7.48483 5.24303C5.90879 4.53382 5.12078 4.17921 4.59799 4.32468C4.14397 4.45101 3.77572 4.78336 3.60365 5.22209C3.40551 5.72728 3.67772 6.54741 4.22215 8.18767L5.24829 11.2793C5.34179 11.561 5.38855 11.7019 5.407 11.8459C5.42338 11.9738 5.42321 12.1032 5.40651 12.231C5.38768 12.375 5.34057 12.5157 5.24634 12.7972Z"
+                                            stroke="#ffffff" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                        </path>
+                                    </g>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </van-action-sheet>
+            </div>
+        </div>
+
+        <div class="bg-gray-300 h-[10%]  w-full bg-white shadow-lg">
+
             <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
                 <div id="users-mention" v-if="filteredMentions?.length > 0">
                     <div v-if="showDropdown && !editMode" class="ant-mentions-dropdown">
@@ -146,54 +201,19 @@
                     </button>
                 </div>
             </div>
+
         </div>
-
-        <van-action-sheet v-model:show="showEditMessage" :actions="actions" @select="onSelectEdit" cancel-text="Cancel"
-            close-on-click-action @cancel="onCancel" />
-
-        <van-action-sheet v-model:show="editMode" title="แก้ไขข้อความ">
-            <div class="p-3 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 pt-[15rem]">
-                <div id="users-mention" v-if="filteredMentions?.length > 0">
-                    <div v-if="showDropdown && editMode" class="ant-mentions-dropdown">
-                        <ul>
-                            <li v-for="(mention, index) in filteredMentions" :key="index"
-                                @click="selectMention(mention)">
-                                <TmmAvatar :src="mention.upload_avatar" /> {{ mention.fullname }}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <input ref="mentionInputEdit" type="text" @input="checkTagName" v-model="messageEdit"
-                        placeholder="Type your message..."
-                        class="flex-1 border rounded-full px-4 py-2 focus:outline-none" />
-                    <!-- <a-mentions id="mentionEdit" class="!border !rounded-full !px-4 !py-2 !focus:outline-none" autofocus
-                        v-model:value="messageEdit" :options="resParticipantcMentions"></a-mentions> -->
-                    <button class="bg-blue-500 text-white rounded-full p-2 ml-2 hover:bg-blue-600 focus:outline-none"
-                        @click="sendMessageEdit()">
-                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M11.5003 12H5.41872M5.24634 12.7972L4.24158 15.7986C3.69128 17.4424 3.41613 18.2643 3.61359 18.7704C3.78506 19.21 4.15335 19.5432 4.6078 19.6701C5.13111 19.8161 5.92151 19.4604 7.50231 18.7491L17.6367 14.1886C19.1797 13.4942 19.9512 13.1471 20.1896 12.6648C20.3968 12.2458 20.3968 11.7541 20.1896 11.3351C19.9512 10.8529 19.1797 10.5057 17.6367 9.81135L7.48483 5.24303C5.90879 4.53382 5.12078 4.17921 4.59799 4.32468C4.14397 4.45101 3.77572 4.78336 3.60365 5.22209C3.40551 5.72728 3.67772 6.54741 4.22215 8.18767L5.24829 11.2793C5.34179 11.561 5.38855 11.7019 5.407 11.8459C5.42338 11.9738 5.42321 12.1032 5.40651 12.231C5.38768 12.375 5.34057 12.5157 5.24634 12.7972Z"
-                                    stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                </path>
-                            </g>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </van-action-sheet>
     </div>
+
+
+
 
     <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
 </template>
 <script setup>
 definePageMeta({
-    layout: "chat",
-   middleware: 'auth'
+    layout: false,
+    middleware: 'auth'
 });
 useHead({ title: 'แชท' });
 import DeferredContent from 'primevue/deferredcontent';
@@ -502,7 +522,17 @@ const sendMessage = async () => {
     }
 };
 import { $mqtt } from "vue-paho-mqtt";
-
+const chatContainer = ref(null);
+const isScrolledToBottom = () => {
+    const el = chatContainer.value;
+    return el.scrollHeight - el.scrollTop === el.clientHeight;
+};
+// ฟังก์ชันเลื่อนลงไปล่างสุด
+const scrollToBottomById = () => {
+    const el = chatContainer.value;
+    el.scrollTop = el.scrollHeight;
+    hideNotification()
+};
 const mqtt_pre = useRuntimeConfig().public.MQTT_PRE;
 const mqttSub = async () => {
     try {
@@ -518,7 +548,7 @@ const mqttSub = async () => {
                 ) {
                     return;
                 }
-                
+
                 const objForAppend = {
                     id: parsedMessage?.data?.id,
                     sender_employee_id: parsedMessage?.data?.sender_employee_id,
@@ -538,8 +568,19 @@ const mqttSub = async () => {
                     read_messages_status: true,
                     is_cancel: false,
                 };
+
+                // เช็คว่าหน้าจอเลื่อนอยู่ล่างสุดหรือไม่
+                const atBottom = isScrolledToBottom();
                 resMessage.value = [...resMessage.value, objForAppend];
-                showNotification()
+                // ถ้าอยู่ล่างสุดแล้ว ให้เลื่อนลงไปล่างสุด
+                if (atBottom) {
+                    setTimeout(() => {
+                        scrollToBottomById(); 
+                    }, 500);
+                }else{
+                    showNotification()
+                }
+                
                 // เมื่อมีการรับข้อมูลจาก mqtt
                 console.log(parsedMessage);
             }
@@ -657,11 +698,11 @@ const resObectMessage = ref();
 const timer = ref(null);
 const startPressEdit = (item) => {
     try {
-        if (item?.is_cancel==true) {
+        if (item?.is_cancel == true) {
             return;
         }
         resObectMessage.value = item
-        notiNewMessage.value =false
+        notiNewMessage.value = false
         handleLongPressEdit()
         // resObectMessage.value = item;
         // timer.value = setTimeout(() => {
@@ -681,15 +722,15 @@ const cancelPressEdit = () => {
 };
 
 const handleLongPressEdit = () => {
-            try {
-                showEditMessage.value = true;
-                nextTick(() => {
-                    mentionInputEdit.value.focus();
-                });
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    try {
+        showEditMessage.value = true;
+        nextTick(() => {
+            mentionInputEdit.value.focus();
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 const visible = ref(false);
 const filteredPersons = ref([]);
@@ -771,9 +812,9 @@ const notiNewMessage = ref(false)
 // }
 function showNotification() {
     notiNewMessage.value = true
-//     if (!isAtBottom()) {
-//         notiNewMessage.value = true
-//   }
+    //     if (!isAtBottom()) {
+    //         notiNewMessage.value = true
+    //   }
 }
 
 function hideNotification() {
@@ -781,11 +822,11 @@ function hideNotification() {
 }
 
 function scrollToBottom() {
-  window.scrollTo({
-    top: document.documentElement.scrollHeight,
-    behavior: 'smooth'
-  })
-  hideNotification()
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+    })
+    hideNotification()
 }
 </script>
 
@@ -872,15 +913,15 @@ function scrollToBottom() {
 }
 
 .notification {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
- 
-  border-radius: 5px;
-  cursor: pointer;
-  z-index: 9999;
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 9999;
 }
 </style>
