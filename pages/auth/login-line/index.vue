@@ -5,98 +5,75 @@
 </template>
 
 <script setup>
-definePageMeta({
-    layout: false,
-    // or middleware: 'auth'
-});
-useHead({ title: 'เข้าสู่ระบบ' });
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import * as dataApi from '../api/data.js'
-
 import liff from "@line/liff";
-const route = useRoute();
 
+// ใช้ useRuntimeConfig() ภายในฟังก์ชัน setup
+const config = useRuntimeConfig();
+const liffId = config.public.LIFFID;
+const liffUrl = config.public.LIFFURL;
+
+const route = useRoute();
 const isLineConnected = ref(false);
 
-const liftId = useRuntimeConfig().public.LIFFID;
-const liftUrl = useRuntimeConfig().public.LIFFURL;
-
-liff.init({ liffId: liftId, })
+// ฟังก์ชันเชื่อมต่อ Line
 const connectLine = async () => {
-    isLineConnected.value = false;
+    if (!liffId) {
+        console.error("liffId ไม่ถูกต้อง");
+        return;
+    }
+
     try {
-        // alert('call')
-        // console.log(liff.isLoggedIn())
-        // liff.init({ liffId: liftId, })
+        await liff.init({ liffId });
         liff.ready.then(() => {
-
-            // if (liff.isLoggedIn()) {
-            //     return loadProfile();
-            // } else {
-            //     return logIn();
-            // }
-
-            // if (liff.isInClient()) {
-            //     // console.log("LIFF app is running in LIFF browser.");
-            //     loadProfile();
-            // } else {
-            // console.log('LIFF app is not running in LIFF browser.');
-            // alert('LIFF app is not running in LIFF browser.');
             if (liff.isLoggedIn()) {
-                console.log("User is logged in");
                 loadProfile();
             } else {
                 logIn();
             }
-            //}
         });
-
-
     } catch (error) {
-        isLineConnected.value = true;
         console.error(error);
+        isLineConnected.value = true;
     }
 };
 
+// ฟังก์ชันสำหรับล็อกอิน
 const logIn = () => {
     liff.login({
-        redirectUri: window.location.replace(liftUrl),
+        redirectUri: window.location.replace(liffUrl),
     });
 };
 
+// ฟังก์ชันโหลดโปรไฟล์ผู้ใช้
 const loadProfile = async () => {
     try {
         const conText = await liff.getContext();
         const userId = conText.userId;
         await localStorage.setItem("userId", userId);
         const token = await liff.getIDToken();
-        console.log('token line', token);
         await localStorage.setItem("tokenline", token);
-        const payload = {
-            line_get_id_token: token
-        };
+        const payload = { line_get_id_token: token };
         const res = await dataApi.lineLogin(payload);
-        console.log("token lineLogin", res.data.data.token);
         await localStorage.setItem("token", res.data.data.token);
 
         if (route?.query?.page) {
             return navigateTo(`/${route?.query?.page}`);
+        } else {
+            return navigateTo('/');
         }
-        else {
-            return navigateTo('/')
-        }
-
     } catch (error) {
-        if (error.response.data.message === "ยังไม่ได้ลงทะเบียน") {
-            // alert("ยังไม่ได้ลงทะเบียน");
+        if (error.response?.data?.message === "ยังไม่ได้ลงทะเบียน") {
             return navigateTo('/auth/register');
         }
-        isLineConnected.value = true;
         console.error(error);
+        isLineConnected.value = true;
     }
 };
 
-onMounted(async () => {
+// เรียกใช้เมื่อคอมโพเนนต์ถูกสร้าง
+onMounted(() => {
     connectLine();
 });
 </script>
