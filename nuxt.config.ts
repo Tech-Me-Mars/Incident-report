@@ -112,13 +112,15 @@ export default defineNuxtConfig({
       // URL_API: "https://api.eop-thaipolice.com",
       // MQTT_PRE:"eop"
       // uat
-      URL_API: "https://uat-api.eop-thaipolice.com",
-      MQTT_PRE:"uateop"
-      
-      
+      // URL_API: "https://uat-api.eop-thaipolice.com",
+      URL_API: "http://127.0.0.1:8001",
+      MQTT_PRE: "uateop"
+
+
     }
   },
   plugins: [
+    '~/plugins/axios.js',
     '@/plugins/mqtt',
     '@/plugins/vue3-perfect-scrollbar.js',
     '@/plugins/vue-scroll-loader.client.js',
