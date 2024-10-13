@@ -50,7 +50,7 @@ export async function request(method, url, data, auth = true, type = 'json') {
       // }
       // หาก401 (token หมดเวลา) ให้Logout line แล้วLogin=>init ใหม่
       console.log("Login รหัสผ่านผิด | Token ไม่ถูกต้อง | ไม่มี Token");
-      localStorage.removeItem("token");
+      // localStorage.removeItem("token");
       await navigateTo("/auth/login-line");
     } else if (error.response.status === 422) {
       console.log("ติด validate");
