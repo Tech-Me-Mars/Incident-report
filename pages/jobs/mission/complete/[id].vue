@@ -97,8 +97,8 @@
                         </div>
                         <div class="flex flex-warp">
                             <p class="font-medium text-md">ระยะเวลาดำเนินงาน: <span
-                                    class="ml-auto font-light text-sm">{{ resJobProcessDetail?.jobs_process?.date_start
-                                    }} ถึง {{ resJobProcessDetail?.jobs_process?.date_end }}</span></p>
+                                    class="ml-auto font-light text-sm">{{ formattedDateBuddha(resJobProcessDetail?.jobs_process?.date_start)
+                                    }} ถึง {{ formattedDateBuddha(resJobProcessDetail?.jobs_process?.date_end) }}</span></p>
                         </div>
                         <div class="flex flex-warp">
                             <p class="font-medium text-md">รายละเอียดงาน: <span class="ml-auto font-light text-sm">{{
@@ -250,6 +250,20 @@ import VuePdfEmbed from 'vue-pdf-embed'
 import 'vue-pdf-embed/dist/style/index.css'
 import 'vue-pdf-embed/dist/style/annotationLayer.css'
 import 'vue-pdf-embed/dist/style/textLayer.css'
+
+import { format, parseISO } from 'date-fns';
+import { th } from 'date-fns/locale';
+function formattedDateBuddha(dateString) {
+    if (!dateString) {
+      return ''
+    }
+    const date = parseISO(dateString);
+    const buddhistYear = date.getFullYear() + 543;
+    const formattedDate = format(date, `d MMMM yyyy`, { locale: th });
+
+    // แทนที่ปี ค.ศ. ด้วยปี พ.ศ.
+    return formattedDate.replace(date.getFullYear().toString(), buddhistYear.toString());
+}
 const pdfSection = ref(null)
 
 import { formatDateTime, formatDate, customDateFormat, formatCurrency, formatNumber,formatNumberDecimal, roundToTwoDecimalPlaces } from '@/helpers/utility';
@@ -258,7 +272,6 @@ import * as dataApi from './api/dataApi.js'
 //! /////// [validation import] /////////
 import { useField, useForm, Form, useFieldArray } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { format } from "date-fns";
 import * as zod from "zod";
 
 const router = useRouter()
