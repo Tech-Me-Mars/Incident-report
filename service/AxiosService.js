@@ -3,7 +3,6 @@ import liff from "@line/liff";
 // const config = useRuntimeConfig();
 // axios.defaults.baseURL = "https://api_incident_report.tech-me-mars.com";
 // axios.defaults.baseURL = "https://api.eop-thaipolice.com"; //
-axios.defaults.baseURL = "https://uat-api.eop-thaipolice.com"; //uat
 
 
 const getToken = function () {
