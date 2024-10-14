@@ -4,9 +4,9 @@
     </HeaderMenu>
     <section class="p-3">
         <div class="!flex justify-center">
-       
-        <img src="@/public/image/icon/label-police.png" class="w-full max-w-[40rem] max-h-[5rem] mb-2"></img>
-         
+
+            <img src="@/public/image/icon/label-police.png" class="w-full max-w-[40rem] max-h-[5rem] mb-2"></img>
+
         </div>
         <div class="card p-3">
             <Form @submit="onSubmit">
@@ -15,17 +15,18 @@
 
                     <div class="!flex justify-center">
                         <div>
-                        <!-- <TmmAvatarUpload class=" mx-auto" v-model="uploadAvatarField" /> -->
-                        <a-upload v-model:file-list="uploadAvatarField" name="avatar" list-type="picture-card"
-                            class="avatar-uploader" :show-upload-list="false" :before-upload="beforeUpload"
-                            @change="handleChange" accept="image/*">
-                            <img v-if="upload_avatar_url" :src="upload_avatar_url" alt="avatar" />
-                            <div v-else>
-                                <loading-outlined v-if="loading"></loading-outlined>
-                                <plus-outlined v-else></plus-outlined>
-                                <div class="ant-upload-text">Upload</div>
-                            </div>
-                        </a-upload></div>
+                            <!-- <TmmAvatarUpload class=" mx-auto" v-model="uploadAvatarField" /> -->
+                            <a-upload v-model:file-list="uploadAvatarField" name="avatar" list-type="picture-card"
+                                class="avatar-uploader" :show-upload-list="false" :before-upload="beforeUpload"
+                                @change="handleChange" accept="image/*">
+                                <img v-if="upload_avatar_url" :src="upload_avatar_url" alt="avatar" />
+                                <div v-else>
+                                    <loading-outlined v-if="loading"></loading-outlined>
+                                    <plus-outlined v-else></plus-outlined>
+                                    <div class="ant-upload-text">Upload</div>
+                                </div>
+                            </a-upload>
+                        </div>
                     </div>
                     <div class="mb-2">
                         <TmmTypographyLabelForm label="สถานี" />
@@ -181,7 +182,7 @@ const firstNameField = ref(firstName);
 const lastNameField = ref(lastName);
 const uploadAvatarField = ref();
 const upload_avatar_url = ref()
-const isEditImage  = ref(false)
+const isEditImage = ref(false)
 const OtpField = ref(otp);
 const refCodeField = ref(ref_code);
 // const { value: cid } = useField("cid");
@@ -206,7 +207,7 @@ const saveUsers = async (values) => {
             formData.append('upload_avatar', uploadAvatarField?.value[0].originFileObj);
         }
         formData.append('otp_refcode', refCodeField.value);
-        
+
         const res = await dataApi.registerLineOtp(formData)
         await localStorage.setItem("token", res.data.data.token);
         errorAlert.value = false;
@@ -217,9 +218,15 @@ const saveUsers = async (values) => {
         };
         navigateTo('/')
     } catch (error) {
+        if (error.response?.status === 400 || error.response?.status === 401) {
+            // localStorage.clear();
+            return navigateTo('/auth/login-line');
+        }
+
         errorAlert.value = true;
         dataError.value = error;
         console.error(error)
+
     }
 
     // const dataApi
