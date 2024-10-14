@@ -64,7 +64,12 @@ const loadProfile = async () => {
             return navigateTo('/');
         }
     } catch (error) {
-        if (error.response?.data?.message === "ยังไม่ได้ลงทะเบียน") {
+        if (error.response?.status === 400) {
+            // ลบ localStorage ทั้งหมดเมื่อ error 401
+            localStorage.clear();
+            console.error("Unauthorized: ลบข้อมูลใน localStorage");
+            connectLine();
+        } else if (error.response?.status === 401) {
             return navigateTo('/auth/register');
         }
         console.error(error);
