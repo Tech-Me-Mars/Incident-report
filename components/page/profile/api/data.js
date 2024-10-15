@@ -24,3 +24,8 @@ export function getFillter() {
   const url = `/api/v1/dashboard/get_fillter`;
   return request("get", url, {}, true);
 }
+
+export function logout() {
+  const url = `/api/auth/logout`;
+  return request("post", url, {}, true);
+}
