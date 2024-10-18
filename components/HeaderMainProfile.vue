@@ -82,6 +82,8 @@ const mqttSub = async () => {
     $mqtt.subscribe(`${mqtt_pre}/notification/${resProfile.value.police_employee_id}`, (message) => {
         // เมื่อมีการรับข้อมูลจาก mqtt
         loadNotifyCount()
+        const audio = new Audio('/mp3/goldencookie0-43081.mp3');
+        audio.play();
         console.log(message, 'received');
     });
 }

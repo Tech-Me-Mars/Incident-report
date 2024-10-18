@@ -217,7 +217,7 @@ const route = useRoute();
 const daysOfMonth = ref([]);
 
 const month = ref(new Date())
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 // สร้าง computed property เพื่อดึงชื่อเดือนจากตัวแปร month
 const monthName = computed(() => {
   if (!month.value) {
@@ -257,7 +257,7 @@ watch(month, (newValue, oldValue) => {
 });
 
 const getDayName = (dayIndex) => {
-  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
   return days[dayIndex];
 };
 // สร้างตัวแปร calendaDashboardUseState โดยกำหนดค่าเริ่มต้นเป็น null

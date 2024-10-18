@@ -81,6 +81,8 @@ const mqttSub = async () => {
         // เมื่อมีการรับข้อมูลจาก mqtt
         loadNotifyCount()
         console.log(message, 'received');
+        const audio = new Audio('/mp3/goldencookie0-43081.mp3');
+        audio.play();
     });
 }
 
