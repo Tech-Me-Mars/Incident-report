@@ -1,10 +1,11 @@
 <template>
   <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width: 256px" class="card !w-full"
     mode="inline" :items="items" @click="handleClick" />
+  <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
 </template>
 
 <script setup>
-
+import * as dataApi from './api/data.js'
 import { h, ref } from 'vue';
 import {
   SettingTwoTone,
@@ -18,10 +19,16 @@ import {
   QuestionCircleTwoTone,
   LogoutOutlined
 } from '@ant-design/icons-vue';
+
+const alertToast = ref({});
+const errorAlert = ref(false);
+const dataError = ref({})
+
+
 const selectedKeys = ref([]);
 const openKeys = ref([]);
 const items = ref([
-{
+  {
     key: '1',
     icon: () => h(SettingTwoTone),
     label: 'ประวัติการปฏิบัติงาน',
@@ -86,12 +93,25 @@ const handleClick = menuInfo => {
         `คุณต้องการออกจากระบบใช่หรือไม่`,
     })
       .then(() => {
-        localStorage.clear()
-        navigateTo('/auth/login-line');
+        logout()
       })
       .catch(() => {
       });
 
   }
 };
+
+const logout = async () => {
+  try {
+    const res = await dataApi.logout();
+    localStorage.clear()
+    navigateTo('/auth/login-line');
+  } catch (error) {
+    errorAlert.value = true;
+    dataError.value = error;
+    console.error(error)
+  }
+}
+
+
 </script>

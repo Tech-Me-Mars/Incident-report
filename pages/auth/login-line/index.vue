@@ -26,10 +26,11 @@ const connectLine = async () => {
 
     try {
         await liff.init({ liffId });
-        liff.ready.then(() => {
+        liff.ready.then(async() => {
             if (liff.isLoggedIn()) {
                 loadProfile();
             } else {
+                await localStorage.clear();
                 logIn();
             }
         });
