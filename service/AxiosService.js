@@ -5,7 +5,7 @@ import liff from "@line/liff";
 // axios.defaults.baseURL = "https://api.eop-thaipolice.com"; //
 axios.defaults.baseURL = "https://uat-api.eop-thaipolice.com"; //uat
 
-
+const notLoading = ['/api/v1/notification/count']
 const getToken = function () {
   return localStorage.getItem("token");
 };
@@ -24,7 +24,9 @@ export async function request(method, url, data, auth = true, type = 'json') {
     headers["Authorization"] = `Bearer ${getToken()}`;
   }
   const isloadingAxi = useState("isloadingAxi", () => true);
-  isloadingAxi.value = true;
+  if (!notLoading.includes(url)) {
+    isloadingAxi.value = true;
+  }
   try {
     const response = await axios({
       method,

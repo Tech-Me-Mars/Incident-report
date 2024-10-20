@@ -13,9 +13,15 @@
             <div class="flex gap-5 items-center">
 
                 <a-badge :count="resNotifyCount || 0" color="red">
-                    <NuxtLink to="/notification">
-                        <i type="" class="mdi mdi mdi-bell text-lg text-blue-500" style="font-size: 25px;">
-                        </i>
+                    <NuxtLink to="/notification" class="relative flex flex-col justify-center items-center">
+                        <!-- ไอคอนกระดิ่ง -->
+                        <i class="mdi mdi-bell text-lg text-blue-500" style="font-size: 25px;"></i>
+
+                        <!-- จุดสีเขียวใต้กระดิ่ง -->
+                        <span v-if="is_connect_line_notify == 1"
+                            class="absolute bottom-0 transform translate-y-2 w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                        <span v-if="is_connect_line_notify == 0"
+                            class="absolute bottom-0 transform translate-y-2 w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
                     </NuxtLink>
                 </a-badge>
                 <NuxtLink to="/profile">
@@ -69,6 +75,7 @@ onMounted(async () => {
     await loadProfile();
     await mqttSub()
     await loadNotifyCount();
+    checkLineNotiConnect();
 })
 
 // connect MQTT
@@ -88,4 +95,8 @@ const mqttSub = async () => {
     });
 }
 
+const is_connect_line_notify = ref()
+const checkLineNotiConnect = async () => {
+    is_connect_line_notify.value = localStorage.getItem("is_connect_line_notify");
+}
 </script>

@@ -29,3 +29,8 @@ export function logout() {
   const url = `/api/auth/logout`;
   return request("post", url, {}, true);
 }
+
+export function getCheckConnectLineNotify() {
+  const url = `/api/v2/connect/line_notify`;
+  return request("get", url, {}, true);
+}

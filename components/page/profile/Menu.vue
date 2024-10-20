@@ -8,6 +8,7 @@
 import * as dataApi from './api/data.js'
 import { h, ref } from 'vue';
 import {
+  BellTwoTone,
   SettingTwoTone,
   MailOutlined,
   ExclamationOutlined,
@@ -24,10 +25,19 @@ const alertToast = ref({});
 const errorAlert = ref(false);
 const dataError = ref({})
 
-
+const is_connect_line_notify = localStorage.getItem("is_connect_line_notify");
 const selectedKeys = ref([]);
 const openKeys = ref([]);
 const items = ref([
+  {
+    key: '0',
+    danger:is_connect_line_notify != 1 ? true : false,
+    icon: () => h(BellTwoTone, { 'two-tone-color': is_connect_line_notify == 1 ? '' : '#eb2f96' }), // เปลี่ยนสีตามเงื่อนไข
+    // icon: () => h(BellTwoTone),
+    label: is_connect_line_notify == 1 ? "ตอนนี้คุณเชื่อมต่อการแจ้งเตือนไลน์แล้ว" : 'เปิดรับการแจ้งเตือนไลน์',
+    title: is_connect_line_notify == 1 ? "ตอนนี้คุณเชื่อมต่อการแจ้งเตือนไลน์แล้ว" : 'เปิดรับการแจ้งเตือนไลน์',
+
+  },
   {
     key: '1',
     icon: () => h(SettingTwoTone),
@@ -69,8 +79,23 @@ const items = ref([
     danger: true
   },
 ]);
-const handleClick = menuInfo => {
+const handleClick = async(menuInfo) => {
   console.log('click ', menuInfo);
+  if (menuInfo.key == 0) {
+    if (is_connect_line_notify == 1) {
+      return
+    }
+    try {
+      const res = await dataApi.getCheckConnectLineNotify();
+      if (res.data.data.connect == false) { //ถ้ายังไม่เชื่อม
+        window.location.href = res.data.data.generateAuthorizeLink; //รีไดเร็ก
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    // navigateTo('/my-jobs')
+  }
   if (menuInfo.key == 1) {
     navigateTo('/my-jobs')
   }

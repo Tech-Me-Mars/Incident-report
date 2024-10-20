@@ -47,6 +47,19 @@ const logIn = () => {
     });
 };
 
+const checkRegisterNotify =async () =>{
+    try{
+        const res =await dataApi.getCheckLineNotify();
+        if (res.data.data?.connect == true) {
+            localStorage.setItem("is_connect_line_notify", 1);
+        }else{
+            localStorage.setItem("is_connect_line_notify", 0);
+        }
+    }catch(error){
+        console.error(error)
+    }
+}
+
 // ฟังก์ชันโหลดโปรไฟล์ผู้ใช้
 const loadProfile = async () => {
     try {
@@ -58,7 +71,7 @@ const loadProfile = async () => {
         const payload = { line_get_id_token: token };
         const res = await dataApi.lineLogin(payload);
         await localStorage.setItem("token", res.data.data.token);
-
+        await checkRegisterNotify()
         if (route?.query?.page) {
             return navigateTo(`/${route?.query?.page}`);
         } else {

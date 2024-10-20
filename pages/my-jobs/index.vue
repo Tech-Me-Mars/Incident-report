@@ -124,6 +124,8 @@ const mqttSub = async () => {
                     // const parsedMessage = JSON.parse(message);
                     // console.log("parsedMessage", parsedMessage);
                     getNoReadMessageJobMission(e.id)
+                    const audio = new Audio('/mp3/notifychat.mp3');
+                    audio.play();
                 });
             });
         }

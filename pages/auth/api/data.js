@@ -49,6 +49,11 @@ export function getPolicePosition() {
   return request("get", url, {}, false);
 }
 
+export function getCheckLineNotify() {
+  const url = `/api/v2/connect/line_notify`;
+  return request("get", url, {}, true);
+}
+
 
 
 
