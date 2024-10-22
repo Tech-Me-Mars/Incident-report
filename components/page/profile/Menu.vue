@@ -1,6 +1,7 @@
 <template>
   <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width: 256px" class="card !w-full"
     mode="inline" :items="items" @click="handleClick" />
+    <img src="/image/line_active.png" />
   <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
 </template>
 

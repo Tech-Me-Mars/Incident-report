@@ -93,6 +93,6 @@ const loadProfile = async () => {
 
 // เรียกใช้เมื่อคอมโพเนนต์ถูกสร้าง
 onMounted(() => {
-    connectLine();
+    // connectLine();
 });
 </script>
