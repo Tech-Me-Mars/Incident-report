@@ -95,8 +95,14 @@ const mqttSub = async () => {
     });
 }
 
+const is_connect_line_notify_global = useState("is_connect_line_notify_global");
 const is_connect_line_notify = ref()
 const checkLineNotiConnect = async () => {
     is_connect_line_notify.value = localStorage.getItem("is_connect_line_notify");
 }
+
+// Watch for changes in is_connect_line_notify_global and call checkLineNotiConnect
+watch(is_connect_line_notify_global, () => {
+    checkLineNotiConnect();
+});
 </script>

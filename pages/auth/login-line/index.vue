@@ -26,14 +26,15 @@ const connectLine = async () => {
 
     try {
         await liff.init({ liffId });
-        liff.ready.then(async() => {
-            if (liff.isLoggedIn()) {
-                loadProfile();
-            } else {
-                await localStorage.clear();
-                logIn();
-            }
-        });
+        await liff.ready;
+        // liff.ready.then(async() => {
+        if (liff.isLoggedIn()) {
+            loadProfile();
+        } else {
+            await localStorage.clear();
+            logIn();
+        }
+        // });
     } catch (error) {
         console.error(error);
         isLineConnected.value = true;
@@ -47,15 +48,15 @@ const logIn = () => {
     });
 };
 
-const checkRegisterNotify =async () =>{
-    try{
-        const res =await dataApi.getCheckLineNotify();
+const checkRegisterNotify = async () => {
+    try {
+        const res = await dataApi.getCheckLineNotify();
         if (res.data.data?.connect == true) {
             localStorage.setItem("is_connect_line_notify", 1);
-        }else{
+        } else {
             localStorage.setItem("is_connect_line_notify", 0);
         }
-    }catch(error){
+    } catch (error) {
         console.error(error)
     }
 }
@@ -93,6 +94,6 @@ const loadProfile = async () => {
 
 // เรียกใช้เมื่อคอมโพเนนต์ถูกสร้าง
 onMounted(() => {
-    // connectLine();
+    connectLine();
 });
 </script>

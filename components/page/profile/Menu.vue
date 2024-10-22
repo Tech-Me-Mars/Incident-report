@@ -1,7 +1,6 @@
 <template>
   <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width: 256px" class="card !w-full"
     mode="inline" :items="items" @click="handleClick" />
-    <img src="/image/line_active.png" />
   <TmmAlertToast :data="alertToast" :error="errorAlert" :dataError="dataError" />
 </template>
 
@@ -30,14 +29,16 @@ const is_connect_line_notify = localStorage.getItem("is_connect_line_notify");
 const selectedKeys = ref([]);
 const openKeys = ref([]);
 const items = ref([
-  {
+{
     key: '0',
-    danger:is_connect_line_notify != 1 ? true : false,
-    icon: () => h(BellTwoTone, { 'two-tone-color': is_connect_line_notify == 1 ? '' : '#eb2f96' }), // เปลี่ยนสีตามเงื่อนไข
-    // icon: () => h(BellTwoTone),
-    label: is_connect_line_notify == 1 ? "ตอนนี้คุณเชื่อมต่อการแจ้งเตือนไลน์แล้ว" : 'เปิดรับการแจ้งเตือนไลน์',
+    // danger: is_connect_line_notify != 1 ? true : false,
+    // ใช้ไอคอนภาพตามเงื่อนไข
+    icon: () => h('img', { src: is_connect_line_notify == 1 ? '/image/line_active.png' : '/image/line_black.png', width: '20' }),
+    // ปรับเปลี่ยนสีของ label ตามเงื่อนไข
+    label: h('span', {
+      style: { color: is_connect_line_notify == 1 ? 'green' : '' } // สีเขียวเมื่อเชื่อมต่อ
+    }, is_connect_line_notify == 1 ? "ตอนนี้คุณเชื่อมต่อการแจ้งเตือนไลน์แล้ว" : 'เปิดรับการแจ้งเตือนไลน์'),
     title: is_connect_line_notify == 1 ? "ตอนนี้คุณเชื่อมต่อการแจ้งเตือนไลน์แล้ว" : 'เปิดรับการแจ้งเตือนไลน์',
-
   },
   {
     key: '1',

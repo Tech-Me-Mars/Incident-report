@@ -408,8 +408,8 @@
                             v-model:value="inquiry_employee_position" :options="resPositionsInquiry"
                             placeholder="ตำแหน่ง"
                             :field-names="{ label: 'position_name_th', value: 'position_name_th' }"
-                             @search="inquiryPositionSearch"
-                            @select="inquiryPositionSelect" @keydown="inquiryPositionKeyDown" />
+                            @search="inquiryPositionSearch" @select="inquiryPositionSelect"
+                            @keydown="inquiryPositionKeyDown" />
 
                         <TmmInput id="inquiry_employee_phone" v-model="inquiry_employee_phone" class="w-full !mb-2"
                             placeholder="เบอร์โทร..." :error="errors.inquiry_employee_phone" />
@@ -435,8 +435,8 @@
                             class="!w-full !mb-2" v-model:value="senior_police_control_employee_position"
                             :options="resPositionsSenior" placeholder="ตำแหน่ง"
                             :field-names="{ label: 'position_name_th', value: 'position_name_th' }"
-                            @search="seniorPositionSearch"
-                            @select="seniorPositionSelect" @keydown="seniorPositionKeyDown" />
+                            @search="seniorPositionSearch" @select="seniorPositionSelect"
+                            @keydown="seniorPositionKeyDown" />
 
 
                         <TmmInput id="senior_police_control_employee_phone"
@@ -1336,6 +1336,8 @@ onMounted(() => {
     loadPositions();
     //loadMyProfile();
 })
+
+import { message } from 'ant-design-vue';
 const { $swal } = useNuxtApp()
 const warningModal = ref(false);
 const messageError = ref('');
@@ -1346,8 +1348,21 @@ const checkIsError = async () => {
     if (isError == 'true') {
         warningModal.value = true;
         messageError.value = message
+        message.error(message);
 
-
+        const newQuery = { ...route.query };
+        delete newQuery.iserror;
+        delete newQuery.message;
+        // Update the URL without reloading the page
+        router.replace({ query: newQuery });
+    }
+    if (isError == 'false') {
+        errorAlert.value = false;
+        alertToast.value = {
+            severity: "success",
+            summary: "ทำรายการสำเร็จ",
+            detail: message,
+        };
         const newQuery = { ...route.query };
         delete newQuery.iserror;
         delete newQuery.message;
@@ -1357,10 +1372,17 @@ const checkIsError = async () => {
 };
 const connectLineModal = ref(false);
 
+const is_connect_line_notify_global = useState("is_connect_line_notify_global", () => localStorage.getItem("is_connect_line_notify_global"));
 const connectLineNotifycheck = async () => {
     try {
         const res = await dataApi.getCheckConnectLineNotify();
-        console.log('คอลเช็ค conect line notify')
+        if (res.data.data?.connect == true) {
+            localStorage.setItem("is_connect_line_notify", 1);
+            is_connect_line_notify_global.value = 1;
+        } else {
+            localStorage.setItem("is_connect_line_notify", 0);
+            is_connect_line_notify_global.value = 0;
+        }
         if (res.data.data.connect == false) { //ถ้ายังไม่เชื่อม
             connectLineModal.value = true; //เปิด modal
         }
@@ -1522,7 +1544,7 @@ const inquiryPositionSelect = (e) => {
     if (resPositionsInquiry.value.length < 1) {
         inquiry_employee_position.value = stateTextInquiryPosition.value
         return
-    } 
+    }
 }
 
 //  *********************** SENIOR  ***********************
@@ -1600,7 +1622,7 @@ const seniorKeyDown = (event) => {
 const stateTextSeniorPosition = ref('')
 const seniorPositionSearch = (val) => {
     try {
-        stateTextSeniorPosition.value = val 
+        stateTextSeniorPosition.value = val
         if (val.length > 1) {
             resPositionsSenior.value = resPositions.value.filter(item =>
                 item.position_name_th.toLowerCase().includes(val.toLowerCase())
@@ -1625,7 +1647,7 @@ const seniorPositionSelect = (e) => {
     if (resPositionsSenior.value.length < 1) {
         senior_police_control_employee_position.value = stateTextSeniorPosition.value
         return
-    } 
+    }
 }
 
 
