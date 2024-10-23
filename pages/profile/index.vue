@@ -52,10 +52,12 @@
       <span class="text-gray-500">ข้อมูลทั่วไป</span>
     </div>
     <PageProfileMenu />
+    <span class="text-xs text-gray-500 font-light"> version : {{ version }}</span>
 
   </section>
 </template>
 <script setup>
+import { version } from "@/package.json"
 definePageMeta({
    middleware: 'auth'
 });

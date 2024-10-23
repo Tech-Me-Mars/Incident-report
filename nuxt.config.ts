@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const version = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 export default defineNuxtConfig({
   devtools: { enabled: false },
   // app: {
@@ -15,6 +16,12 @@ export default defineNuxtConfig({
 
   ssr: false,
   build: {
+    filenames: {
+      app: ({ isDev }) => isDev ? '[name].js' : `[name].${version}.js`,
+      chunk: ({ isDev }) => isDev ? '[name].js' : `[name].${version}.js`,
+      css: ({ isDev }) => isDev ? '[name].css' : `[name].${version}.css`
+    },
+    cache: true,  // เพื่อช่วยในการคุมแคชไฟล์
     transpile: ['v3-infinite-loading']
   },
   vue: {
@@ -227,13 +234,13 @@ export default defineNuxtConfig({
       LIFFURL: process.env.LIFFURL,
       MAP_KEY: process.env.MAP_KEY,
       // prod
-      // URL_API: "https://api.eop-thaipolice.com",
-      // MQTT_PRE:"eop"
+      URL_API: "https://api.eop-thaipolice.com",
+      MQTT_PRE:"eop"
       // uat
      
       // URL_API: "http://127.0.0.1:8001",
-      URL_API: "https://uat-api.eop-thaipolice.com",
-      MQTT_PRE: "uateop"
+      // URL_API: "https://uat-api.eop-thaipolice.com",
+      // MQTT_PRE: "uateop"
 
 
     }
