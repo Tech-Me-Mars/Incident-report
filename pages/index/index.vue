@@ -450,6 +450,9 @@ const mqttSub = async () => {
     console.error(error);
   }
 };
+onBeforeUnmount(() => {
+  $mqtt.unsubscribeAll();
+});
 const getNoReadMessageJobMission = async (jobid) => {
   try {
     setTimeout(async() => {
