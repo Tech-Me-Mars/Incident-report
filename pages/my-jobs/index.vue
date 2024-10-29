@@ -116,11 +116,14 @@ const loadMyJobs = async () => {
 
 import { $mqtt } from "vue-paho-mqtt";
 const mqtt_pre = useRuntimeConfig().public.MQTT_PRE;
+let subscriptionTopics = [];
 const mqttSub = async () => {
     try {
         if (resMyJobs.value?.length > 0) {
             resMyJobs.value?.forEach((e, i) => {
-                $mqtt.subscribe(`${mqtt_pre}/jobs/chat/${e.id}/ping_messages`, (message) => {
+                const topic = `${mqtt_pre}/jobs/chat/${e.id}/ping_messages`;
+                subscriptionTopics.push(topic);
+                $mqtt.subscribe(topic, (message) => {
                     // const parsedMessage = JSON.parse(message);
                     // console.log("parsedMessage", parsedMessage);
                     getNoReadMessageJobMission(e.id)
@@ -135,7 +138,10 @@ const mqttSub = async () => {
     }
 };
 onBeforeUnmount(() => {
-  $mqtt.unsubscribeAll();
+  subscriptionTopics.forEach((topic) => {
+    $mqtt.unsubscribe(topic);
+  });
+  subscriptionTopics = [];
 });
 const getNoReadMessageJobMission = async (jobid) => {
     try {

@@ -572,6 +572,8 @@ const mqttSub = async () => {
                 // เช็คว่าหน้าจอเลื่อนอยู่ล่างสุดหรือไม่
                 const atBottom = isScrolledToBottom();
                 resMessage.value = [...resMessage.value, objForAppend];
+                const audio = new Audio('/mp3/notifychat.mp3');
+                audio.play();
                 // ถ้าอยู่ล่างสุดแล้ว ให้เลื่อนลงไปล่างสุด
                 if (atBottom) {
                     setTimeout(() => {

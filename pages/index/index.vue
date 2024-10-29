@@ -27,8 +27,7 @@
     </div>
 
     <div class="flex items-center justify-start px-5 w-full py-1 card !bg-blue-600 gap-3 mb-3">
-      <TmmFeedbackProgresscircle :size="60"
-        :percent="resDashboardJobs?.jobs_summary?.completion_percentage || 0" />
+      <TmmFeedbackProgresscircle :size="60" :percent="resDashboardJobs?.jobs_summary?.completion_percentage || 0" />
       <div class="text-white">
         <p class="text-sm">คดีความของท่านวันนี้</p>
         <span class="text-xs text-stone-200">สำเร็จไปแล้ว
@@ -419,30 +418,33 @@ const paginatedsMissionFollow = computed(() => {
 
 const mqtt_pre = useRuntimeConfig().public.MQTT_PRE;
 import { $mqtt } from "vue-paho-mqtt";
+let subscriptionTopics = [];
 const mqttSub = async () => {
   try {
-    console.log(resDashboardJobs.value?.jobs_mission?.length)
-    console.log(resDashboardJobs.value?.jobs_mission_follow?.length)
     if (resDashboardJobs.value?.jobs_mission?.length > 0) {
       resDashboardJobs.value?.jobs_mission.forEach((e, i) => {
-        $mqtt.subscribe(`${mqtt_pre}/jobs/chat/${e.id}/ping_messages`, (message) => {
-          // const parsedMessage = JSON.parse(message);
-          // console.log("parsedMessage", parsedMessage);
-          getNoReadMessageJobMission(e.id)
+        const topic = `${mqtt_pre}/jobs/chat/${e.id}/ping_messages`;
+        subscriptionTopics.push(topic);
+
+        $mqtt.subscribe(topic, (message) => {
+          getNoReadMessageJobMission(e.id);
           const audio = new Audio('/mp3/notifychat.mp3');
           audio.play();
+
         });
       });
     }
 
     if (resDashboardJobs.value?.jobs_mission_follow?.length > 0) {
       resDashboardJobs.value?.jobs_mission_follow.forEach((e, i) => {
-        $mqtt.subscribe(`${mqtt_pre}/jobs/chat/${e.id}/ping_messages`, (message) => {
-          // const parsedMessage = JSON.parse(message);
-          // console.log("parsedMessage", parsedMessage);
+        const topic = `${mqtt_pre}/jobs/chat/${e.id}/ping_messages`;
+        subscriptionTopics.push(topic);
+
+        $mqtt.subscribe(topic, (message) => {
           getNoReadMessageJobMissionFollow(e.id);
           const audio = new Audio('/mp3/notifychat.mp3');
           audio.play();
+
         });
       });
     }
@@ -451,20 +453,23 @@ const mqttSub = async () => {
   }
 };
 onBeforeUnmount(() => {
-  $mqtt.unsubscribeAll();
+  subscriptionTopics.forEach((topic) => {
+    $mqtt.unsubscribe(topic);
+  });
+  subscriptionTopics = [];
 });
 const getNoReadMessageJobMission = async (jobid) => {
   try {
-    setTimeout(async() => {
+    setTimeout(async () => {
       const res = await dataApi.getCheckNoRead(jobid);
-    if (resDashboardJobs.value?.jobs_mission) {
-      const jobMission = resDashboardJobs.value?.jobs_mission?.find(job => job.id == jobid);
-      if (jobMission) {
-        jobMission.no_read_messages_count = res.data.data.no_read_messages_count;
+      if (resDashboardJobs.value?.jobs_mission) {
+        const jobMission = resDashboardJobs.value?.jobs_mission?.find(job => job.id == jobid);
+        if (jobMission) {
+          jobMission.no_read_messages_count = res.data.data.no_read_messages_count;
+        }
       }
-    }
     }, 1500);
-    
+
   } catch (error) {
     console.error("Error updating no_read_messages_count:", error);
   }
